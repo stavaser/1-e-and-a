@@ -63,6 +63,6 @@ let p_notes: Parser<_, unit> =
 let p_pattern: Parser<Pattern, Unit> =
     pipe3
         (str pattern_id .>> ws1)
-        (manyCharsTill ((letter <|> digit) .>> ws0) (str_ws0 ":"))
+        (manyCharsTill (letter <|> digit) (ws0 >>. str_ws0 ":"))
         (many p_notes)
         (fun _ id data -> Pattern(id, data))
