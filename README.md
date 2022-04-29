@@ -1,4 +1,4 @@
-# cs334 HW7
+# cs334 Final Project
 Starter code for Lab 7
 
 # Lab Feedback
