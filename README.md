@@ -1,7 +1,5 @@
-# cs334 Final Project
-Starter code for Lab 7
-
-# Lab Feedback
+# CS334 Final Project
+Describe your project here.
 
 ## Ready for Feeback?
  - [x] Not completed, development is still in progress
