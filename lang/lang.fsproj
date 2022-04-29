@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="FParsec" Version="1.1.1" />
+    <PackageReference Include="Giraffe" Version="6.0.0" />
   </ItemGroup>
 
 </Project>

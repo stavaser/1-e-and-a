@@ -1,0 +1,5 @@
+pattern mypattern  : 1 e + a
+pattern mypattern2    : 1 1 2 3
+
+bar mybar:
+    hh: 1 1 2 3
