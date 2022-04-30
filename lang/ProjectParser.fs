@@ -1,12 +1,13 @@
 module ProjectParser
 
 open FParsec
+type Num = int
 
 type Note =
-    | Num of int
-    | E of char
-    | And of char
-    | A of char
+    | Num
+    | E
+    | And
+    | A
 
 type VarName = string
 
@@ -21,18 +22,20 @@ type Drum =
 type Bar = Bar of VarName * ((Drum * Pattern) list)
 // type Expr =
 // parse notes
-// let num = pdigit |>> int |>> Num
-// let e = pletter |>> E
-// let and' = pletter |>> And
-// let a = pletter |>> A
+
+let ws0 = spaces
+let ws1 = spaces1
+
+let num: Parser<Note, unit> = (digit .>> ws0) |>> (fun e -> Num)
+let e: Parser<Note, unit> = (pchar 'e' .>> ws0) |>> (fun e -> E)
+let and': Parser<Note, unit> = (pchar '+' .>> ws0) |>> (fun e -> And)
+let a: Parser<Note, unit> = (pchar 'a' .>> ws0) |>> (fun e -> A)
+// let and' = pchar '+' |>> And
 
 // type Expr =
 //     | Pattern of VarName * (string list)
 //     | Bar of VarName * ((Drum * Pattern) list)
 
-
-let ws0 = spaces
-let ws1 = spaces1
 
 let str s = pstring s
 let str_ws0 s = pstring s .>> ws0
@@ -57,6 +60,7 @@ let p_notes: Parser<_, unit> =
         || c = 'a'
         || c = '|')
     .>> ws0
+
 
 let p_assignment = (manyCharsTill (letter <|> digit) (ws0 >>. str_ws0 ":"))
 
