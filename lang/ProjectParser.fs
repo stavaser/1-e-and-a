@@ -19,11 +19,12 @@ type Drum =
     | SN
     | BD
 
-// type DrumPattern =
-//     | DrumPatternVar of Drum * PatternName
-//     | DrumPatternNotes of Drum * (Note list)
+type DrumPattern =
+    | DrumPatternVar of Drum * PatternName
+    | DrumPatternNotes of Drum * (Note list)
 
-type Bar = Bar of BarName * (((Drum * PatternName) * (Drum * (Note list))) list)
+type Bar = Bar of BarName * (DrumPattern list)
+// type Bar = Bar of BarName * (((Drum * PatternName) list) * ((Drum * (Note list)) list))
 // type Expr =
 // parse notes
 
@@ -86,10 +87,10 @@ let p_drum = (hh <|> sn <|> bd) .>> (ws0 >>. str_ws0 ":")
     hh: var_pattern_name1
 *)
 let p_drumpattern_notes =
-    pipe2 p_drum (many p_note) (fun drum pattern -> (drum, pattern))
+    pipe2 p_drum (many p_note) (fun drum pattern -> DrumPatternNotes(drum, pattern))
 
 let p_drumpattern_var =
-    pipe2 p_drum (manyCharsTill (letter <|> digit) ws1) (fun drum pattern -> (drum, PatternName(pattern)))
+    pipe2 p_drum (manyCharsTill (letter <|> digit) ws1) (fun drum pattern -> DrumPatternVar(drum, pattern))
 
 
 (*
@@ -102,7 +103,8 @@ let p_bar: Parser<Bar, Unit> =
     pipe3
         (str_ws1 bar_keyword)
         (p_assignment |>> BarName)
-        (many (p_drumpattern_var .>>. p_drumpattern_notes))
+        ((many p_drumpattern_var
+          <|> many p_drumpattern_notes))
         (fun _ id data -> Bar(id, data))
 
 

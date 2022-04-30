@@ -2,8 +2,6 @@ pattern mypattern  : 1 e + a
 pattern mypattern2    : 1 1 2 3
 
 bar mybar:
-    hh: mypattern
-    bd: 1 2 3 e a
-    hh: mypattern2
-    bd: 1 2 3 e a
+    hh: 1 2 3 4
+    hh: 2 3 4 + a
 
