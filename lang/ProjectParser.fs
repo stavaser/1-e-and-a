@@ -2,10 +2,9 @@ module ProjectParser
 
 open FParsec
 // type Num = int
-// type Settings =
-//     { Time: uint8 * uint8
-//       Division: uint8 * uint8
-//       Tempo: int }
+type Settings =
+    { Time: uint8 * uint8
+      Division: uint8 * uint8 }
 
 type Note =
     | Num of uint8
@@ -32,6 +31,10 @@ type Bar = Bar of BarName * (DrumPatternVar list * DrumPatternNotes list)
 // type Expr =
 // parse notes
 
+type Expr =
+    { Settings: Settings
+      Patterns: Pattern list }
+
 let ws0 = spaces
 let ws1 = spaces1
 
@@ -54,8 +57,6 @@ let bd: Parser<Drum, unit> = (str_ws0 "bd") |>> (fun x -> BD)
 //     | Pattern of VarName * (string list)
 //     | Bar of VarName * ((Drum * Pattern) list)
 
-
-
 let pattern_keyword = "pattern"
 let bar_keyword = "bar"
 let time_keyword = "time"
@@ -66,6 +67,14 @@ let p_time: Parser<(uint8 * uint8), unit> =
     ((str_ws0 time_keyword) .>> (ws0 >>. str_ws0 ":"))
     >>. (((puint8 .>> ws0) .>> pchar '/')
          .>>. (puint8 .>> ws0))
+
+let p_div: Parser<(uint8 * uint8), unit> =
+    ((str_ws0 div_keyword) .>> (ws0 >>. str_ws0 ":"))
+    >>. (((puint8 .>> ws0) .>> pchar '/')
+         .>>. (puint8 .>> ws0))
+
+let p_settings =
+    pipe2 p_time p_div (fun time div -> { Time = time; Division = div })
 
 (*
     Parses a variable name assignment such as
@@ -121,6 +130,11 @@ let p_drumpattern_var =
 
 
 
-let expr = p_time .>>. (many p_pattern) .>> spaces
+let expr =
+    pipe2 p_settings (many p_pattern) (fun settings patterns ->
+        { Settings = settings
+          Patterns = patterns })
+
+// let expr = p_settings .>>. (many p_pattern) .>> spaces
 
 let grammar: Parser<_, _> = expr .>> eof

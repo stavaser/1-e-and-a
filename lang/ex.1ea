@@ -1,4 +1,5 @@
 time : 4/4
+division: 1/16
 
 pattern mypattern : 1 e + a
 pattern mypattern2 : 1 1 2 3
