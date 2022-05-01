@@ -63,30 +63,34 @@ let lines width =
 
 let evalNote note =
     match note with
-    | E -> "<ellipse cx=\"50\" cy=\"50\" rx=\"50\" ry=\"50\" />"
-    | And -> "<ellipse cx=\"50\" cy=\"50\" rx=\"50\" ry=\"50\" />"
-    | A -> "<ellipse cx=\"50\" cy=\"50\" rx=\"50\" ry=\"50\" />"
-    | num -> "<ellipse cx=\"50\" cy=\"50\" rx=\"50\" ry=\"50\" />"
+    | E -> 2
+    | And -> 3
+    | A -> 4
+    | num -> 1
+// | E -> "<ellipse cx=\"50\" cy=\"50\" rx=\"50\" ry=\"50\" />"
+// | And -> "<ellipse cx=\"50\" cy=\"50\" rx=\"50\" ry=\"50\" />"
+// | A -> "<ellipse cx=\"50\" cy=\"50\" rx=\"50\" ry=\"50\" />"
+// | num -> "<ellipse cx=\"50\" cy=\"50\" rx=\"50\" ry=\"50\" />"
 
-let evalNotes notes =
-    match notes with
-    | [] -> ""
-    | note :: rest -> evalNote note
+// let evalNotes notes =
+//     match notes with
+//     | [] -> ""
+//     | note :: rest -> evalNote note
 
 let evalCanvas data =
     match data with
     | { Time = (x, y); Division = (a, b) } ->
-        let array3 = [| for i in 1 .. (int b) -> 1 |]
-        array3
-// let width = int (b / y)
+        let beats = int (b / y)
+        let bar = [| for i in 1 .. (int x) -> [| for i in 1 .. (beats) -> 0 |] |]
+        bar
 // String.replicate (int b) (lines 102)
 
 
-let evalPatterns patterns =
-    match patterns with
-    | [] -> ""
-    // | Pattern (varname, notes) -> varname
-    | Pattern (varname, notes) :: rest -> evalNotes notes
+// let evalPatterns patterns =
+//     match patterns with
+//     | [] -> 0
+//     // | Pattern (varname, notes) -> varname
+//     | Pattern (varname, notes) :: rest -> evalNotes notes
 
 
 let evalSettings settings = settings
