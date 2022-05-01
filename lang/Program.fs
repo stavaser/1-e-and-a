@@ -10,42 +10,26 @@ open Giraffe.ViewEngine
 
 [<EntryPoint>]
 let main argv =
-    // let lines = File.ReadAllLines(@"./test.1ea")
+    if (Array.length argv <> 1) then
+        printfn "usage: dotnet run <input_file>"
+        1
+    else
+        let input = argv.[0]
 
-    // // Convert file lines into a list.
-    // let list = Seq.toList lines
-    // printfn "%A" list
-
-    // let output = Seq.where (fun (n) -> pattern_name n) list
-    // printfn "%A" output
-    // 0
-
-    // let view =
-    //     html [] [
-    //         head [] [ title [] [ str "Giraffe" ] ]
-    //         body [] [ header [] [ str "Giraffe" ] ]
-    //     ]
-
-    // let document = RenderView.AsString.htmlDocument view
-
-    // printfn "%s" document
-
-    let input = argv.[0]
-
-    let test p str =
-        match run p str with
-        | Success (result, _, _) -> printfn "Success: %A" result
-        | Failure (errorMsg, _, _) -> printfn "Failure: %s" errorMsg
+        let test p str =
+            match run p str with
+            | Success (result, _, _) -> printfn "Success: %A" (eval result)
+            | Failure (errorMsg, _, _) -> printfn "Failure: %s" errorMsg
 
 
-    let lines = File.ReadAllText input
-    // let list = Seq.toList lines
-    test grammar lines
+        let lines = File.ReadAllText input
+        // let list = Seq.toList lines
+        test grammar lines
 
-    // List.map (fun x -> test parse x) list |> ignore
+        // List.map (fun x -> test parse x) list |> ignore
 
-    // let output = Seq.where (fun (n) -> test p_pattern n) list
-    // printfn "%A" output
-    // test p_pattern input
+        // let output = Seq.where (fun (n) -> test p_pattern n) list
+        // printfn "%A" output
+        // test p_pattern input
 
-    0
+        0

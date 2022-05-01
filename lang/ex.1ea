@@ -1,7 +1,6 @@
-pattern mypattern  : 1 e + a
-pattern mypattern2    : 1 1 2 3
+time : 4/4
 
-bar mybar:
-    hh: 1 2 3 4
-    hh: 2 3 4 + a
+pattern mypattern : 1 e + a
+pattern mypattern2 : 1 1 2 3
+
 
