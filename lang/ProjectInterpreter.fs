@@ -95,7 +95,17 @@ let evalCanvas data =
 
 let evalSettings settings = settings
 
+let findExpr exprs variable =
+    let isFound var = var = variable
+
+    exprs
+    |> List.find (fun (Pattern (x, _)) -> isFound x)
+
+
 let eval e =
     match e with
-    | { Settings = s_data; Patterns = p_data } -> (evalCanvas s_data)
+    | { Settings = s_data
+        Patterns = p_data
+        Render = varname } -> (findExpr p_data varname)
+// (evalCanvas s_data)
 // evalSettings s_data

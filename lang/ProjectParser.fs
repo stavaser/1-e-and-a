@@ -11,6 +11,7 @@ type Note =
     | E
     | And
     | A
+    | Sep
 
 type PatternName = string
 type BarName = string
@@ -30,10 +31,12 @@ type Bar = Bar of BarName * (DrumPatternVar list * DrumPatternNotes list)
 // type Bar = Bar of BarName * (((Drum * PatternName) list) * ((Drum * (Note list)) list))
 // type Expr =
 // parse notes
+// type Variables = PatternVariable of PatternName
 
 type Expr =
     { Settings: Settings
-      Patterns: Pattern list }
+      Patterns: Pattern list
+      Render: string }
 
 let ws0 = spaces
 let ws1 = spaces1
@@ -47,6 +50,7 @@ let num: Parser<Note, unit> = (puint8 .>> ws0) |>> (fun e -> Num(e))
 let e: Parser<Note, unit> = (pchar 'e' .>> ws0) |>> (fun e -> E)
 let and': Parser<Note, unit> = (pchar '+' .>> ws0) |>> (fun e -> And)
 let a: Parser<Note, unit> = (pchar 'a' .>> ws0) |>> (fun e -> A)
+let sep: Parser<Note, unit> = (pchar '|' .>> ws0) |>> (fun e -> Sep)
 // let and' = pchar '+' |>> And
 
 let hh: Parser<Drum, unit> = (str_ws0 "hh") |>> (fun x -> HH)
@@ -62,6 +66,13 @@ let bar_keyword = "bar"
 let time_keyword = "time"
 let div_keyword = "division"
 let tempo_keyword = "tempo"
+let render_keyword = "render"
+
+let p_render =
+    ((str_ws0 render_keyword) .>> (ws0 >>. str_ws0 ":"))
+    >>. (manyCharsTill (letter <|> digit) ws1)
+// |>> PatternVariable
+
 
 let p_time: Parser<(uint8 * uint8), unit> =
     ((str_ws0 time_keyword) .>> (ws0 >>. str_ws0 ":"))
@@ -86,7 +97,7 @@ let p_assignment = (manyCharsTill (letter <|> digit) (ws0 >>. str_ws0 ":"))
     Parses a note value such as
     1, e, and, or a
 *)
-let p_note = (num <|> e <|> and' <|> a)
+let p_note = (num <|> e <|> and' <|> a <|> sep)
 
 (*
     Parses a pattern expression such as
@@ -131,9 +142,10 @@ let p_drumpattern_var =
 
 
 let expr =
-    pipe2 p_settings (many p_pattern) (fun settings patterns ->
+    pipe3 p_settings (many p_pattern) p_render (fun settings patterns render ->
         { Settings = settings
-          Patterns = patterns })
+          Patterns = patterns
+          Render = render })
 
 // let expr = p_settings .>>. (many p_pattern) .>> spaces
 
