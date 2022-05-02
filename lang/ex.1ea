@@ -1,4 +1,4 @@
-time : 4/4
+time : 4/8
 division: 1/16
 
 pattern mypattern : 1 e + a | 2 e + a | 3 | 4 |

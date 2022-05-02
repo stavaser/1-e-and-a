@@ -8,7 +8,7 @@ open Giraffe.ViewEngine
 [<EntryPoint>]
 let main argv =
     if (Array.length argv <> 1) then
-        printfn "usage: dotnet run <input_file>"
+        printfn "usage: dotnet run <input_file>.1ea"
         exit 1
 
     let input = argv.[0]

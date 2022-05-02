@@ -37,12 +37,16 @@ let lines width =
 
 let STEM_LEN = 30
 
-let TIME_SIG a b = "(4)(4) 30.5 -47.0 tsig"
+let TIME_SIG (a, b) =
+    "("
+    + string a
+    + ")("
+    + string b
+    + ") 30.5 -47.0 tsig\n"
 
-let DRUM_BASS =
-    "/bass{gsave
-    0 exch add -47.0 hd -21.0 sd
-    grestore}!"
+let LINE = "newline"
+
+let DRUM_BASS distance = string distance + " bass"
 
 
 let evalNote note props =
@@ -112,14 +116,14 @@ let findExpr exprs variable =
 *)
 let eval e =
     match e with
-    | { Settings = props
+    | { Settings = { Time = time; Division = div }
         Patterns = p_data
         Render = varname } ->
         // find which pattern to render
-        let expr = (findExpr p_data varname)
+        // let expr = (findExpr p_data varname)
         // evaluate the pattern
-        let pattern = (fun (Pattern (_, pattern)) -> evalPattern pattern props) expr
+        // let pattern = (fun (Pattern (_, pattern)) -> evalPattern pattern props) expr
         // create an svg for the pattern
-        let bar = evalBar pattern props
-        DRUM_BASS
+        // let bar = evalBar pattern props
+        LINE + TIME_SIG(time) + DRUM_BASS(100)
 // (fun a b -> (a, b)) bar pattern
