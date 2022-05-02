@@ -1,0 +1,109 @@
+% percussions.abh	 -*- abc -*-
+%
+% Percussion maps for abcm2ps/abc2svg, abc2midi, and abc2xml.py
+%
+% Written by Guido Gonzato, PhD <guido dot gonzato at gmail dot com>
+% Latest update: March 20, 2018
+% License: GPLv2 or later.
+
+% Usage: see accompanying file demo-percussions.abc
+
+% -----
+
+% new note head shapes
+%%beginsvg
+<defs>
+
+% x-shaped head
+<path id="x_head"
+  d="m -3 -3 l 6 6 m 0 -6 l -6 6"
+  class="stroke" style="stroke-width:1.2"/>
+
+% triangle head
+<path id="triangle"
+  d="m -3.5 3.5 l 3.5 -7 l 3.5 7 l -7 0"
+  class="fill" />
+
+% diamond head
+<path id="diamond"
+  d="m 0 -3.5 l -3.5 3.5 l 3.5 3.5 l 3.5 -3.5 l -3.5 -3.5"
+  class="fill" />
+
+</defs>
+%%endsvg
+
+% -----
+
+% abcm2ps / abc2svg percussion maps
+
+%%map drummap D    print=D heads=x_head   % pedal hi-hat
+%%map drummap E    print=E                % bass drum 1
+%%map drummap F    print=F                % acoustic bass drum
+%%map drummap G    print=G                % low floor tom-tom
+%%map drummap A    print=A                % high floor tom-tom
+%%map drummap B    print=B                % low tom-tom
+%%map drummap ^B   print=B heads=triangle % tambourine
+%%map drummap c    print=c                % acoustic snare
+%%map drummap _c   print=c                % electric snare
+%%map drummap ^c   print=c heads=triangle % low wood block
+%%map drummap =c   print=c                % side stick
+%%map drummap d    print=d                % low-mid tom tom
+%%map drummap ^d   print=d heads=triangle % high wood block
+%%map drummap e    print=e                % high-mid tom tom
+%%map drummap ^e   print=e heads=triangle % cowbell
+%%map drummap f    print=f                % high tom tom
+%%map drummap ^f   print=f heads=x_head   % ride cymbal 1
+%%map drummap g    print=g heads=x_head   % closed hi-hat
+%%map drummap ^g   print=g heads=diamond  % open hi-hat
+%%map drummap a    print=a heads=x_head   % crash cymbal 1
+%%map drummap ^a   print=a heads=triangle % open triangle
+
+% abc2xml.py (v. 80+) percussion maps
+
+%%percmap D  pedal-hi-hat  x
+%%percmap E  bass-drum-1
+%%percmap F  acou-ba-dr    % acoustic bass drum (substring matching)
+%%percmap G  low-floor-tom
+%%percmap A  high-floor-tom
+%%percmap B  low-tom
+%%percmap ^B tambourine    triangle
+%%percmap c  acou-snare              % acoustic snare
+%%percmap _c elec-snare              % electric snare
+%%percmap ^c low-wo-blo    triangle  % low wood block
+%%percmap =c side-stick
+%%percmap d  low-mi-tom              % low-mid tom
+%%percmap ^d hi-wo-blo     triangle  % high wood block
+%%percmap e  hi-mi-tom               % high-mid tom
+%%percmap ^e cowbell       triangle
+%%percmap f  high-tom
+%%percmap ^f ride-cymbal-1 x
+%%percmap g  closed-hi-hat x
+%%percmap ^g open-hi-hat   diamond
+%%percmap a  crash-cym-1   x
+%%percmap ^a open-tri      triangle
+
+% MIDI channel 10 maps
+
+%%MIDI drummap D   44 % pedal hi-hat
+%%MIDI drummap E   36 % bass drum 1
+%%MIDI drummap F   35 % acoustic bass drum
+%%MIDI drummap G   41 % low floor tom-tom
+%%MIDI drummap A   43 % high floor tom-tom
+%%MIDI drummap B   45 % low tom-tom
+%%MIDI drummap ^B  54 % tambourine
+%%MIDI drummap c   38 % acoustic snare
+%%MIDI drummap _c  40 % electric snare
+%%MIDI drummap ^c  77 % low wood block
+%%MIDI drummap =c  37 % side stick
+%%MIDI drummap d   47 % low-mid tom tom
+%%MIDI drummap ^d  76 % high wood block
+%%MIDI drummap e   48 % high-mid tom tom
+%%MIDI drummap ^e  56 % cowbell
+%%MIDI drummap f   50 % high tom tom
+%%MIDI drummap ^f  51 % ride cymbal 1
+%%MIDI drummap g   42 % closed hi-hat
+%%MIDI drummap ^g  46 % open hi-hat
+%%MIDI drummap a   49 % crash cymbal 1
+%%MIDI drummap ^a  81 % open triangle
+
+% --- End of file percussions.abh

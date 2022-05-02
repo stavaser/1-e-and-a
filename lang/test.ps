@@ -1,0 +1,113 @@
+
+/!{bind def}bind def
+/T/translate load def
+/M/moveto load def
+/RM/rmoveto load def
+/F2{/Times-Roman-utf8 exch selectfont}!
+/showc{dup stringwidth pop .5 mul neg 0 RM show}!
+/SLW/setlinewidth load def
+/RL/rlineto load def
+/dlw{0.7 SLW}!
+
+/bar{M 1 SLW 0 exch RL stroke}!
+/pclef{	exch 2.7 sub exch -9 add 5.4 18 1.4 SLW rectstroke}!
+
+/x_head{gsave T 0 0 M
+ 1.2 SLW -3 3 RM 6 -6 RL 0 6 RM -6 -6 RL stroke
+grestore}!
+/triangle{gsave T 0 0 M
+ -3.5 -3.5 RM 3.5 7 RL 3.5 -7 RL -7 -0 RL fill
+grestore}!
+/diamond{gsave T 0 0 M
+ 0 3.5 RM -3.5 -3.5 RL 3.5 -3.5 RL 3.5 3.5 RL -3.5 3.5 RL fill
+grestore}!
+/x_head{gsave T 0 0 M
+ 1.2 SLW -3 3 RM 6 -6 RL 0 6 RM -6 -6 RL stroke
+grestore}!
+/triangle{gsave T 0 0 M
+ -3.5 -3.5 RM 3.5 7 RL 3.5 -7 RL -7 -0 RL fill
+grestore}!
+/diamond{gsave T 0 0 M
+ 0 3.5 RM -3.5 -3.5 RL 3.5 -3.5 RL 3.5 3.5 RL -3.5 3.5 RL fill
+grestore}!
+
+/setpagedevice where{pop
+	<</PageSize[612 792]>>setpagedevice}if
+gsave 0.75 dup scale 0 1018.2 T
+% --- width 681.6
+67.20 0 T
+0 -22.00 T
+% --- xref 1
+0 -26.00 T
+% --- title
+340.8 4.0 M  20.0 F2 (Title)showc
+0 -19.00 T
+% --- titlesub
+340.8 3.2 M  16.0 F2 (Subtitle)showc
+0 -12.00 T
+% --- font 20.0 F2 
+/y0{-47.0 add}!
+/yns0{-47.0 add}!
+24.0 681.6 -47.0 bar 
+dlw 681.6 0.0 -47.0 M 0 RL 681.6 0.0 -41.0 M 0 RL 681.6 0.0 -35.0 M 0 RL 681.6 0.0 -29.0 M 0 RL 681.6 0.0 -23.0 M 0 RL stroke
+
+12.0 -35.0  pclef
+% 40.7 -50.0 2 copy xydef x_head 21.0 su
+% 177.1 -47.0 hd 21.0 su
+% 313.4 -44.0 hd 21.0 su
+% 449.8 -41.0 hd 21.0 su
+% 586.2 -38.0 hd 21.0 su
+% 600 -35.0 hd 21.0 su
+% 0 -87.60 T
+% /y0{-47.0 add}!
+% /yns0{-47.0 add}!
+% 24.0 681.6 -47.0 bar 
+% dlw 681.6 0.0 -47.0 M 0 RL 681.6 0.0 -41.0 M 0 RL 681.6 0.0 -35.0 M 0 RL 681.6 0.0 -29.0 M 0 RL 681.6 0.0 -23.0 M 0 RL stroke
+
+% %%Page: 1 1
+% /w 900 def
+% /h 10 def
+% /p 50 def
+
+% /lines {
+%     5 {
+%         0 0 moveto
+%         900 0 lineto
+%         stroke
+%         0 10 translate
+%     } repeat
+% } def
+
+% /bars {
+%     2 {
+%         0 0 moveto
+%         0 40 lineto
+%         stroke
+%         5 0 translate
+%     } repeat
+% } def
+
+% % /x 1 def
+% % /y 1 def
+% % /z 50 def
+
+% % /notes {
+% %     10 20 890 {
+% %         rand 10 mod 7 ge {
+% %             rand 5 mod 10 mul 5 0 360 arc closepath fill
+% %         } if
+% %     } for
+% % } def
+
+% 50 50 translate
+% 1 {
+%     gsave lines grestore
+%     gsave
+%     4 {
+%         gsave bars grestore
+%         225 0 translate
+%     } repeat
+%     grestore
+%     % gsave notes grestore
+%     0 100 translate
+% } repeat
