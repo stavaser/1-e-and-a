@@ -24,7 +24,6 @@
 	currentpoint 3 -1 roll showc
 	12 add M showc grestore}!
 
-
 /bar{M 1 SLW 0 exch RL stroke}!
 
 /pclef{	
@@ -145,39 +144,10 @@ grestore}!
 /setpagedevice where{pop
 	<</PageSize[612 792]>>setpagedevice}if
 gsave 0.75 dup scale 0 1018.2 T
-% --- width 681.6
 67.20 0 T
 0 -22.00 T
-% --- xref 1
 0 -26.00 T
-% --- title
-340.8 4.0 M  20.0 F2 (Title)showc
-0 -19.00 T
-% --- titlesub
-340.8 3.2 M  16.0 F2 (Subtitle)showc
-0 -12.00 T
-% --- font 20.0 F2 
-newline
-(4)(4) 30.5 -47.0 tsig
 
-beam8
-55 foothh
-200 foothh
-
-313.4 bass
-449.8 tom2
-586.2 tom1
-
-0 -87.60 T
-newline
-
-315.3 snare
-
-0 -87.60 T
-newline
-155.9 ride
-267.7 closedhh
-379.6 openhh
-491.4 crash
-
-
+/bass{gsave
+    0 exch add -47.0 hd -21.0 sd
+    grestore}!

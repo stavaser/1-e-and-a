@@ -17,7 +17,10 @@ let main argv =
         match run p str with
         | Success (result, _, _) ->
             let output = eval result
-            use sw = new StreamWriter("output.html")
+            File.Copy("src.ps", "output.ps", true)
+            // use sw = new File.AppendText("output.ps")
+            use sw = new StreamWriter("output.ps", true)
+            // File.AppendText(output)
             sw.WriteLine(output)
             printfn "Success: %A" (eval result)
         | Failure (errorMsg, _, _) -> printfn "Failure: %s" errorMsg

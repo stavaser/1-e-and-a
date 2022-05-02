@@ -1,6 +1,9 @@
 module ProjectInterpreter
 
+open System.IO
+
 open ProjectParser
+
 
 let lines width =
     let prefix =
@@ -31,6 +34,15 @@ let lines width =
 
     let suffix = "</svg>\n"
     prefix + path + suffix
+
+let STEM_LEN = 30
+
+let TIME_SIG a b = "(4)(4) 30.5 -47.0 tsig"
+
+let DRUM_BASS =
+    "/bass{gsave
+    0 exch add -47.0 hd -21.0 sd
+    grestore}!"
 
 
 let evalNote note props =
@@ -109,5 +121,5 @@ let eval e =
         let pattern = (fun (Pattern (_, pattern)) -> evalPattern pattern props) expr
         // create an svg for the pattern
         let bar = evalBar pattern props
-
-        (fun a b -> (a, b)) bar pattern
+        DRUM_BASS
+// (fun a b -> (a, b)) bar pattern
