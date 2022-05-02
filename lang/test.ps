@@ -1,4 +1,3 @@
-
 /!{bind def}bind def
 /T/translate load def
 /M/moveto load def
@@ -8,27 +7,123 @@
 /SLW/setlinewidth load def
 /RL/rlineto load def
 /dlw{0.7 SLW}!
+/xydef{/y exch def/x exch def}!
+/su{dlw x y M 3.5 1.0 RM 1.0 sub 0 exch RL stroke}!
+/sd{dlw x y M -3.5 -1.0 RM 1.0 add 0 exch RL stroke}!
+
+/uhd{{	100 -270 640 280
+	560 82
+	474 267 105 105 186 -80
+	267 -265 636 -102 555 82
+	}<0b000122050a>}cvlit def
+
+/hd{	/x 2 index def/y 1 index def
+	gsave T -7.4 0 T .02 dup scale uhd ufill grestore}!
 
 /bar{M 1 SLW 0 exch RL stroke}!
-/pclef{	exch 2.7 sub exch -9 add 5.4 18 1.4 SLW rectstroke}!
 
-/x_head{gsave T 0 0 M
- 1.2 SLW -3 3 RM 6 -6 RL 0 6 RM -6 -6 RL stroke
+/pclef{	
+exch 2.7 sub 
+exch -9 add 
+5.4 18 1.4 SLW 
+rectstroke}!
+
+/x_head{gsave 
+T 0 0 M 1.2 SLW 
+ -3 3 RM 
+ 6 -6 RL 
+ 0 6 RM 
+ -6 -6 RL 
+ stroke
 grestore}!
 /triangle{gsave T 0 0 M
- -3.5 -3.5 RM 3.5 7 RL 3.5 -7 RL -7 -0 RL fill
+ -3.5 -3.5 RM 
+ 3.5 7 RL 
+ 3.5 -7 RL 
+ -7 -0 RL 
+ fill
 grestore}!
 /diamond{gsave T 0 0 M
- 0 3.5 RM -3.5 -3.5 RL 3.5 -3.5 RL 3.5 3.5 RL -3.5 3.5 RL fill
+ 0 3.5 RM 
+ -3.5 -3.5 RL 
+ 3.5 -3.5 RL 
+ 3.5 3.5 RL 
+ -3.5 3.5 RL 
+ fill
 grestore}!
 /x_head{gsave T 0 0 M
- 1.2 SLW -3 3 RM 6 -6 RL 0 6 RM -6 -6 RL stroke
+ 1.2 SLW 
+ -3 3 RM 
+ 6 -6 RL 
+ 0 6 RM 
+ -6 -6 RL 
+ stroke
 grestore}!
 /triangle{gsave T 0 0 M
- -3.5 -3.5 RM 3.5 7 RL 3.5 -7 RL -7 -0 RL fill
+ -3.5 -3.5 RM 
+ 3.5 7 RL 
+ 3.5 -7 RL 
+ -7 -0 RL 
+ fill
 grestore}!
 /diamond{gsave T 0 0 M
- 0 3.5 RM -3.5 -3.5 RL 3.5 -3.5 RL 3.5 3.5 RL -3.5 3.5 RL fill
+ 0 3.5 RM 
+ -3.5 -3.5 RL 
+ 3.5 -3.5 RL 
+ 3.5 3.5 RL 
+ -3.5 3.5 RL 
+ fill
+grestore}!
+
+/staff{gsave
+dlw 681.6 0.0 -47.0 M 0 RL 681.6 0.0 -41.0 M 0 RL 681.6 0.0 -35.0 M 0 RL 681.6 0.0 -29.0 M 0 RL 681.6 0.0 -23.0 M 0 RL stroke
+grestore}!
+
+/newline{gsave
+    % 0 -87.60 T
+    /y0{-47.0 add}!
+    /yns0{-47.0 add}!
+    24.0 681.6 -47.0 bar 
+    staff
+    12.0 -35.0  pclef
+grestore}!
+
+% DRUMS %
+/foothh{gsave
+0 exch add -50.0 2 copy xydef x_head 21.0 su
+grestore}!
+
+/bass{gsave
+0 exch add -44.0 hd 21.0 su
+grestore}!
+
+/tom1{gsave
+0 exch add -38.0 hd 21.0 su
+grestore}!
+
+/tom2{gsave
+0 exch add -41.0 hd 21.0 su
+grestore}!
+
+/snare{gsave
+ 0 exch add -32.0 hd -21.0 sd
+grestore}!
+
+/ride{gsave
+0 exch add -23.0 2 copy xydef x_head -21.0 sd
+grestore}!
+
+/closedhh{gsave
+0 exch add -20.0 2 copy xydef x_head -21.0 sd
+grestore}!
+
+/openhh{gsave
+   0 exch add -20.0 2 copy xydef diamond -21.0 sd
+grestore}!
+
+/crash{gsave
+    % 0 exch add -17.0 hl 
+    0 exch add -17.0 2 copy xydef x_head -21.0 sd
 grestore}!
 
 /setpagedevice where{pop
@@ -46,68 +141,23 @@ gsave 0.75 dup scale 0 1018.2 T
 340.8 3.2 M  16.0 F2 (Subtitle)showc
 0 -12.00 T
 % --- font 20.0 F2 
-/y0{-47.0 add}!
-/yns0{-47.0 add}!
-24.0 681.6 -47.0 bar 
-dlw 681.6 0.0 -47.0 M 0 RL 681.6 0.0 -41.0 M 0 RL 681.6 0.0 -35.0 M 0 RL 681.6 0.0 -29.0 M 0 RL 681.6 0.0 -23.0 M 0 RL stroke
+newline
 
-12.0 -35.0  pclef
-% 40.7 -50.0 2 copy xydef x_head 21.0 su
-% 177.1 -47.0 hd 21.0 su
-% 313.4 -44.0 hd 21.0 su
-% 449.8 -41.0 hd 21.0 su
-% 586.2 -38.0 hd 21.0 su
-% 600 -35.0 hd 21.0 su
-% 0 -87.60 T
-% /y0{-47.0 add}!
-% /yns0{-47.0 add}!
-% 24.0 681.6 -47.0 bar 
-% dlw 681.6 0.0 -47.0 M 0 RL 681.6 0.0 -41.0 M 0 RL 681.6 0.0 -35.0 M 0 RL 681.6 0.0 -29.0 M 0 RL 681.6 0.0 -23.0 M 0 RL stroke
+40.7 foothh
+313.4 bass
+449.8 tom2
+586.2 tom1
 
-% %%Page: 1 1
-% /w 900 def
-% /h 10 def
-% /p 50 def
+0 -87.60 T
+newline
 
-% /lines {
-%     5 {
-%         0 0 moveto
-%         900 0 lineto
-%         stroke
-%         0 10 translate
-%     } repeat
-% } def
+315.3 snare
 
-% /bars {
-%     2 {
-%         0 0 moveto
-%         0 40 lineto
-%         stroke
-%         5 0 translate
-%     } repeat
-% } def
+0 -87.60 T
+newline
+155.9 ride
+267.7 closedhh
+379.6 openhh
+491.4 crash
 
-% % /x 1 def
-% % /y 1 def
-% % /z 50 def
 
-% % /notes {
-% %     10 20 890 {
-% %         rand 10 mod 7 ge {
-% %             rand 5 mod 10 mul 5 0 360 arc closepath fill
-% %         } if
-% %     } for
-% % } def
-
-% 50 50 translate
-% 1 {
-%     gsave lines grestore
-%     gsave
-%     4 {
-%         gsave bars grestore
-%         225 0 translate
-%     } repeat
-%     grestore
-%     % gsave notes grestore
-%     0 100 translate
-% } repeat
