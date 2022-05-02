@@ -1,7 +1,7 @@
 module ProjectParser
 
 open FParsec
-// type Num = int
+
 type Settings =
     { Time: uint8 * uint8
       Division: uint8 * uint8 }
@@ -13,25 +13,19 @@ type Note =
     | A
     | Sep
 
-type PatternName = string
-type BarName = string
-
-type Pattern = Pattern of PatternName * (Note list)
-
 type Drum =
     | HH
     | SN
     | BD
 
-// type DrumPattern =
+type PatternName = string
+type BarName = string
+
 type DrumPatternVar = Drum * PatternName
 type DrumPatternNotes = Drum * (Note list)
 
+type Pattern = Pattern of PatternName * (Note list)
 type Bar = Bar of BarName * (DrumPatternVar list * DrumPatternNotes list)
-// type Bar = Bar of BarName * (((Drum * PatternName) list) * ((Drum * (Note list)) list))
-// type Expr =
-// parse notes
-// type Variables = PatternVariable of PatternName
 
 type Expr =
     { Settings: Settings
@@ -45,22 +39,26 @@ let str s = pstring s
 let str_ws0 s = pstring s .>> ws0
 let str_ws1 s = pstring s .>> ws1
 
-
+(*
+    Parse note values
+*)
 let num: Parser<Note, unit> = (puint8 .>> ws0) |>> (fun e -> Num(e))
 let e: Parser<Note, unit> = (pchar 'e' .>> ws0) |>> (fun e -> E)
 let and': Parser<Note, unit> = (pchar '+' .>> ws0) |>> (fun e -> And)
 let a: Parser<Note, unit> = (pchar 'a' .>> ws0) |>> (fun e -> A)
 let sep: Parser<Note, unit> = (pchar '|' .>> ws0) |>> (fun e -> Sep)
-// let and' = pchar '+' |>> And
 
+(*
+    Parse drum names
+*)
 let hh: Parser<Drum, unit> = (str_ws0 "hh") |>> (fun x -> HH)
 let sn: Parser<Drum, unit> = (str_ws0 "sn") |>> (fun x -> SN)
 let bd: Parser<Drum, unit> = (str_ws0 "bd") |>> (fun x -> BD)
 
-// type Expr =
-//     | Pattern of VarName * (string list)
-//     | Bar of VarName * ((Drum * Pattern) list)
 
+(*
+    keywords
+*)
 let pattern_keyword = "pattern"
 let bar_keyword = "bar"
 let time_keyword = "time"
@@ -68,23 +66,32 @@ let div_keyword = "division"
 let tempo_keyword = "tempo"
 let render_keyword = "render"
 
+
+(*
+    Parses which expression the program should render, such as
+    render: beat2
+*)
 let p_render =
     ((str_ws0 render_keyword) .>> (ws0 >>. str_ws0 ":"))
     >>. (manyCharsTill (letter <|> digit) ws1)
-// |>> PatternVariable
 
 
-let p_time: Parser<(uint8 * uint8), unit> =
-    ((str_ws0 time_keyword) .>> (ws0 >>. str_ws0 ":"))
-    >>. (((puint8 .>> ws0) .>> pchar '/')
-         .>>. (puint8 .>> ws0))
-
-let p_div: Parser<(uint8 * uint8), unit> =
-    ((str_ws0 div_keyword) .>> (ws0 >>. str_ws0 ":"))
-    >>. (((puint8 .>> ws0) .>> pchar '/')
-         .>>. (puint8 .>> ws0))
-
+(*
+    Parses the setup such as
+    time: 4/4
+    division: 1/16
+*)
 let p_settings =
+    let p_time: Parser<(uint8 * uint8), unit> =
+        ((str_ws0 time_keyword) .>> (ws0 >>. str_ws0 ":"))
+        >>. (((puint8 .>> ws0) .>> pchar '/')
+             .>>. (puint8 .>> ws0))
+
+    let p_div: Parser<(uint8 * uint8), unit> =
+        ((str_ws0 div_keyword) .>> (ws0 >>. str_ws0 ":"))
+        >>. (((puint8 .>> ws0) .>> pchar '/')
+             .>>. (puint8 .>> ws0))
+
     pipe2 p_time p_div (fun time div -> { Time = time; Division = div })
 
 (*

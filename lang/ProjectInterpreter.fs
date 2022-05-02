@@ -63,25 +63,51 @@ let evalBar pattern data =
         (lines width)
 // String.replicate (int b) (lines 300)
 
-
+(*
+    Creates a list of 1's and 0's
+*)
 let evalPattern pattern props =
     List.map (fun x -> (evalNote x props)) pattern
 
-
+(*
+    Dummy function
+*)
 let evalSettings settings = settings
 
+(*
+    Finds an expression given a list
+    of expression and the variable name
+*)
 let findExpr exprs variable =
     let isFound var = var = variable
 
     exprs
     |> List.find (fun (Pattern (x, _)) -> isFound x)
 
-
+(*
+    Returns a bar with length depending on the division
+    of the beats and a list of notes that should fit in
+    bar, where 0 separates notes for each beat
+    So for example the list
+    [1; 1; 1; 1; 0; 1; 1; 1; 1; 0; 1; 0; 1; 0]
+    would mean that
+    in 4/4 time and 1/16 divison
+    in this one bar, there are
+        - 4 16th notes
+        - 4 16th notes
+        - 1 4th note
+        - 1 4th note
+*)
 let eval e =
     match e with
     | { Settings = props
         Patterns = p_data
         Render = varname } ->
+        // find which pattern to render
         let expr = (findExpr p_data varname)
+        // evaluate the pattern
         let pattern = (fun (Pattern (_, pattern)) -> evalPattern pattern props) expr
-        evalBar pattern props
+        // create an svg for the pattern
+        let bar = evalBar pattern props
+
+        (fun a b -> (a, b)) bar pattern
