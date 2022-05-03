@@ -4,7 +4,11 @@ open FParsec
 
 type Settings =
     { Time: uint8 * uint8
-      Division: uint8 * uint8 }
+      Division: uint8 * uint8
+    //   Title: string
+    //   Subtitle: string
+
+     }
 
 type Note =
     | Num of uint8
@@ -65,6 +69,8 @@ let time_keyword = "time"
 let div_keyword = "division"
 let tempo_keyword = "tempo"
 let render_keyword = "render"
+let title_keyword = "title"
+let subtitle_keyword = "subtitle"
 
 
 (*
@@ -74,7 +80,6 @@ let render_keyword = "render"
 let p_render =
     ((str_ws0 render_keyword) .>> (ws0 >>. str_ws0 ":"))
     >>. (manyCharsTill (letter <|> digit) ws1)
-
 
 (*
     Parses the setup such as
@@ -92,6 +97,20 @@ let p_settings =
         >>. (((puint8 .>> ws0) .>> pchar '/')
              .>>. (puint8 .>> ws0))
 
+    // let p_subtitle =
+    //     ((str_ws0 subtitle_keyword)
+    //      .>> (ws0 >>. str_ws0 ":"))
+    //     >>. (manyCharsTill (letter <|> digit) (ws0 >>. tab))
+
+    // let p_title =
+    //     ((str_ws0 title_keyword) .>> (ws0 >>. str_ws0 ":"))
+    //     >>. (manyCharsTill (letter <|> digit) (ws0 >>. tab))
+
+    // pipe4 p_time p_div p_title p_subtitle (fun time div title subtitle ->
+    //     { Time = time
+    //       Division = div
+    //       Title = title
+    //       Subtitle = subtitle })
     pipe2 p_time p_div (fun time div -> { Time = time; Division = div })
 
 (*

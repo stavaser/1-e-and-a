@@ -49,20 +49,15 @@ let LINE = "newline"
 let DRUM_BASS distance = string distance + " bass\n"
 
 
-let evalNote note =
-    // match props with
-    // | { Time = (x, y); Division = (a, b) } ->
-    match note with
-    | E -> 1
-    | And -> 1
-    | A -> 1
-    | Sep -> 0
-    | Num (n) -> 1
-// | E -> (1.0 / float b)
-// | And -> (1.0 / (float b / 2.0))
-// | A -> (1.0 / float b)
-// | Sep -> 0.0
-// | Num (n) -> 1.0
+
+// | E -> 2
+// | And -> 3
+// | A -> 4
+// | Sep -> 0
+// | Num (n) -> 1/
+// [1/4,2,3,4,0,1,3,0,1,0,1]
+
+
 
 // | E -> "<ellipse cx=\"50\" cy=\"50\" rx=\"50\" ry=\"50\" />"
 // | And -> "<ellipse cx=\"50\" cy=\"50\" rx=\"50\" ry=\"50\" />"
@@ -79,13 +74,44 @@ let evalBar pattern data =
         (lines width)
 // String.replicate (int b) (lines 300)
 
+let evalNote note (time, div) =
+    match note with
+    | E -> 2
+    | And -> 3
+    | A -> 4
+    | Sep -> 1
+    | Num (n) -> 1
+// match (time, div) with
+//  4/4     1/16
+// | (x, y), (a, b) ->
+//     match note with
+//     | E -> (1.0 / float b)
+//     | And -> (1.0 / (float b / 2.0))
+//     | A -> (1.0 / float b)
+//     | Sep -> 0.0
+//     | Num (n) -> 1.0
+// pattern a: 1 + | 2 + | 3 + | 4 +
+//   1/4
+// [[0.25, 0.25, 0.25, 0.25], [1], [1], [1]]
+//  . . . . . _ _ _ . _ _ _ . _ _ _
 (*
     Creates a list of 1's and 0's
 *)
-let evalPattern pattern : string =
-    let notelist = List.map (fun x -> (evalNote x)) pattern
+let evalPattern pattern (time, div) : string =
+    let notelist = List.map (fun x -> (evalNote x (time, div))) pattern
+    printfn "%A" notelist
+    // let width = (fun (a, b) -> (float b) + 50.0) div
+    // 1/16 =
+    let width = (fun (a, b) -> (float a / float b)) div
 
-    List.mapi (fun i x -> (DRUM_BASS(i * 100 + 100))) notelist
+    List.mapi
+        (fun i x ->
+            // let temp =
+            (DRUM_BASS(
+                (float x) * (100.0 / (float x))
+                + ((float i) * width * 100.0)
+            )))
+        notelist
     |> String.concat "\n"
 
 // for note in notelist do
@@ -142,7 +168,7 @@ let eval e =
         // find which pattern to render
         let expr = (findExpr p_data varname)
         // evaluate the pattern
-        let pattern = (fun (Pattern (_, pattern)) -> evalPattern pattern) expr
+        let pattern = (fun (Pattern (_, pattern)) -> evalPattern pattern (time, div)) expr
         // create an svg for the pattern
         // let bar = evalBar pattern props
         LINE + TIME_SIG(time) + pattern
