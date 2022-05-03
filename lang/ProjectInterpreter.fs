@@ -46,18 +46,18 @@ let TIME_SIG (a, b) =
 
 let LINE = "newline"
 
-let DRUM_BASS distance = string distance + " bass"
+let DRUM_BASS distance = string distance + " bass\n"
 
 
-let evalNote note props =
-    match props with
-    | { Time = (x, y); Division = (a, b) } ->
-        match note with
-        | E -> 1
-        | And -> 1
-        | A -> 1
-        | Sep -> 0
-        | Num (n) -> 1
+let evalNote note =
+    // match props with
+    // | { Time = (x, y); Division = (a, b) } ->
+    match note with
+    | E -> 1
+    | And -> 1
+    | A -> 1
+    | Sep -> 0
+    | Num (n) -> 1
 // | E -> (1.0 / float b)
 // | And -> (1.0 / (float b / 2.0))
 // | A -> (1.0 / float b)
@@ -82,8 +82,28 @@ let evalBar pattern data =
 (*
     Creates a list of 1's and 0's
 *)
-let evalPattern pattern props =
-    List.map (fun x -> (evalNote x props)) pattern
+let evalPattern pattern : string =
+    let notelist = List.map (fun x -> (evalNote x)) pattern
+
+    List.mapi (fun i x -> (DRUM_BASS(i * 100 + 100))) notelist
+    |> String.concat "\n"
+
+// for note in notelist do
+//     String.replicate (int b) (DRUM_BASS distance)
+// let rec helper pattern distance =
+//     match pattern with
+//     | [] -> ""
+//     | head :: tail ->
+//         if head = 1 then
+//             (DRUM_BASS distance)
+//             + helper tail (distance + 100)
+//         else
+//             "\n"
+
+
+// let res = helper notelist 100
+// res
+
 
 (*
     Dummy function
@@ -120,10 +140,10 @@ let eval e =
         Patterns = p_data
         Render = varname } ->
         // find which pattern to render
-        // let expr = (findExpr p_data varname)
+        let expr = (findExpr p_data varname)
         // evaluate the pattern
-        // let pattern = (fun (Pattern (_, pattern)) -> evalPattern pattern props) expr
+        let pattern = (fun (Pattern (_, pattern)) -> evalPattern pattern) expr
         // create an svg for the pattern
         // let bar = evalBar pattern props
-        LINE + TIME_SIG(time) + DRUM_BASS(100)
+        LINE + TIME_SIG(time) + pattern
 // (fun a b -> (a, b)) bar pattern
