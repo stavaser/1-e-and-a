@@ -4,38 +4,8 @@ open System.IO
 
 open ProjectParser
 
-
-let lines width =
-    let prefix =
-        "<svg width=\""
-        + (string width)
-        + "\" height=\"144\" viewBox=\"0 0 "
-        + (string width)
-        + " 144\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">"
-
-    let path =
-        "<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M "
-        + (string width)
-        + " 21 H 1 V 23 H "
-        + (string width)
-        + " V 21 Z M "
-        + (string width)
-        + " 45 H 1 V 47 H "
-        + (string width)
-        + " V 45 Z M 1 69 H "
-        + (string width)
-        + " V 71 H 1 V 69 Z M "
-        + (string width)
-        + " 93 H 1 V 95 H "
-        + (string width)
-        + " V 93 Z M 1 117 H "
-        + (string width)
-        + " V 119 H 1 V 117 Z\" fill=\"black\"/>"
-
-    let suffix = "</svg>\n"
-    prefix + path + suffix
-
-let STEM_LEN = 30
+// let STEM_LEN length = "/stemlen" + string (-length) + "def\n"
+// let BAR_WIDTH width = "/bar_width" + string width + " def\n"
 
 let TIME_SIG (a, b) =
     "("
@@ -44,7 +14,7 @@ let TIME_SIG (a, b) =
     + string b
     + ") 30.5 -47.0 tsig\n"
 
-let LINE = "newline"
+let LINE width = string width + " newline\n"
 
 let DRUM_BASS distance = string distance + " bass\n"
 
@@ -65,22 +35,30 @@ let DRUM_BASS distance = string distance + " bass\n"
 // | num -> "<ellipse cx=\"50\" cy=\"50\" rx=\"50\" ry=\"50\" />"
 
 
-let evalBar pattern data =
-    match data with
-    | { Time = (x, y); Division = (a, b) } ->
-        let beats = int (b / y)
-        let bar = [| for i in 1 .. (int x) -> [| for i in 1 .. (beats) -> 0 |] |]
-        let width = (beats * (int y)) * 50
-        (lines width)
+let evalBar pattern data = data
+// match data with
+// | { Time = (x, y); Division = (a, b) } ->
+//     let beats = int (b / y)
+//     let bar = [| for i in 1 .. (int x) -> [| for i in 1 .. (beats) -> 0 |] |]
+//     let width = (beats * (int y)) * 50
+//     (lines width)
 // String.replicate (int b) (lines 300)
 
-let evalNote note (time, div) =
+let evalNote note (x, y) len current =
+    // let mult = (fun (x, y) -> (float len) / (float x)) time
+    // let width = (fun (a, b) -> (float a / float b) * mult) div
+    // // printfn "%A, %A" mult width
+
+    // List.mapi (fun i x -> (DRUM_BASS((float i) * mult))) notelist
+    // // |> String.concat "\n"
+
     match note with
-    | E -> 2
-    | And -> 3
-    | A -> 4
-    | Sep -> 1
-    | Num (n) -> 1
+    | E -> float current + (1.0 / float y)
+    | And -> float current + (1.0 / float y)
+    | A -> float current + (1.0 / float y)
+    | Sep -> 0
+    | Num (n) -> float current
+// 100 25 50 75
 // match (time, div) with
 //  4/4     1/16
 // | (x, y), (a, b) ->
@@ -97,22 +75,22 @@ let evalNote note (time, div) =
 (*
     Creates a list of 1's and 0's
 *)
-let evalPattern pattern (time, div) : string =
-    let notelist = List.map (fun x -> (evalNote x (time, div))) pattern
+let evalPattern pattern (time, div) len : string =
+    let notelist = List.mapi (fun i x -> (evalNote x div len (i + 1))) pattern
     printfn "%A" notelist
     // let width = (fun (a, b) -> (float b) + 50.0) div
     // 1/16 =
-    let width = (fun (a, b) -> (float a / float b)) div
+    let mult = (fun (x, y) -> (float len) / (float x)) time
+    let width = (fun (a, b) -> (float a / float b) * mult) div
+    // printfn "%A, %A" mult width
 
-    List.mapi
-        (fun i x ->
-            // let temp =
-            (DRUM_BASS(
-                (float x) * (100.0 / (float x))
-                + ((float i) * width * 100.0)
-            )))
-        notelist
+    List.mapi (fun i x -> (DRUM_BASS((float x) * mult))) notelist
     |> String.concat "\n"
+
+
+
+
+
 
 // for note in notelist do
 //     String.replicate (int b) (DRUM_BASS distance)
@@ -160,6 +138,13 @@ let findExpr exprs variable =
         - 1 4th note
         - 1 4th note
 *)
+
+// 4/4
+// 4 things of len 4
+// div - mimimum distacne btwn notes
+let calc_bar_len time division = 400
+
+
 let eval e =
     match e with
     | { Settings = { Time = time; Division = div }
@@ -168,8 +153,12 @@ let eval e =
         // find which pattern to render
         let expr = (findExpr p_data varname)
         // evaluate the pattern
-        let pattern = (fun (Pattern (_, pattern)) -> evalPattern pattern (time, div)) expr
         // create an svg for the pattern
         // let bar = evalBar pattern props
-        LINE + TIME_SIG(time) + pattern
+        let len = calc_bar_len time div
+
+        let pattern =
+            (fun (Pattern (_, pattern)) -> evalPattern pattern (time, div) len) expr
+
+        LINE(len) + TIME_SIG(time) + pattern
 // (fun a b -> (a, b)) bar pattern

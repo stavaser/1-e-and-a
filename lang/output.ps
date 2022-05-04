@@ -1,6 +1,4 @@
-/bar_width 200 def
 /stemlen -25 def
-
 
 /!{bind def}bind def
 /T/translate load def
@@ -31,6 +29,7 @@
 /bar{M 1 SLW 0 exch RL stroke}!
 
 /staff{gsave
+/bar_width exch def
 dlw 
 bar_width 0.0 -47.0 M 0 RL 
 bar_width 0.0 -41.0 M 0 RL 
@@ -40,11 +39,12 @@ bar_width 0.0 -23.0 M 0 RL stroke
 grestore}!
 
 /newline{gsave
-    % 0 -87.60 T
+    /bar_width exch def
+
     /y0{-47.0 add}!
     /yns0{-47.0 add}!
     24.0 bar_width -47.0 bar 
-    staff
+    bar_width staff
     12.0 -35.0  pclef
 grestore}!
 
@@ -134,19 +134,19 @@ gsave 0.75 dup scale 0 1018.2 T
 340.8 3.2 M  16.0 F2 (Subtitle)showc
 0 -12.00 T
 % --- font 20.0 F2 
-
-newline(4)(4) 30.5 -47.0 tsig
+400 newline
+(4)(4) 30.5 -47.0 tsig
 100 bass
 
-112.5 bass
+212.5 bass
 
-125 bass
+312.5 bass
 
-137.5 bass
+412.5 bass
 
-150 bass
+500 bass
 
-162.5 bass
+600 bass
 
-175 bass
+700 bass
 
