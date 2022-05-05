@@ -59,9 +59,9 @@ let evalNote note =
     // | Sep -> 0
     // | Num (n) -> float n
     match note with
-    | E -> 2.0
-    | And -> 3.0
-    | A -> 4.0
+    | E -> 1.0
+    | And -> 1.0
+    | A -> 1.0
     | Sep -> 0
     | Num (n) -> 1.0
 // 100 25 50 75
@@ -91,21 +91,40 @@ let evalPattern pattern (time, div) len =
     printfn "%A" pattern
     let result = []
 
-    let rec helper pattern distance =
+    let full_measure =
+        [ Num(1)
+          E
+          And
+          A
+          Num(2)
+          E
+          And
+          A
+          Num(3)
+          E
+          And
+          A
+          Num(4)
+          E
+          And
+          A ]
+
+    let rec helper pattern distance res =
 
         match pattern with
-        | [] -> distance
+        | [] -> DRUM_BASS distance + res
         | note :: rest ->
-            printfn "%A" distance
-
-            (helper rest (distance + frac_div * 10.0 * (evalNote note)))
+            // printfn "%A" distance
+            let new_dist = (distance + frac_div * 100.0 * (evalNote note))
+            let new_res = (DRUM_BASS new_dist) + res
+            (helper rest new_dist new_res)
 
     // pattern
     // |> Seq.pairwise
     // |> Seq.map (fun (xn_1, xn) -> (xn - xn_1) / xn_1)
 
     // List.map (helper pattern 100.0 result) pattern
-    let distances = helper pattern 100.0
+    let distances = helper pattern 100.0 ""
     distances
 
 // List.mapi (fun x -> (DRUM_BASS x)) distances
@@ -191,6 +210,6 @@ let eval e =
         let pattern =
             (fun (Pattern (_, pattern)) -> evalPattern pattern (time, div) len) expr
 
-        // LINE(len) + TIME_SIG(time) + pattern
-        pattern
+        LINE(len) + TIME_SIG(time) + pattern
+// pattern
 // (fun a b -> (a, b)) bar pattern
