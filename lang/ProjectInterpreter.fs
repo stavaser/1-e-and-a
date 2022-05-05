@@ -92,24 +92,35 @@ let evalPattern pattern (time, div) len =
     let result = []
 
     let full_measure =
-        [ Num(1)
+        [ Num(uint8 1)
           E
           And
           A
-          Num(2)
+          Num(uint8 2)
           E
           And
           A
-          Num(3)
+          Num(uint8 3)
           E
           And
           A
-          Num(4)
+          Num(uint8 4)
           E
           And
           A ]
 
     let rec helper pattern distance res =
+        // match pattern, full_measure with
+        // | [], _ -> DRUM_BASS distance + res
+        // | note :: rest, example :: example_rest ->
+        //     // printfn "%A" distance
+        //     match note, example with
+        //     | Num (a), Num (b) ->
+        //         let multiplier = 1.0
+        //         let new_dist = (distance + frac_div * 100.0 * multiplier)
+        //         let new_res = (DRUM_BASS new_dist) + res
+        //         (helper rest example_rest new_dist new_res)
+        //     | _, _ -> ""
 
         match pattern with
         | [] -> DRUM_BASS distance + res
