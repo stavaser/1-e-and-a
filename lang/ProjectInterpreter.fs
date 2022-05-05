@@ -44,7 +44,7 @@ let evalBar pattern data = data
 //     (lines width)
 // String.replicate (int b) (lines 300)
 
-let evalNote note (x, y) len current =
+let evalNote note =
     // let mult = (fun (x, y) -> (float len) / (float x)) time
     // let width = (fun (a, b) -> (float a / float b) * mult) div
     // // printfn "%A, %A" mult width
@@ -52,12 +52,18 @@ let evalNote note (x, y) len current =
     // List.mapi (fun i x -> (DRUM_BASS((float i) * mult))) notelist
     // // |> String.concat "\n"
 
+    // match note with
+    // | E -> float beat + (1.0 / float y)
+    // | And -> float beat + (1.0 / float y)
+    // | A -> float beat + (1.0 / float y)
+    // | Sep -> 0
+    // | Num (n) -> float n
     match note with
-    | E -> float current + (1.0 / float y)
-    | And -> float current + (1.0 / float y)
-    | A -> float current + (1.0 / float y)
+    | E -> 2.0
+    | And -> 3.0
+    | A -> 4.0
     | Sep -> 0
-    | Num (n) -> float current
+    | Num (n) -> 1.0
 // 100 25 50 75
 // match (time, div) with
 //  4/4     1/16
@@ -73,19 +79,44 @@ let evalNote note (x, y) len current =
 // [[0.25, 0.25, 0.25, 0.25], [1], [1], [1]]
 //  . . . . . _ _ _ . _ _ _ . _ _ _
 (*
-    Creates a list of 1's and 0's
+    i think this is what i need to do:
+    i should recursively pass the current distance and add
+    div to it multiplied by the note value (1, e, and, a)
+    BUT HOW I HAVE NO IDEA
 *)
-let evalPattern pattern (time, div) len : string =
-    let notelist = List.mapi (fun i x -> (evalNote x div len (i + 1))) pattern
-    printfn "%A" notelist
-    // let width = (fun (a, b) -> (float b) + 50.0) div
-    // 1/16 =
-    let mult = (fun (x, y) -> (float len) / (float x)) time
-    let width = (fun (a, b) -> (float a / float b) * mult) div
-    // printfn "%A, %A" mult width
+let evalDiv div = (fun (a, b) -> float a / float b) div
 
-    List.mapi (fun i x -> (DRUM_BASS((float x) * mult))) notelist
-    |> String.concat "\n"
+let evalPattern pattern (time, div) len =
+    let frac_div = (evalDiv div)
+    printfn "%A" pattern
+    let result = []
+
+    let rec helper pattern distance =
+
+        match pattern with
+        | [] -> distance
+        | note :: rest ->
+            printfn "%A" distance
+
+            (helper rest (distance + frac_div * 10.0 * (evalNote note)))
+
+    // pattern
+    // |> Seq.pairwise
+    // |> Seq.map (fun (xn_1, xn) -> (xn - xn_1) / xn_1)
+
+    // List.map (helper pattern 100.0 result) pattern
+    let distances = helper pattern 100.0
+    distances
+
+// List.mapi (fun x -> (DRUM_BASS x)) distances
+// |> String.concat "\n"
+// let notelist = List.mapi (fun i x -> (evalNote x)) pattern
+// printfn "%A" notelist
+
+// let mult = (fun (x, y) -> (float len) / (float x)) time
+
+// List.mapi (fun i x -> (DRUM_BASS((float x) * mult))) notelist
+// |> String.concat "\n"
 
 
 
@@ -160,5 +191,6 @@ let eval e =
         let pattern =
             (fun (Pattern (_, pattern)) -> evalPattern pattern (time, div) len) expr
 
-        LINE(len) + TIME_SIG(time) + pattern
+        // LINE(len) + TIME_SIG(time) + pattern
+        pattern
 // (fun a b -> (a, b)) bar pattern
