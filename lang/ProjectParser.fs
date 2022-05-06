@@ -18,8 +18,12 @@ type Note =
     | Sep
 
 type Drum =
+    | CC
+    | RD
     | HH
     | SN
+    | T1
+    | T2
     | BD
 
 type PatternName = string
@@ -72,8 +76,12 @@ let sep: Parser<Note, unit> = (pchar '|' .>> ws0) |>> (fun e -> Sep)
 (*
     Parse drum names
 *)
+let cc: Parser<Drum, unit> = (str_ws0 "cc") |>> (fun x -> CC)
+let rd: Parser<Drum, unit> = (str_ws0 "rd") |>> (fun x -> RD)
 let hh: Parser<Drum, unit> = (str_ws0 "hh") |>> (fun x -> HH)
 let sn: Parser<Drum, unit> = (str_ws0 "sn") |>> (fun x -> SN)
+let t1: Parser<Drum, unit> = (str_ws0 "t1") |>> (fun x -> T1)
+let t2: Parser<Drum, unit> = (str_ws0 "t2") |>> (fun x -> T2)
 let bd: Parser<Drum, unit> = (str_ws0 "bd") |>> (fun x -> BD)
 
 
@@ -153,7 +161,9 @@ let p_pattern: Parser<Pattern, Unit> =
     Parses drum name assignment such as
     hh:
 *)
-let p_drum = (hh <|> sn <|> bd) .>> (ws0 >>. str_ws0 ":")
+let p_drum =
+    (cc <|> rd <|> hh <|> sn <|> t1 <|> t2 <|> bd)
+    .>> (ws0 >>. str_ws0 ":")
 
 (*
     Parses a drum to pattern or pattern variable assignment such as

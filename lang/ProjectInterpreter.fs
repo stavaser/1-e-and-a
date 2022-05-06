@@ -15,9 +15,19 @@ let TIME_SIG (a, b) =
 
 let LINE width = string width + " newline\n"
 
-let BASS distance = string distance + " bass\n"
+let CRASH distance = string distance + " crash\n"
+let RIDE distance = string distance + " ride\n"
+
+let CLOSED_HH distance = string distance + " closedhh\n"
 let OPEN_HH distance = string distance + " openhh\n"
 
+let SNARE distance = string distance + " snare\n"
+
+let TOM_1 distance = string distance + " tom1\n"
+let TOM_2 distance = string distance + " tom2\n"
+
+let FOOT_HH distance = string distance + " foothh\n"
+let BASS distance = string distance + " bass\n"
 
 // [100.0; 112.5; 125.0; 137.5]
 let evalOneBeat beat numBeats div i =
@@ -104,8 +114,13 @@ let createPatternPS drum pattern numBeats div =
 
     let drum_PS pos drum =
         match drum with
+        | CC -> CRASH pos
+        | RD -> RIDE pos
+        | HH -> CLOSED_HH pos
+        | SN -> SNARE pos
+        | T1 -> TOM_1 pos
+        | T2 -> TOM_2 pos
         | BD -> BASS pos
-        | HH -> OPEN_HH pos
 
     List.map
         (fun one_beat ->
