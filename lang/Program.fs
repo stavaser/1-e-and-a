@@ -22,7 +22,7 @@ let main argv =
             use sw = new StreamWriter("output.ps", true)
             // File.AppendText(output)
             sw.WriteLine(output)
-            printfn "Success: %A" (eval result)
+            printfn "Success: %A" (output)
         | Failure (errorMsg, _, _) -> printfn "Failure: %s" errorMsg
 
 

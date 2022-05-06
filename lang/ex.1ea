@@ -1,11 +1,10 @@
 time : 4/4
 division: 1/8
 
-pattern mypattern : 1 e + a 2 3 4
+pattern mypattern : 1 e + a
 pattern mypattern2 : 1 1 2 3
 
 bar mybar:
     bd: 1 2 3 4 5
-    hh: mypattern2
 
 render: mypattern

@@ -35,11 +35,12 @@ type DrumPattern =
 type Pattern = Pattern of PatternName * (Note list)
 type Bar = Bar of BarName * (DrumPattern list)
 
+
 type Expr =
     { Settings: Settings
       Patterns: Pattern list
       Render: string
-      Bar: Bar list }
+      Bars: Bar list }
 
 let ws0 = spaces
 let ws1 = spaces1
@@ -83,8 +84,8 @@ let subtitle_keyword = "subtitle"
     render: beat2
 *)
 let p_render =
-    ((str_ws0 render_keyword) .>> (ws0 >>. str_ws0 ":"))
-    >>. (manyCharsTill (letter <|> digit) ws1)
+    (((str_ws0 render_keyword) .>> (ws0 >>. str_ws0 ":"))
+     >>. (manyCharsTill (letter <|> digit) ws1))
 
 (*
     Parses the setup such as
@@ -174,7 +175,7 @@ let expr =
     pipe4 p_settings (many p_pattern) (many p_bar) p_render (fun settings patterns bar render ->
         { Settings = settings
           Patterns = patterns
-          Bar = bar
+          Bars = bar
           Render = render })
 
 // let expr = p_settings .>>. (many p_pattern) .>> spaces
