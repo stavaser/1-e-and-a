@@ -3,6 +3,19 @@ module ProjectInterpreter
 open System
 
 open ProjectParser
+
+let TIME_SIG (a, b) =
+    "("
+    + string a
+    + ")("
+    + string b
+    + ") 30.5 -47.0 tsig\n"
+
+let LINE width = string width + " newline\n"
+
+let DRUM_BASS distance = string distance + " bass\n"
+
+
 // [100.0; 112.5; 125.0; 137.5]
 let rec evalOneBeat (pattern: Note list) (numBeats: int) div distance prevVal =
     let multuplier current prev =
@@ -66,10 +79,22 @@ let separatePattern pattern beat =
     let list = separatePatternHelper pattern beat
     list |> List.map List.rev
 
-let rec evalOnePattern pattern numBeats div distance =
+let rec evalOnePattern pattern numBeats div =
     let separatedPattern = separatePattern pattern []
 
     List.mapi (fun i x -> evalOneBeat x numBeats div (100.0 * (float (i + 1))) (Num(uint8 1))) separatedPattern
+
+let createPatternPS pattern numBeats div =
+    let distances = evalOnePattern pattern numBeats div
+
+
+    List.map
+        (fun one_beat ->
+            (List.map (fun one_note -> DRUM_BASS one_note) one_beat)
+            |> String.concat "\n")
+        distances
+    |> String.concat "\n"
+
 
 let rec evalManyPatterns (patterns: Pattern list) =
     match patterns with
@@ -102,7 +127,9 @@ let eval
     if envPattern.ContainsKey render then
         let pattern = envPattern.Item render
         // separatePattern pattern []
-        evalOnePattern pattern numBeats div 0
+        let drums = createPatternPS pattern numBeats div
+
+        LINE(400) + TIME_SIG(numBeats, beatValue) + drums
     // evalOneBeat pattern numBeats div 100.0 (Num(uint8 1))
     else
         failwith ("Undefined variable '" + render + "'")
