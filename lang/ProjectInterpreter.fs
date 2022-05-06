@@ -54,28 +54,27 @@ let rec evalOneBeat (pattern: Note list) (numBeats: int) div distance prevVal =
             :: (evalOneBeat tail numBeats div new_dist A)
 
 
-let rec separatePattern pattern beat =
-    match pattern with
-    | [] -> []
-    | head :: tail ->
-        match head with
-        | Sep -> (beat :: separatePattern tail [])
-        | _ -> separatePattern tail (head :: beat)
+let separatePattern pattern beat =
+    let rec separatePatternHelper pattern beat =
+        match pattern with
+        | [] -> []
+        | head :: tail ->
+            match head with
+            | Sep -> (beat :: separatePatternHelper tail [])
+            | _ -> separatePatternHelper tail (head :: beat)
 
-// let rec evalOnePattern pattern beat numBeats div distance =
-//     match pattern with
-//     | [] -> []
-//     | head :: tail ->
-//         match head with
-//         // let rec evalOneBeat (pattern: Note list) (numBeats: int) div distance prevVal =
-//         | Sep -> (evalOneBeat beat numBeats div (distance + 100.0) (Num(uint8 1)))
-//         | _ -> evalManyBeats tail (head :: beat) numBeats div distance
+    let list = separatePatternHelper pattern beat
+    list |> List.map List.rev
+
+let rec evalOnePattern pattern numBeats div distance =
+    let separatedPattern = separatePattern pattern []
+
+    List.mapi (fun i x -> evalOneBeat x numBeats div (100.0 * (float (i + 1))) (Num(uint8 1))) separatedPattern
 
 let rec evalManyPatterns (patterns: Pattern list) =
     match patterns with
     | [] -> "patterns"
     | head :: tail ->
-
         printfn "%A" head
         "head"
 
@@ -102,7 +101,8 @@ let eval
 
     if envPattern.ContainsKey render then
         let pattern = envPattern.Item render
-        separatePattern pattern []
+        // separatePattern pattern []
+        evalOnePattern pattern numBeats div 0
     // evalOneBeat pattern numBeats div 100.0 (Num(uint8 1))
     else
         failwith ("Undefined variable '" + render + "'")
