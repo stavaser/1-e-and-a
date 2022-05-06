@@ -5,12 +5,21 @@ open System
 open ProjectParser
 // [100.0; 112.5; 125.0; 137.5]
 let rec evalOnePattern (pattern: Note list) (numBeats: int) div distance prevVal =
-    let multuplier prev =
-        match prev with
-        | Num (n) -> 1.0
-        | E -> 0.5
-        | And -> 0.5
-        | A -> 0.5
+    let multuplier current prev =
+        match current with
+        | E -> 1.0
+        | And ->
+            match prev with
+            | Num (_) -> 2.0
+            | E -> 1.0
+            | _ -> failwith ("Incorrect position of notes: '+' cannot come after 'a'")
+        | A ->
+            match prev with
+            | Num (n) -> 3.0
+            | E -> 2.0
+            | And -> 1.0
+            | _ -> failwith ("Incorrect position of notes: 'a'")
+        | a -> failwith ("Something went wrong: " + string a)
 
     match pattern with
     | [] -> []
@@ -28,19 +37,21 @@ let rec evalOnePattern (pattern: Note list) (numBeats: int) div distance prevVal
             else
                 failwith ("Number of beats exceeds " + string numBeats + ".")
         | E ->
-            let new_dist = (distance + (div * (multuplier prevVal) * 100.0))
+            let new_dist = (distance + (div * (multuplier E prevVal) * 100.0))
 
             new_dist
             :: (evalOnePattern tail numBeats div new_dist E)
 
         | And ->
 
-            let new_dist = (distance + (div * (multuplier prevVal) * 100.0))
+            let new_dist =
+                (distance
+                 + (div * (multuplier And prevVal) * 100.0))
 
             new_dist
             :: (evalOnePattern tail numBeats div new_dist And)
         | A ->
-            let new_dist = (distance + (div * (multuplier prevVal) * 100.0))
+            let new_dist = (distance + (div * (multuplier A prevVal) * 100.0))
 
             new_dist
             :: (evalOnePattern tail numBeats div new_dist A)
