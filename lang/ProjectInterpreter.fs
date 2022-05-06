@@ -4,7 +4,7 @@ open System
 
 open ProjectParser
 // [100.0; 112.5; 125.0; 137.5]
-let rec evalOnePattern (pattern: Note list) (numBeats: int) div distance prevVal =
+let rec evalOneBeat (pattern: Note list) (numBeats: int) div distance prevVal =
     let multuplier current prev =
         match current with
         | E -> 1.0
@@ -30,31 +30,46 @@ let rec evalOnePattern (pattern: Note list) (numBeats: int) div distance prevVal
             if int n <= numBeats then
                 // calculate the distance of the next note
                 distance
-                :: (evalOnePattern tail numBeats div distance (Num(n)))
-            // let new_dist = (distance + (float div * 100.0))
-            // let new_result = new_dist :: result
-            // (evalOnePattern tail numBeats div new_dist new_result)
+                :: (evalOneBeat tail numBeats div distance (Num(n)))
             else
                 failwith ("Number of beats exceeds " + string numBeats + ".")
         | E ->
             let new_dist = (distance + (div * (multuplier E prevVal) * 100.0))
 
             new_dist
-            :: (evalOnePattern tail numBeats div new_dist E)
+            :: (evalOneBeat tail numBeats div new_dist E)
 
         | And ->
-
             let new_dist =
                 (distance
                  + (div * (multuplier And prevVal) * 100.0))
 
             new_dist
-            :: (evalOnePattern tail numBeats div new_dist And)
+            :: (evalOneBeat tail numBeats div new_dist And)
+
         | A ->
             let new_dist = (distance + (div * (multuplier A prevVal) * 100.0))
 
             new_dist
-            :: (evalOnePattern tail numBeats div new_dist A)
+            :: (evalOneBeat tail numBeats div new_dist A)
+
+
+let rec separatePattern pattern beat =
+    match pattern with
+    | [] -> []
+    | head :: tail ->
+        match head with
+        | Sep -> (beat :: separatePattern tail [])
+        | _ -> separatePattern tail (head :: beat)
+
+// let rec evalOnePattern pattern beat numBeats div distance =
+//     match pattern with
+//     | [] -> []
+//     | head :: tail ->
+//         match head with
+//         // let rec evalOneBeat (pattern: Note list) (numBeats: int) div distance prevVal =
+//         | Sep -> (evalOneBeat beat numBeats div (distance + 100.0) (Num(uint8 1)))
+//         | _ -> evalManyBeats tail (head :: beat) numBeats div distance
 
 let rec evalManyPatterns (patterns: Pattern list) =
     match patterns with
@@ -87,7 +102,8 @@ let eval
 
     if envPattern.ContainsKey render then
         let pattern = envPattern.Item render
-        evalOnePattern pattern numBeats div 100.0 (Num(uint8 1))
+        separatePattern pattern []
+    // evalOneBeat pattern numBeats div 100.0 (Num(uint8 1))
     else
         failwith ("Undefined variable '" + render + "'")
 
