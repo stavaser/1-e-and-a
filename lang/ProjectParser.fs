@@ -36,6 +36,17 @@ type Pattern = Pattern of PatternName * (Note list)
 type Bar = Bar of BarName * (DrumPattern list)
 
 
+// type DrumPattern =
+//     | DrumPatternVar of Drum * PatternName
+//     | DrumPatternNotes of Drum * (Note list)
+
+// type DrumPatternVar = Drum * PatternName
+// type DrumPatternNotes = Drum * (Note list)
+
+// type Pattern = Pattern of PatternName * (Note list)
+// type Bar = Bar of BarName * (DrumPatternVar list * DrumPatternNotes list)
+
+
 type Expr =
     { Settings: Settings
       Patterns: Pattern list

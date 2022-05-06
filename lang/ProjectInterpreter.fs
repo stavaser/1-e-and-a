@@ -15,7 +15,8 @@ let TIME_SIG (a, b) =
 
 let LINE width = string width + " newline\n"
 
-let DRUM_BASS distance = string distance + " bass\n"
+let BASS distance = string distance + " bass\n"
+let OPEN_HH distance = string distance + " openhh\n"
 
 
 // [100.0; 112.5; 125.0; 137.5]
@@ -97,30 +98,30 @@ let rec evalOnePattern pattern numBeats div =
 
         separatedPattern
 
-let createPatternPS pattern numBeats div =
+let createPatternPS drum pattern numBeats div =
     // 2d list of distances of notes in each beat
     let distances = evalOnePattern pattern numBeats div
 
+    let drum_PS pos drum =
+        match drum with
+        | BD -> BASS pos
+        | HH -> OPEN_HH pos
+
     List.map
         (fun one_beat ->
-            (List.map (fun one_note -> DRUM_BASS one_note) one_beat)
+            (List.map (fun pos -> (drum_PS pos drum)) one_beat)
             |> String.concat "\n")
         distances
     |> String.concat "\n"
 
 
-let rec evalManyPatterns (patterns: Pattern list) =
-    match patterns with
-    | [] -> "patterns"
-    | head :: tail ->
-        printfn "%A" head
-        "head"
+let evalOneDrumPattern drum_pattern numBeats div =
+    match drum_pattern with
+    | DrumPatternNotes (drum, notes) -> createPatternPS drum notes numBeats div
 
-// let createPatternEnv patterns =
-//   match patterns with
-//   | [] -> None
-//   | head::tail -> patterns
-
+let evanManyDrumPatterns drum_patterns numBeats div =
+    List.map (fun expr -> (evalOneDrumPattern expr numBeats div)) drum_patterns
+    |> String.concat "\n"
 
 let eval
     { Settings = settings
@@ -137,10 +138,22 @@ let eval
         |> List.map (fun (Pattern (id, data)) -> id, data)
         |> Map.ofSeq
 
+    let envBar =
+        bars
+        |> List.map (fun (Bar (id, data)) -> id, data)
+        |> Map.ofSeq
+
     if envPattern.ContainsKey render then
-        let pattern = envPattern.Item render
-        // separatePattern pattern []
-        let drums = createPatternPS pattern numBeats div
+        let expr = envPattern.Item render
+        let drum = HH
+        let drums = createPatternPS drum expr numBeats div
+
+        LINE(MAX_LINE_WIDTH)
+        + TIME_SIG(numBeats, beatValue)
+        + drums
+    elif envBar.ContainsKey render then
+        let expr = envBar.Item render
+        let drums = evanManyDrumPatterns expr numBeats div
 
         LINE(MAX_LINE_WIDTH)
         + TIME_SIG(numBeats, beatValue)
