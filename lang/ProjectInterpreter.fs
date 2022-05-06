@@ -87,11 +87,15 @@ let separatePattern pattern =
 let rec evalOnePattern pattern numBeats div =
     let separatedPattern = separatePattern pattern
     // where the first note of a beat should start
-    let note_start = MAX_LINE_WIDTH / float numBeats
+    let offset = 60.0
+    let note_start = (MAX_LINE_WIDTH - offset) / float numBeats
     // minimum distance between two consequtive notes
     let dist = note_start / float numBeats
 
-    List.mapi (fun i x -> evalOneBeat x numBeats dist ((float i) * note_start)) separatedPattern
+    List.mapi
+        (fun i x -> evalOneBeat x numBeats dist ((float i) * note_start + offset))
+
+        separatedPattern
 
 let createPatternPS pattern numBeats div =
     // 2d list of distances of notes in each beat

@@ -1,7 +1,7 @@
 time : 4/4
 division: 1/8
 
-pattern mypattern : 1 | 2 | 3 e + a | 4 a |
+pattern mypattern : 1 e + a | 2 e + a | 3 e + a | 4 e + a |
 
 pattern mypattern2 : 1 1 2 3
 
