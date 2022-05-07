@@ -116,7 +116,8 @@ grestore}!
 /bm{	M 3 copy RL neg 0 exch RL neg exch neg exch RL 0 exch RL fill}!
  
 /beam8{gsave
-    3.2 26.1 -0.0 51.6 -70 bm
+    /bar_width exch def
+    3.2 bar_width -0.0 offset -70 bm
 grestore}!
 
 /setpagedevice where{pop
@@ -136,13 +137,19 @@ gsave 0.75 dup scale 0 1018.2 T
 % --- font 20.0 F2 
 681.6 newline
 (4)(4) 30.5 -47.0 tsig
-60 closedhh
+60 crash
+/offset 60 def
+60 beam8
 
 137.7 closedhh
 
 215.4 closedhh
 
+254.25 closedhh
+
 293.1 closedhh
+
+331.95000000000005 closedhh
 
 370.8 closedhh
 
@@ -151,16 +158,42 @@ gsave 0.75 dup scale 0 1018.2 T
 526.2 closedhh
 
 603.9000000000001 closedhh
+/offset 137.7 def
+137.7 beam8
+/offset 215.4 def
+215.4 beam8
+/offset 254.25 def
+254.25 beam8
+/offset 293.1 def
+293.1 beam8
+/offset 331.95000000000005 def
+331.95000000000005 beam8
+/offset 370.8 def
+370.8 beam8
+/offset 448.5 def
+448.5 beam8
+/offset 526.2 def
+526.2 beam8
+/offset 603.9000000000001 def
+603.9000000000001 beam8
 
 
 215.4 snare
 
 
 526.2 snare
+/offset 215.4 def
+215.4 beam8
+/offset 526.2 def
+526.2 beam8
 
 60 bass
 
 
 370.8 bass
 
+/offset 60 def
+60 beam8
+/offset 370.8 def
+370.8 beam8
 

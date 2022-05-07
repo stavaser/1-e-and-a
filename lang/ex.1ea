@@ -1,13 +1,19 @@
 time : 4/4
-division: 1/8
+division: 1/16
 
 pattern mypattern : 1 | 2 | 3 e + a | 4 e + a |
 
 pattern mypattern2 : 1 1 2 3
 
 bar mybar:
-    hh: 1 + | 2 + | 3 + | 4 + | 
+    cc: 1 |
+    hh:  + | 2 e + a | 3 + | 4  + |
     sn:   | 2 |   | 4 |
     bd: 1 |   | 3 |   |
 
-render: mybar
+snippet mysnippet:
+    mybar
+    mybar
+    mybar
+
+render: mysnippet

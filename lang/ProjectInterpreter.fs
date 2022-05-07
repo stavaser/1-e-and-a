@@ -15,6 +15,13 @@ let TIME_SIG (a, b) =
 
 let LINE width = string width + " newline\n"
 
+let BEAM8 (offset, len) =
+    "/offset "
+    + (string offset)
+    + " def\n"
+    + (string len)
+    + " beam8\n"
+
 let CRASH distance = string distance + " crash\n"
 let RIDE distance = string distance + " ride\n"
 
@@ -108,9 +115,29 @@ let rec evalOnePattern pattern numBeats div =
 
         separatedPattern
 
+let rec evalBeams distances offset =
+
+    let rec evalBeamsHelper one_beat prev_note =
+        match one_beat with
+        | [] -> ""
+        | note :: note_rest ->
+            let len = note
+
+            BEAM8(note, len)
+            + (evalBeamsHelper note_rest note)
+
+    match distances with
+    | [] -> ""
+    | one_beat :: rest ->
+        (evalBeamsHelper one_beat 0.0)
+        + evalBeams rest (offset + 1.0)
+
 let createPatternPS drum pattern numBeats div =
     // 2d list of distances of notes in each beat
     let distances = evalOnePattern pattern numBeats div
+    let beams = evalBeams distances 0
+    printfn "%A" (distances)
+    printfn "%A" (beams)
 
     let drum_PS pos drum =
         match drum with
@@ -122,12 +149,14 @@ let createPatternPS drum pattern numBeats div =
         | T2 -> TOM_2 pos
         | BD -> BASS pos
 
-    List.map
+    (List.map
         (fun one_beat ->
             (List.map (fun pos -> (drum_PS pos drum)) one_beat)
             |> String.concat "\n")
         distances
-    |> String.concat "\n"
+     |> String.concat "\n")
+    + beams
+
 
 
 let evalOneDrumPattern drum_pattern numBeats div =

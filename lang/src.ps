@@ -116,7 +116,8 @@ grestore}!
 /bm{	M 3 copy RL neg 0 exch RL neg exch neg exch RL 0 exch RL fill}!
  
 /beam8{gsave
-    3.2 26.1 -0.0 51.6 -70 bm
+    /bar_width exch def
+    3.2 bar_width -0.0 offset -70 bm
 grestore}!
 
 /setpagedevice where{pop

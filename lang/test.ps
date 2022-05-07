@@ -138,7 +138,8 @@ grestore}!
 /bm{	M 3 copy RL neg 0 exch RL neg exch neg exch RL 0 exch RL fill}!
  
 /beam8{gsave
-    3.2 26.1 -0.0 51.6 -70 bm
+    /len exch def
+    3.2 len -0.0 offset -70 bm
 grestore}!
 
 /setpagedevice where{pop
@@ -159,13 +160,23 @@ gsave 0.75 dup scale 0 1018.2 T
 newline
 (4)(4) 30.5 -47.0 tsig
 
-beam8
+
 55 foothh
 200 foothh
 
 313.4 bass
 449.8 tom2
 586.2 tom1
+
+/offset 100 def
+50 beam8
+/offset 200 def
+50 beam8
+/offset 300 def
+50 beam8
+/offset 400 def
+50 beam8
+
 
 0 -87.60 T
 newline
