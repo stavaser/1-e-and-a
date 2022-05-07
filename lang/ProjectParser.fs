@@ -28,6 +28,7 @@ type Drum =
 
 type PatternName = string
 type BarName = string
+type SnippetName = string
 
 type DrumPattern =
     | DrumPatternVar of Drum * PatternName
@@ -50,12 +51,18 @@ type Bar = Bar of BarName * (DrumPattern list)
 // type Pattern = Pattern of PatternName * (Note list)
 // type Bar = Bar of BarName * (DrumPatternVar list * DrumPatternNotes list)
 
+type SnippetData =
+    | Bars of BarName list
+    | Repeat of int * BarName * int * (DrumPattern list)
+
+type Snippet = Snippet of SnippetName * (SnippetData list)
 
 type Expr =
     { Settings: Settings
       Patterns: Pattern list
-      Render: string
-      Bars: Bar list }
+      Bars: Bar list
+      Snippets: Snippet list
+      Render: string }
 
 let ws0 = spaces
 let ws1 = spaces1
@@ -90,6 +97,8 @@ let bd: Parser<Drum, unit> = (str_ws0 "bd") |>> (fun x -> BD)
 *)
 let pattern_keyword = "pattern"
 let bar_keyword = "bar"
+let snippet_keyword = "pippet"
+let repeat_keyword = "repeat"
 let time_keyword = "time"
 let div_keyword = "division"
 let tempo_keyword = "tempo"
@@ -191,13 +200,46 @@ let p_bar: Parser<Bar, Unit> =
         (many (p_drumpattern_notes <|> p_drumpattern_var))
         (fun _ id data -> Bar(id, data))
 
+let p_snippet: Parser<Snippet, Unit> =
+    let number = many1Satisfy isDigit
+
+    let p_barname = (manyCharsTill (letter <|> digit) ws1)
+
+    let p_repeat_num =
+        ((many1Satisfy isDigit) .>> (ws0 >>. str_ws0 ":"))
+        |>> int
+
+    let p_change_num = (str_ws0 "(" >>. number .>> str_ws0 ")") |>> int
+
+    let p_change_data =
+        str_ws0 "{" >>. (many p_drumpattern_notes)
+        .>> str_ws0 "}"
+
+    let p_repeats =
+        pipe5
+            (str_ws1 repeat_keyword)
+            (p_repeat_num)
+            (p_barname)
+            (p_change_num)
+            (p_change_data)
+            (fun _ repeat_num barname change_num change_data -> Repeat(repeat_num, barname, change_num, change_data))
+
+    pipe3 (str_ws1 snippet_keyword) (p_assignment |>> SnippetName) (many p_repeats) (fun _ id data -> Snippet(id, data))
+
 
 let expr =
-    pipe4 p_settings (many p_pattern) (many p_bar) p_render (fun settings patterns bar render ->
-        { Settings = settings
-          Patterns = patterns
-          Bars = bar
-          Render = render })
+    pipe5
+        (p_settings)
+        (many (p_pattern .>> ws0))
+        (many p_bar .>> ws0)
+        (many p_snippet .>> ws0)
+        p_render
+        (fun settings patterns bars snippets render ->
+            { Settings = settings
+              Patterns = patterns
+              Bars = bars
+              Snippets = snippets
+              Render = render })
 
 // let expr = p_settings .>>. (many p_pattern) .>> spaces
 

@@ -171,6 +171,7 @@ let eval
     { Settings = settings
       Patterns = patterns
       Bars = bars
+      Snippets = snippets
       Render = render }
     =
     // get values of the settings
@@ -185,6 +186,11 @@ let eval
     let envBar =
         bars
         |> List.map (fun (Bar (id, data)) -> id, data)
+        |> Map.ofSeq
+
+    let envSnippet =
+        snippets
+        |> List.map (fun (Snippet (id, data)) -> id, data)
         |> Map.ofSeq
 
     if envPattern.ContainsKey render then
@@ -203,6 +209,10 @@ let eval
         + TIME_SIG(numBeats, beatValue)
         + drums
     // evalOneBeat pattern numBeats div 100.0 (Num(uint8 1))
+    elif envSnippet.ContainsKey render then
+        let expr = envSnippet.Item render
+        printfn "%A" expr
+        "hehe"
     else
         failwith ("Undefined variable '" + render + "'")
 
