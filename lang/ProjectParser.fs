@@ -53,7 +53,8 @@ type Bar = Bar of BarName * (DrumPattern list)
 
 type SnippetData =
     | Bars of BarName list
-    | Repeat of int * BarName * int * (DrumPattern list)
+    | Repeat of int * (BarName list)
+    | RepeatChange of int * BarName * int * (DrumPattern list)
 
 type Snippet = Snippet of SnippetName * (SnippetData list)
 
@@ -215,16 +216,29 @@ let p_snippet: Parser<Snippet, Unit> =
         str_ws0 "{" >>. (many p_drumpattern_notes)
         .>> str_ws0 "}"
 
-    let p_repeats =
+    let p_repeat =
+        pipe3
+            (str_ws1 repeat_keyword)
+            (p_repeat_num)
+            (str_ws1 "[" >>. many p_barname .>> str_ws1 "]")
+            (fun _ repeat_num barname -> Repeat(repeat_num, barname))
+
+    let p_repeat_with_change =
         pipe5
             (str_ws1 repeat_keyword)
             (p_repeat_num)
             (p_barname)
             (p_change_num)
             (p_change_data)
-            (fun _ repeat_num barname change_num change_data -> Repeat(repeat_num, barname, change_num, change_data))
+            (fun _ repeat_num barname change_num change_data ->
+                RepeatChange(repeat_num, barname, change_num, change_data))
 
-    pipe3 (str_ws1 snippet_keyword) (p_assignment |>> SnippetName) (many p_repeats) (fun _ id data -> Snippet(id, data))
+    pipe3
+        (str_ws1 snippet_keyword)
+        (p_assignment |>> SnippetName)
+        (attempt (many p_repeat_with_change)
+         <|> (many p_repeat))
+        (fun _ id data -> Snippet(id, data))
 
 
 let expr =

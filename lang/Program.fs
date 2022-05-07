@@ -20,6 +20,7 @@ let main argv =
             File.Copy("src.ps", "output.ps", true)
             // use sw = new File.AppendText("output.ps")
             use sw = new StreamWriter("output.ps", true)
+
             // File.AppendText(output)
             sw.WriteLine(output)
             printfn "Success: %A" (output)

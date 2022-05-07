@@ -167,6 +167,11 @@ let evanManyDrumPatterns drum_patterns numBeats div =
     List.map (fun expr -> (evalOneDrumPattern expr numBeats div)) drum_patterns
     |> String.concat "\n"
 
+
+// let evalRepeat snippet numBeats div =
+//   match snippet with
+//   | num_repeat, bar, change ->
+
 let eval
     { Settings = settings
       Patterns = patterns
