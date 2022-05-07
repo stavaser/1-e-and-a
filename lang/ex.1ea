@@ -11,16 +11,11 @@ bar mybar:
     sn:   | 2 |   | 4 |
     bd: 1 |   | 3 |   |
 
+bar mybar2:
+    t1: 1 | 2 |3 |4 |
+    t2: 1 e + a| 2 e + a|3 e + a|4 e + a|
+
 pippet mysnippet:
-    repeat 2:
-        mybar (2) {
-            bd: 1 |  2 | 3 |  4 |
-        }
-
-    repeat 2:   
-        mybar (2) {
-            bd: 1 |  2 | 3 |  4 |
-        }
-
+    repeat 2: [ mybar mybar2 ]
 
 render: mysnippet

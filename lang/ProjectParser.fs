@@ -52,7 +52,7 @@ type Bar = Bar of BarName * (DrumPattern list)
 // type Bar = Bar of BarName * (DrumPatternVar list * DrumPatternNotes list)
 
 type SnippetData =
-    | Bars of BarName list
+    | SnippetBar of BarName
     | Repeat of int * (BarName list)
     | RepeatChange of int * BarName * int * (DrumPattern list)
 
@@ -204,7 +204,7 @@ let p_bar: Parser<Bar, Unit> =
 let p_snippet: Parser<Snippet, Unit> =
     let number = many1Satisfy isDigit
 
-    let p_barname = (manyCharsTill (letter <|> digit) ws1)
+    let p_barname = (manyCharsTill (letter <|> digit) ws1) |>> BarName
 
     let p_repeat_num =
         ((many1Satisfy isDigit) .>> (ws0 >>. str_ws0 ":"))

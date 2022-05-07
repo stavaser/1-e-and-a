@@ -13,6 +13,7 @@ let TIME_SIG (a, b) =
     + string b
     + ") 30.5 -47.0 tsig\n"
 
+let TRANSLATE = "0 -87.60 T \n"
 let LINE width = string width + " newline\n"
 
 let BEAM8 (offset, len) =
@@ -155,7 +156,7 @@ let createPatternPS drum pattern numBeats div =
             |> String.concat "\n")
         distances
      |> String.concat "\n")
-    + beams
+// + beams
 
 
 
@@ -171,6 +172,38 @@ let evanManyDrumPatterns drum_patterns numBeats div =
 // let evalRepeat snippet numBeats div =
 //   match snippet with
 //   | num_repeat, bar, change ->
+
+let evalManyBars bars (envBar: Map<BarName, DrumPattern list>) numBeats div =
+    let rec evalManyBarsHelper bars =
+        match bars with
+        | [] -> ""
+        | bar :: bar_rest ->
+            if envBar.ContainsKey bar then
+                let expr = envBar.Item bar
+                let drums = evanManyDrumPatterns expr numBeats div
+
+                TRANSLATE
+                + LINE(MAX_LINE_WIDTH)
+                + drums
+                + (evalManyBarsHelper bar_rest)
+            else
+                ""
+
+    evalManyBarsHelper bars
+
+
+let rec evalSnippet snippet envPattern envBar numBeats div =
+    match snippet with
+    | [] -> ""
+    | head :: tail ->
+        match head with
+        | Repeat (repeat_num, bars) ->
+            if repeat_num > 0 then
+                (evalManyBars bars envBar numBeats div)
+                + (evalSnippet tail envPattern envBar numBeats div)
+            else
+                failwith ("Can't have negative repeat values.")
+        | RepeatChange (a, b, c, d) -> ""
 
 let eval
     { Settings = settings
@@ -206,6 +239,7 @@ let eval
         LINE(MAX_LINE_WIDTH)
         + TIME_SIG(numBeats, beatValue)
         + drums
+
     elif envBar.ContainsKey render then
         let expr = envBar.Item render
         let drums = evanManyDrumPatterns expr numBeats div
@@ -216,8 +250,8 @@ let eval
     // evalOneBeat pattern numBeats div 100.0 (Num(uint8 1))
     elif envSnippet.ContainsKey render then
         let expr = envSnippet.Item render
-        printfn "%A" expr
-        "hehe"
+        // printfn "%A" expr
+        evalSnippet expr envPattern envBar numBeats div
     else
         failwith ("Undefined variable '" + render + "'")
 
