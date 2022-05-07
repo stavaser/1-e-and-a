@@ -192,18 +192,45 @@ let evalManyBars bars (envBar: Map<BarName, DrumPattern list>) numBeats div =
     evalManyBarsHelper bars
 
 
-let rec evalSnippet snippet envPattern envBar numBeats div =
-    match snippet with
-    | [] -> ""
-    | head :: tail ->
-        match head with
-        | Repeat (repeat_num, bars) ->
-            if repeat_num > 0 then
-                (evalManyBars bars envBar numBeats div)
-                + (evalSnippet tail envPattern envBar numBeats div)
-            else
-                failwith ("Can't have negative repeat values.")
-        | RepeatChange (a, b, c, d) -> ""
+// let rec evalRepeat bar repeat_num =
+
+
+
+(*
+  given a list of expressions in a snippet:
+    - list of bars
+    - list of repeat instructions without changes
+    - list of repeat instructions with changes
+
+*)
+let evalSnippet snippet envPattern (envBar: Map<BarName, DrumPattern list>) numBeats div =
+    let rec evalSnippetHelper snippet =
+        match snippet with
+        | [] -> ""
+        // look at one expression
+        | head :: tail ->
+            match head with
+            // if it is a repeat with no change expr
+            | Repeat (repeat_num, bars) ->
+                // and repeat number is valid
+                if repeat_num > 0 then
+                    // evaluate the bars in that repeat expr
+                    (String.replicate repeat_num (evalManyBars bars envBar numBeats div))
+                    + (evalSnippetHelper tail)
+                else
+                    failwith ("Can't have negative repeat values.")
+            | RepeatChange (repeat_num, bar, change_num, change_data) -> ""
+
+    evalSnippetHelper snippet
+
+
+// let multiply text times = String.replicate times text
+
+// if repeat_num > 0 then
+//     (evanManyDrumPatterns drum_patterns numBeats div )
+//     + (evalSnippet tail envPattern envBar numBeats div)
+// else
+//     failwith ("Can't have negative repeat values.")
 
 let eval
     { Settings = settings
