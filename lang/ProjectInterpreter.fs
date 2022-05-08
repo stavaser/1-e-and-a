@@ -213,38 +213,41 @@ let evalBarDifference old_bar change_data =
     List.map (fun (drum, pattern) -> DrumPatternNotes(drum, pattern)) (newMap |> Map.toList)
 
 
-let evalRepeatChange repeat_num literals old_bar change_data numBeats div =
 
-    let rec evalRepeatChangeHelper literals current =
-        match literals with
-        | [] -> ""
-        // let drums_ps = evanManyDrumPatterns old_bar numBeats div
-        // String.replicate (repeat_num - current) drums_ps
-        | head :: tail ->
-            if head = current then
-                let drums_ast = evalBarDifference old_bar change_data
-                printfn "%A" drums_ast
-                let drums_ps = evanManyDrumPatterns drums_ast numBeats div
+let evalRepeatChange (envBar: Map<BarName, DrumPattern list>) repeat_num literals old_bar change_data numBeats div =
+    let bar_nums = [ for i in 1..repeat_num -> i ]
 
+    let all_old_bars =
+        (List.map (fun num -> (num, old_bar)) bar_nums)
+        |> List.map (fun (num, data) -> num, data)
+        |> Map.ofSeq
+
+    let all_new_bars =
+        (List.map (fun num -> (num, change_data)) literals)
+        |> List.map (fun (num, data) -> num, data)
+        |> Map.ofSeq
+
+    let new_bar = evalBarDifference old_bar change_data
+
+    let newMap =
+        Map.fold (fun acc key value -> Map.add key new_bar acc) all_old_bars all_new_bars
+
+    let bars_ast = (List.map (fun (_, data) -> data) (newMap |> Map.toList))
+
+
+    let bars_ps =
+        List.map
+            (fun expr ->
                 TRANSLATE
                 + LINE(MAX_LINE_WIDTH)
-                + drums_ps
-                + (evalRepeatChangeHelper (tail) (current + 1))
-            else
-                let drums_ps = evanManyDrumPatterns old_bar numBeats div
+                + (evanManyDrumPatterns expr numBeats div))
+            bars_ast
 
-                // (String.replicate
-                //     (current)
-                (TRANSLATE
-                 + LINE(MAX_LINE_WIDTH)
-                 + drums_ps
-                 + (evalRepeatChangeHelper (head :: tail) (current + 1)))
-    //  )
 
-    evalRepeatChangeHelper literals 1
-// if repeat_num >= literals.Length then
-// else
-//     failwith ("Number of bars to change exceeds the number of bars to repeat.")
+    printfn "%A" bars_ast
+
+    (bars_ps |> String.concat "\n")
+
 
 (*
   given a list of expressions in a snippet:
@@ -275,7 +278,7 @@ let evalSnippet snippet envPattern (envBar: Map<BarName, DrumPattern list>) numB
                     if repeat_num > 0 then
                         if envBar.ContainsKey old_bar then
                             let expr = envBar.Item old_bar
-                            evalRepeatChange repeat_num literals expr change_data numBeats div
+                            evalRepeatChange envBar repeat_num literals expr change_data numBeats div
                         else
                             failwith ("Undefined bar " + old_bar + ".")
                     // (String.replicate repeat_num (evalManyBars bars envBar numBeats div))
