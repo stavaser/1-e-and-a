@@ -51,10 +51,14 @@ type Bar = Bar of BarName * (DrumPattern list)
 // type Pattern = Pattern of PatternName * (Note list)
 // type Bar = Bar of BarName * (DrumPatternVar list * DrumPatternNotes list)
 
+type RepeatOption =
+    | Literals of (int list)
+    | Every of int
+
 type SnippetData =
     | SnippetBar of BarName
     | Repeat of int * (BarName list)
-    | RepeatChange of int * BarName * int * (DrumPattern list)
+    | RepeatChange of int * BarName * RepeatOption * (DrumPattern list)
 
 type Snippet = Snippet of SnippetName * (SnippetData list)
 
@@ -210,7 +214,18 @@ let p_snippet: Parser<Snippet, Unit> =
         ((many1Satisfy isDigit) .>> (ws0 >>. str_ws0 ":"))
         |>> int
 
-    let p_change_num = (str_ws0 "(" >>. number .>> str_ws0 ")") |>> int
+    let p_change_num =
+        (str_ws0 "("
+         >>. sepBy (number |>> int) (str_ws0 ",")
+         .>> str_ws0 ")")
+        |>> Literals
+
+    let p_change_every =
+        (str_ws0 "("
+         >>. (str_ws0 "every" >>. (number |>> int))
+         .>> str_ws0 ")")
+        |>> Every
+
 
     let p_change_data =
         str_ws0 "{" >>. (many p_drumpattern_notes)
@@ -228,7 +243,7 @@ let p_snippet: Parser<Snippet, Unit> =
             (str_ws1 repeat_keyword)
             (p_repeat_num)
             (p_barname)
-            (p_change_num)
+            (attempt p_change_num <|> attempt p_change_every)
             (p_change_data)
             (fun _ repeat_num barname change_num change_data ->
                 RepeatChange(repeat_num, barname, change_num, change_data))
@@ -237,7 +252,7 @@ let p_snippet: Parser<Snippet, Unit> =
         (str_ws1 snippet_keyword)
         (p_assignment |>> SnippetName)
         (attempt (many p_repeat_with_change)
-         <|> (many p_repeat))
+         <|> attempt (many p_repeat))
         (fun _ id data -> Snippet(id, data))
 
 

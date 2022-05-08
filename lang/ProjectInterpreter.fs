@@ -177,7 +177,7 @@ let evalManyBars bars (envBar: Map<BarName, DrumPattern list>) numBeats div =
     let rec evalManyBarsHelper bars =
         match bars with
         | [] -> ""
-        | bar :: bar_rest ->
+        | bar :: tail ->
             if envBar.ContainsKey bar then
                 let expr = envBar.Item bar
                 let drums = evanManyDrumPatterns expr numBeats div
@@ -185,16 +185,92 @@ let evalManyBars bars (envBar: Map<BarName, DrumPattern list>) numBeats div =
                 TRANSLATE
                 + LINE(MAX_LINE_WIDTH)
                 + drums
-                + (evalManyBarsHelper bar_rest)
+                + (evalManyBarsHelper tail)
             else
                 ""
 
     evalManyBarsHelper bars
 
+(*
+  find pattern by drum name from drum pattern new in drum pattern old
 
-// let rec evalRepeat bar repeat_num =
+  reconstruct the drum pattern
+*)
+let evalBarDifference old_bar change_data =
+    // let original_arr = drum_pattern_old |>> List.toArray
+    // let new_arr = drum_pattern_new |>> List.toArray
+    // let drum_pattern_old =
+    //     if envBar.ContainsKey old_bar then
+    //         envBar.Item bar
+    //     else
 
 
+    let envDrumPatternOld =
+        old_bar
+        |> List.map (fun (DrumPatternNotes (drum, pattern)) -> drum, pattern)
+        |> Map.ofSeq
+
+    let envDrumPatternNew =
+        change_data
+        |> List.map (fun (DrumPatternNotes (drum, pattern)) -> drum, pattern)
+        |> Map.ofSeq
+
+    // let map1 = Map.ofList [ 1, "one"; 2, "two"; 3, "three" ]
+    // let map2 = Map.ofList [ 2, "two"; 3, "oranges"; 4, "four" ]
+
+    let newMap =
+        Map.fold (fun acc key value -> Map.add key value acc) envDrumPatternOld envDrumPatternNew
+
+    newMap |> Map.toList
+
+// let rec evalBarDifferenceHelper drum_pattern =
+//     match drum_pattern with
+//     | [] -> []
+//     | head :: tail ->
+//         match head with
+//         | DrumPatternNotes (new_drum, new_pattern) ->
+//             // if the original expr has the same drum,
+//             // then we need to change the pattern for that drum
+//             // and remove the drum from both maps
+//             if envDrumPatternOld.ContainsKey new_drum then
+//                 let new_expr = DrumPatternNotes(new_drum, new_pattern)
+//                 // envDrumPatternOld |> Map.remove new_drum
+//                 // envDrumPatternNew |> Map.remove new_drum
+//                 new_expr :: ( evalBarDifferenceHelper tail)
+
+//             else
+//                 let new_expr = DrumPatternNotes(new_drum, new_pattern)
+//                 new_expr :: evalBarDifferenceHelper tail
+
+
+
+// evalBarDifferenceHelper drum_pattern_new
+
+
+
+let evalRepeatChange repeat_num literals old_bar change_data numBeats div =
+    let rec evalRepeatChangeHelper literals current =
+        match literals with
+        | [] -> ""
+        | head :: tail ->
+            if head = current then
+
+                let drums_ast = evalBarDifference old_bar change_data
+                printfn "%A" drums_ast
+                // let drums_ps = evanManyDrumPatterns drums_ast numBeats div
+
+                TRANSLATE
+                + LINE(MAX_LINE_WIDTH)
+                // + drums_ps
+                + (evalRepeatChangeHelper tail (current + 1))
+            else
+                ""
+
+
+    evalRepeatChangeHelper literals 1
+// if repeat_num >= literals.Length then
+// else
+//     failwith ("Number of bars to change exceeds the number of bars to repeat.")
 
 (*
   given a list of expressions in a snippet:
@@ -219,7 +295,19 @@ let evalSnippet snippet envPattern (envBar: Map<BarName, DrumPattern list>) numB
                     + (evalSnippetHelper tail)
                 else
                     failwith ("Can't have negative repeat values.")
-            | RepeatChange (repeat_num, bar, change_num, change_data) -> ""
+            | RepeatChange (repeat_num, old_bar, option, change_data) ->
+                match option with
+                | Literals (literals) ->
+                    if repeat_num > 0 then
+                        if envBar.ContainsKey old_bar then
+                            let expr = envBar.Item old_bar
+                            evalRepeatChange repeat_num literals expr change_data numBeats div
+                        else
+                            failwith ("Undefined bar " + old_bar + ".")
+                    // (String.replicate repeat_num (evalManyBars bars envBar numBeats div))
+                    // + (evalSnippetHelper tail)
+                    else
+                        failwith ("Can't have negative repeat values.")
 
     evalSnippetHelper snippet
 
@@ -278,6 +366,8 @@ let eval
     elif envSnippet.ContainsKey render then
         let expr = envSnippet.Item render
         // printfn "%A" expr
+        printfn "%A" expr
+
         evalSnippet expr envPattern envBar numBeats div
     else
         failwith ("Undefined variable '" + render + "'")
