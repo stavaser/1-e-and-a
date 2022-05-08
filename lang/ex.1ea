@@ -16,8 +16,8 @@ bar mybar2:
     t2: 1 e + a| 2 e + a|3 e + a|4 e + a|
 
 pippet mysnippet:
-    repeat 2: mybar (1,2,3,4) {
-            bd: 1 2 3 4
+    repeat 6: mybar (1,2,6) {
+        bd: 1 e + a| 2 e + a|3 e + a|4 e + a|
     }
 
 

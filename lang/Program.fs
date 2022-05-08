@@ -23,7 +23,7 @@ let main argv =
 
             // File.AppendText(output)
             sw.WriteLine(output)
-            printfn "Success: %A" (output)
+        // printfn "Success: %A" (output)
         | Failure (errorMsg, _, _) -> printfn "Failure: %s" errorMsg
 
 
