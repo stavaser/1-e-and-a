@@ -18,8 +18,12 @@ bar mybar2:
 
 
 pippet mysnippet:
-    repeat 7: 
-        mybar2 (1,5,2) {
+    repeat 2: 
+        mybar2 (1) {
+            bd: 1  + a | 2 e + a| 3 e + a | 4 e + a |
+        }
+    repeat 2: 
+        mybar2 (2) {
             bd: 1  + a | 2 e + a| 3 e + a | 4 e + a |
         }
 
