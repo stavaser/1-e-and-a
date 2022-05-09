@@ -13,18 +13,15 @@ bar mybar1:
 
 bar mybar2:
     cc: 1 |
-    sn:   | 2 |   | 4 |
+    sn:  1 | 2 | 3  | 4 |
     bd: 1 |  e | 3 |   |
 
 
 pippet mysnippet:
-    repeat 2: 
-        mybar2 (1) {
-            bd: 1  + a | 2 e + a| 3 e + a | 4 e + a |
-        }
-    repeat 2: 
-        mybar2 (2) {
-            bd: 1  + a | 2 e + a| 3 e + a | 4 e + a |
+    repeat 8: 
+        mybar2 (every 5) {
+            t1: 1 e + a | 2 e + a| 3 e + a | 4 e + a |
+            bd: 1 e + a | 2 e + a| 3 e + a | 4 e + a |
         }
 
 render: mysnippet

@@ -246,7 +246,6 @@ let evalRepeatChange repeat_num literals old_bar change_data numBeats div =
 
     let bars_ast = (List.map (fun (_, data) -> data) (newMap |> Map.toList))
 
-
     let bars_ps =
         List.map
             (fun expr ->
@@ -260,6 +259,28 @@ let evalRepeatChange repeat_num literals old_bar change_data numBeats div =
 
     (bars_ps |> String.concat "\n")
 
+let evalRepeatChangeEvery repeat_num every_num old_bar change_data numBeats div =
+    let new_bar = evalBarDifference old_bar change_data
+
+    let bar_nums = [ for i in 1..repeat_num -> i ]
+
+    let is_divisible x =
+        if (x % every_num) = 0 then
+            new_bar
+        else
+            old_bar
+
+    let bars_ast = (List.map (fun bar_num -> is_divisible bar_num) bar_nums)
+
+    let bars_ps =
+        List.map
+            (fun expr ->
+                TRANSLATE
+                + LINE(MAX_LINE_WIDTH)
+                + (evalManyDrumPatterns expr numBeats div))
+            bars_ast
+
+    (bars_ps |> String.concat "\n")
 
 (*
   given a list of expressions in a snippet, the expressions are either:
@@ -301,6 +322,19 @@ let evalSnippet snippet envPattern (envBar: Map<BarName, DrumPattern list>) numB
                             let expr = envBar.Item modify_bar
                             // evaluate the "repeat with change given a list of literals" expression
                             (evalRepeatChange repeat_num literals expr modify_data numBeats div)
+                            + (evalSnippetHelper tail)
+                        else
+                            failwith ("Undefined bar " + modify_bar + ".")
+                    else
+                        failwith ("Can't have negative repeat values.")
+                | Every (every_num) ->
+                    if repeat_num > 0 then
+                        // if the bar to modify exists
+                        if envBar.ContainsKey modify_bar then
+                            let expr = envBar.Item modify_bar
+                            ""
+                            // evaluate the "repeat with change given a list of literals" expression
+                            (evalRepeatChangeEvery repeat_num every_num expr modify_data numBeats div)
                             + (evalSnippetHelper tail)
                         else
                             failwith ("Undefined bar " + modify_bar + ".")
