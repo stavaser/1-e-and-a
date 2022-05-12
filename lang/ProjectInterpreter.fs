@@ -177,9 +177,15 @@ let createPatternPS drum pattern numBeats div =
 
 
 
-let evalOneDrumPattern drum_pattern numBeats div =
+let evalOneDrumPattern drum_pattern (envPattern: Map<PatternName, Note list>) numBeats div =
     match drum_pattern with
     | DrumPatternNotes (drum, notes) -> createPatternPS drum notes numBeats div
+    | DrumPatternVar (drum, var) -> 
+        if envPattern.ContainsKey var then
+            let notes = envPattern.Item var
+            createPatternPS drum notes numBeats div
+        else
+            failwith ("Undefined variable '" + var + "'")
 
 
 // let combineBeats (map: Map<int, Note list list>) current =
@@ -193,7 +199,7 @@ let evalOneDrumPattern drum_pattern numBeats div =
 //         :: transpose (List.map List.tail list)
 
 
-let evalManyDrumPatterns drum_patterns numBeats div =
+let evalManyDrumPatterns drum_patterns (envPattern: Map<PatternName, Note list>) numBeats div =
     // let map =
     //     List.mapi (fun i (DrumPatternNotes (drum, pattern)) -> separatePattern pattern) drum_patterns
 
@@ -206,7 +212,7 @@ let evalManyDrumPatterns drum_patterns numBeats div =
     // printfn "drum_patterns: %A \n\n" map
     // printfn "transpose: %A \n\n" (transpose map)
 
-    List.map (fun expr -> (evalOneDrumPattern expr numBeats div)) drum_patterns
+    List.map (fun expr -> (evalOneDrumPattern expr envPattern numBeats div)) drum_patterns
     |> String.concat "\n"
 
 // [
@@ -227,7 +233,7 @@ let evalManyDrumPatterns drum_patterns numBeats div =
         numBeats    -   number of beats (top number of the time signature)
         div         -   minimum division of two notes
 *)
-let evalManyBars bars (envBar: Map<BarName, DrumPattern list>) numBeats div =
+let evalManyBars bars (envPattern: Map<PatternName, Note list>) (envBar: Map<BarName, DrumPattern list>) numBeats div =
     let rec evalManyBarsHelper bars =
         match bars with
         | [] -> ""
@@ -239,7 +245,7 @@ let evalManyBars bars (envBar: Map<BarName, DrumPattern list>) numBeats div =
                 // bd: 1 e | 2 e | 3 a | 4 a |
                 let drum_pattern = envBar.Item bar
                 // evaluates many "drum -> pattern" assignments into PostScript
-                let drums = evalManyDrumPatterns drum_pattern numBeats div
+                let drums = evalManyDrumPatterns drum_pattern envPattern numBeats div
 
                 // construct a bar
                 TRANSLATE
@@ -272,7 +278,7 @@ let evalBarDifference old_bar new_bar =
 
 
 
-let evalRepeatChange repeat_num literals old_bar change_data numBeats div =
+let evalRepeatChange repeat_num literals old_bar change_data numBeats div (envPattern: Map<PatternName, Note list>) =
     let bar_nums = [ for i in 1..repeat_num -> i ]
 
     let all_old_bars =
@@ -297,7 +303,7 @@ let evalRepeatChange repeat_num literals old_bar change_data numBeats div =
             (fun expr ->
                 TRANSLATE
                 + LINE(MAX_LINE_WIDTH)
-                + (evalManyDrumPatterns expr numBeats div))
+                + (evalManyDrumPatterns expr envPattern numBeats div))
             bars_ast
 
 
@@ -305,7 +311,7 @@ let evalRepeatChange repeat_num literals old_bar change_data numBeats div =
 
     (bars_ps |> String.concat "\n")
 
-let evalRepeatChangeEvery repeat_num every_num old_bar change_data numBeats div =
+let evalRepeatChangeEvery repeat_num every_num old_bar change_data numBeats div (envPattern: Map<PatternName, Note list>) =
     let new_bar = evalBarDifference old_bar change_data
 
     let bar_nums = [ for i in 1..repeat_num -> i ]
@@ -323,7 +329,7 @@ let evalRepeatChangeEvery repeat_num every_num old_bar change_data numBeats div 
             (fun expr ->
                 TRANSLATE
                 + LINE(MAX_LINE_WIDTH)
-                + (evalManyDrumPatterns expr numBeats div))
+                + (evalManyDrumPatterns expr envPattern numBeats div))
             bars_ast
 
     (bars_ps |> String.concat "\n")
@@ -336,7 +342,7 @@ let evalRepeatChangeEvery repeat_num every_num old_bar change_data numBeats div 
         - change option is a list of numbers of bars to change
         - change option is number N such that bars are changed every N-th bar
 *)
-let evalSnippet snippet envPattern (envBar: Map<BarName, DrumPattern list>) numBeats div =
+let evalSnippet snippet (envPattern: Map<PatternName, Note list>) (envBar: Map<BarName, DrumPattern list>) numBeats div =
     let rec evalSnippetHelper snippet current_line =
         match snippet with
         | [] -> ""
@@ -348,7 +354,7 @@ let evalSnippet snippet envPattern (envBar: Map<BarName, DrumPattern list>) numB
                 // and repeat number is valid
                 if repeat_num > 0 then
                     // evaluate the bars in that repeat expr
-                    let bar = evalManyBars bars envBar numBeats div
+                    let bar = evalManyBars bars envPattern envBar numBeats div
 
                     (String.replicate repeat_num bar)
                     + (evalSnippetHelper tail (current_line + 1))
@@ -367,7 +373,7 @@ let evalSnippet snippet envPattern (envBar: Map<BarName, DrumPattern list>) numB
                         if envBar.ContainsKey modify_bar then
                             let expr = envBar.Item modify_bar
                             // evaluate the "repeat with change given a list of literals" expression
-                            (evalRepeatChange repeat_num literals expr modify_data numBeats div)
+                            (evalRepeatChange repeat_num literals expr modify_data numBeats div envPattern)
                             + (evalSnippetHelper tail (current_line + 1))
                         else
                             failwith ("Undefined bar " + modify_bar + ".")
@@ -380,7 +386,7 @@ let evalSnippet snippet envPattern (envBar: Map<BarName, DrumPattern list>) numB
                             let expr = envBar.Item modify_bar
                             ""
                             // evaluate the "repeat with change given a list of literals" expression
-                            (evalRepeatChangeEvery repeat_num every_num expr modify_data numBeats div)
+                            (evalRepeatChangeEvery repeat_num every_num expr modify_data numBeats div envPattern)
                             + (evalSnippetHelper tail (current_line + 1))
                         else
                             failwith ("Undefined bar " + modify_bar + ".")
@@ -433,7 +439,8 @@ let eval
     // render value is a bar
     elif envBar.ContainsKey render then
         let expr = envBar.Item render
-        let drums = evalManyDrumPatterns expr numBeats div
+        let drums = evalManyDrumPatterns expr envPattern numBeats div
+        printfn "%A" expr
 
         // construct PostScript
         LINE(MAX_LINE_WIDTH)
