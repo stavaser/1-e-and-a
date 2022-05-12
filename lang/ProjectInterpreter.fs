@@ -12,7 +12,18 @@ let TIME_SIG (a, b) =
     + ") 30.5 -47.0 tsig\n"
 
 let TRANSLATE = "0 -87.60 T \n"
+let FIRST_LINE = "0 87.60 T \n"
 let LINE width = string width + " newline\n"
+
+let NEW_PAGE_START =
+    "grestore showpage
+    gsave 0.75 dup scale 0 1018.2 T
+    67.20 0 T
+    0 -22.00 T
+    /y0{-47.0 add}!
+    /yns0{-47.0 add}! \n"
+
+let NEW_PAGE_END = "grestore showpage \n"
 
 let BEAM8 (offset, len) =
     "/offset "
@@ -107,6 +118,7 @@ let separatePattern pattern =
 
 let rec evalOnePattern pattern numBeats div =
     let separatedPattern = separatePattern pattern
+    printfn "%A" (separatedPattern)
     // where the first note of a beat should start
     let offset = 60.0
     let note_start = (MAX_LINE_WIDTH - offset) / float numBeats
@@ -119,29 +131,32 @@ let rec evalOnePattern pattern numBeats div =
         separatedPattern
 
 (* TODO *)
-let rec evalBeams distances offset =
+// [60.0; 137.7; 215.4; 293.1; 370.8; 526.2]
+let evalBeams combined_distances numBeats div =
+    let offset = 60.0
+    let note_start = (MAX_LINE_WIDTH - offset) / float numBeats
 
-    let rec evalBeamsHelper one_beat prev_note =
-        match one_beat with
-        | [] -> ""
-        | note :: note_rest ->
-            let len = note
+    ""
 
-            BEAM8(note, len)
-            + (evalBeamsHelper note_rest note)
+// let rec evalBeamsHelper one_beat prev_note =
+//     match one_beat with
+//     | [] -> ""
+//     | note :: note_rest ->
+//         let len = note
 
-    match distances with
-    | [] -> ""
-    | one_beat :: rest ->
-        (evalBeamsHelper one_beat 0.0)
-        + evalBeams rest (offset + 1.0)
+//         BEAM8(note, len)
+//         + (evalBeamsHelper note_rest note)
+
+// match distances with
+// | [] -> ""
+// | one_beat :: rest ->
+//     (evalBeamsHelper one_beat 0.0)
+//     + evalBeams rest (offset + 1.0)
 
 let createPatternPS drum pattern numBeats div =
     // 2d list of distances of notes in each beat
     let distances = evalOnePattern pattern numBeats div
-    let beams = evalBeams distances 0
-    printfn "%A" (distances)
-    printfn "%A" (beams)
+    // printfn "%A" (distances)
 
     let drum_PS pos drum =
         match drum with
@@ -159,7 +174,6 @@ let createPatternPS drum pattern numBeats div =
             |> String.concat "\n")
         distances
      |> String.concat "\n")
-// + beams
 
 
 
@@ -167,10 +181,42 @@ let evalOneDrumPattern drum_pattern numBeats div =
     match drum_pattern with
     | DrumPatternNotes (drum, notes) -> createPatternPS drum notes numBeats div
 
+
+// let combineBeats (map: Map<int, Note list list>) current =
+
+// let rec transpose list =
+//     if List.isEmpty (List.head list) then
+//         []
+//     else
+//         (List.map List.head list |> List.distinct)
+
+//         :: transpose (List.map List.tail list)
+
+
 let evalManyDrumPatterns drum_patterns numBeats div =
+    // let map =
+    //     List.mapi (fun i (DrumPatternNotes (drum, pattern)) -> separatePattern pattern) drum_patterns
+
+
+    // let combined_distances =
+    //     List.map (fun (DrumPatternNotes (drum, pattern)) -> separatePattern pattern) drum_patterns
+    //     |> List.concat
+
+    // printfn "combined_distances: %A \n\n" combined_distances
+    // printfn "drum_patterns: %A \n\n" map
+    // printfn "transpose: %A \n\n" (transpose map)
+
     List.map (fun expr -> (evalOneDrumPattern expr numBeats div)) drum_patterns
     |> String.concat "\n"
 
+// [
+
+// [[Num 1uy]; [Num 1uy]; [And]];
+// [[]; [Num 2uy]; [Num 2uy; And]];
+// [[]; [Num 3uy]; [Num 3uy]];
+// [[Num 4uy]; [Num 4uy]; [Num 4uy]]
+
+// ]
 
 (*
     Given a list of bar names, evaluates them into PostScript
@@ -291,7 +337,7 @@ let evalRepeatChangeEvery repeat_num every_num old_bar change_data numBeats div 
         - change option is number N such that bars are changed every N-th bar
 *)
 let evalSnippet snippet envPattern (envBar: Map<BarName, DrumPattern list>) numBeats div =
-    let rec evalSnippetHelper snippet =
+    let rec evalSnippetHelper snippet current_line =
         match snippet with
         | [] -> ""
         // look at one expression
@@ -305,7 +351,7 @@ let evalSnippet snippet envPattern (envBar: Map<BarName, DrumPattern list>) numB
                     let bar = evalManyBars bars envBar numBeats div
 
                     (String.replicate repeat_num bar)
-                    + (evalSnippetHelper tail)
+                    + (evalSnippetHelper tail (current_line + 1))
                 else
                     failwith ("Can't have negative repeat values.")
             // repeat with change, for example:
@@ -322,7 +368,7 @@ let evalSnippet snippet envPattern (envBar: Map<BarName, DrumPattern list>) numB
                             let expr = envBar.Item modify_bar
                             // evaluate the "repeat with change given a list of literals" expression
                             (evalRepeatChange repeat_num literals expr modify_data numBeats div)
-                            + (evalSnippetHelper tail)
+                            + (evalSnippetHelper tail (current_line + 1))
                         else
                             failwith ("Undefined bar " + modify_bar + ".")
                     else
@@ -335,13 +381,13 @@ let evalSnippet snippet envPattern (envBar: Map<BarName, DrumPattern list>) numB
                             ""
                             // evaluate the "repeat with change given a list of literals" expression
                             (evalRepeatChangeEvery repeat_num every_num expr modify_data numBeats div)
-                            + (evalSnippetHelper tail)
+                            + (evalSnippetHelper tail (current_line + 1))
                         else
                             failwith ("Undefined bar " + modify_bar + ".")
                     else
                         failwith ("Can't have negative repeat values.")
 
-    evalSnippetHelper snippet
+    evalSnippetHelper snippet 0
 
 (*
     Evaluates AST into PostScript
@@ -399,6 +445,6 @@ let eval
         let drums = evalSnippet expr envPattern envBar numBeats div
 
         // construct PostScript
-        TIME_SIG(numBeats, beatValue) + drums
+        TIME_SIG(numBeats, beatValue) + FIRST_LINE + drums
     else
         failwith ("Undefined variable '" + render + "'")

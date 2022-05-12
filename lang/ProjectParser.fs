@@ -31,14 +31,14 @@ type BarName = string
 type SnippetName = string
 
 type DrumPattern =
-    | DrumPatternVar of Drum * PatternName
-    | DrumPatternNotes of Drum * (Note list)
+    | DrumPatternVar of PatternName
+    | DrumPatternNotes of (Note list)
 
 // type DrumPatternVar = Drum * PatternName
 // type DrumPatternNotes = Drum * (Note list)
 
 type Pattern = Pattern of PatternName * (Note list)
-type Bar = Bar of BarName * (DrumPattern list)
+type Bar = Bar of BarName * ((Drum * DrumPattern) list)
 
 
 // type DrumPattern =
@@ -111,6 +111,13 @@ let render_keyword = "render"
 let title_keyword = "title"
 let subtitle_keyword = "subtitle"
 
+let (<!>) (p: Parser<_, _>) label : Parser<_, _> =
+    fun stream ->
+        printfn "%A: Entering %s" stream.Position label
+        let reply = p stream
+        printfn "%A: Leaving %s (%A) %A" stream.Position label reply.Status reply.Result
+        reply
+
 
 (*
     Parses which expression the program should render, such as
@@ -176,8 +183,8 @@ let p_pattern: Parser<Pattern, Unit> =
     hh:
 *)
 let p_drum =
-    (cc <|> rd <|> hh <|> sn <|> t1 <|> t2 <|> bd)
-    .>> (ws0 >>. str_ws0 ":")
+    ((cc <|> rd <|> hh <|> sn <|> t1 <|> t2 <|> bd) <!> "parsing drums")
+    .>> ((ws0 <!> "parsing whitespace") >>. (str_ws0 ":" <!> "parsing colon"))
 
 (*
     Parses a drum to pattern or pattern variable assignment such as
@@ -185,12 +192,25 @@ let p_drum =
     or
     hh: var_pattern_name1
 *)
-let p_drumpattern_notes =
-    pipe2 p_drum (many p_note .>> ws0) (fun drum pattern -> DrumPatternNotes(drum, pattern))
 
-let p_drumpattern_var =
-    pipe2 p_drum (manyCharsTill (letter <|> digit) ws1) (fun drum pattern -> DrumPatternVar(drum, pattern))
+// let p_drumpattern_notes =
+//     pipe2
+//         (p_drum <!> "trying to parse drum NAME for drum->notes")
+//         ((many p_note .>> ws0)
+//          <!> "trying to parse drum->notes")
+//         (fun drum pattern -> DrumPatternNotes(drum, pattern))
 
+
+// let p_drumpattern_var =
+//     pipe2
+//         (p_drum <!> "trying to parse drum NAME for drum->var")
+//         ((manyCharsTill (letter <|> digit) ws1)
+//          <!> "trying to parse drum->var")
+//         (fun drum pattern -> DrumPatternVar(drum, pattern))
+
+
+let (p_drumpattern_notes: Parser<Note list,Unit>) = (many p_note .>> ws0) 
+let (p_drumpattern_var: Parser<PatternName,Unit>) = (manyCharsTill (letter <|> digit) ws1) 
 
 (*
     Parses a bar expression such as
@@ -198,11 +218,15 @@ let p_drumpattern_var =
         hh: mypattern
         sn: 1 2 3 e 4
 *)
+
 let p_bar: Parser<Bar, Unit> =
     pipe3
         (str_ws1 bar_keyword)
         (p_assignment |>> BarName)
-        (many (p_drumpattern_notes <|> p_drumpattern_var))
+        ((many (p_drum .>>.
+                (attempt( p_drumpattern_notes |>> DrumPatternNotes) <|> attempt (p_drumpattern_var |>> DrumPatternVar))
+                ))
+         <!> "trying to parse drum->notes or drum->var")
         (fun _ id data -> Bar(id, data))
 
 let p_snippet: Parser<Snippet, Unit> =
@@ -228,7 +252,7 @@ let p_snippet: Parser<Snippet, Unit> =
 
 
     let p_change_data =
-        str_ws0 "{" >>. (many p_drumpattern_notes)
+        str_ws0 "{" >>. (many (p_drumpattern_notes |>> DrumPatternNotes))
         .>> str_ws0 "}"
 
     let p_repeat =
@@ -259,7 +283,7 @@ let p_snippet: Parser<Snippet, Unit> =
 let expr =
     pipe5
         (p_settings)
-        (many (p_pattern .>> ws0))
+        (many p_pattern .>> ws0)
         (many p_bar .>> ws0)
         (many p_snippet .>> ws0)
         p_render

@@ -1,27 +1,25 @@
 time : 4/4
 division: 1/16
 
-pattern mypattern : 1 | 2 | 3 e + a | 4 e + a |
-
-pattern mypattern2 : 1 1 2 3
+pattern mypattern : 1 | 2 | 3 | 4 |
 
 bar mybar1:
-    cc: 1 |
-    hh:   + | 2  + | 3 + | 4  + |
-    sn:   | 2 |   | 4 |
-    bd:  1 e + a | 2 e + a| 3 e + a | 4 e + a |
+    cc: mypattern
+    hh: 1 + | 2  + | 3 + | 4  + |
+    sn:     | 2    |     | 4    |
+    bd: 1  | 2   | 3  | 4 e + a  |
 
 bar mybar2:
     cc: 1 |
-    sn:  1 | 2 | 3  | 4 |
-    bd: 1 |  e | 3 |   |
-
+    sn: 1 | 2 | 3 | 4 |
+    bd: 1 +| 2 + | 3  + | 4  + |
 
 pippet mysnippet:
-    repeat 8: 
-        mybar2 (every 5) {
-            t1: 1 e + a | 2 e + a| 3 e + a | 4 e + a |
-            bd: 1 e + a | 2 e + a| 3 e + a | 4 e + a |
+    repeat 10: 
+        mybar1 (every 3) {
+            cc: 1 |
+            bd: 1 +| 2 + | 3  + | 4  + |
+            t1: 1 +| 2 + | 3  + | 4  + |
         }
 
-render: mysnippet
+render: mybar1
