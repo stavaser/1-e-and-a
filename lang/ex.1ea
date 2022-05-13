@@ -4,22 +4,30 @@ division: 1/16
 pattern mypattern : 1 e + a| 2 | 3 | 4 |
 
 bar mybar1:
-    cc: [ mypattern ]
+    cc: [ 1 + | 2  + | 3 + | 4  + |  ]
     hh: [ 1 + | 2  + | 3 + | 4  + | ]
     sn: [    | 2    |     | 4    | ]
     bd: [ 1  | 2   | 3  | 4 e + a  | ]
 
 pippet mysnippet:
     
-    repeat 10: 
-        mybar1 (every 3) {
+    @change 2: 
+        mybar1 (2) {
             cc: [1 |]
             bd: [1 +| 2 + | 3  + | 4  + |]
             t1: [1 +| 2 + | 3  + | 4  + |]
-        }
+        };
     
-    
+    !repeat 2: [ mybar1 ].
 
+    @change 5: 
+        mybar1 (every 2) {
+            cc: [1 |]
+            bd: [1 +| 2 + | 3  + | 4  + |]
+            t1: [1 +| 2 + | 3  + | 4  + |]
+            t2: [1 +| 2 + | 3  + | 4  + |]
+            sn: [1 +| 2 + | 3  + | 4  + |]
+            rd: [1 +| 2 + | 3  + | 4  + |]
+        };
 
-
-render: mybar1
+render: mysnippet

@@ -104,6 +104,7 @@ let pattern_keyword = "pattern"
 let bar_keyword = "bar"
 let snippet_keyword = "pippet"
 let repeat_keyword = "repeat"
+let change_repeat_keyword = "change"
 let time_keyword = "time"
 let div_keyword = "division"
 let tempo_keyword = "tempo"
@@ -244,12 +245,12 @@ let p_snippet: Parser<Snippet, Unit> =
         pipe3
             (str_ws1 repeat_keyword)
             (p_repeat_num)
-            (str_ws1 "[" >>. many p_barname .>> str_ws1 "]")
+            (str_ws0 "[" >>. many p_barname .>> str_ws0 "]")
             (fun _ repeat_num barname -> Repeat(repeat_num, barname))
 
     let p_repeat_with_change =
         pipe5
-            (str_ws1 repeat_keyword)
+            (str_ws1 change_repeat_keyword)
             (p_repeat_num)
             (p_barname)
             (attempt p_change_num <|> attempt p_change_every)
@@ -260,8 +261,9 @@ let p_snippet: Parser<Snippet, Unit> =
     pipe3
         (str_ws1 snippet_keyword)
         (p_assignment |>> SnippetName)
-        (attempt (many p_repeat_with_change)
-         <|> attempt (many p_repeat))
+        (many ( (attempt (str_ws0 "@" >>. p_repeat_with_change .>> str_ws0 ";")) <|> (attempt (str_ws0 "!" >>. p_repeat .>> str_ws0 ".")) ))
+        // (attempt (many (str_ws0 "@" >>. p_repeat_with_change .>> str_ws0 ";"))
+        //  <|> attempt (many (str_ws0 "!" >>. p_repeat .>> str_ws0 ".")))
         (fun _ id data -> Snippet(id, data))
 
 
