@@ -29,5 +29,8 @@ pippet mysnippet:
             sn: [1 +| 2 + | 3  + | 4  + |]
             rd: [1 +| 2 + | 3  + | 4  + |]
         };
+pippet mysnippet2:
+    
+    !repeat 2: [ mybar1 ].
 
-render: mysnippet
+render: mysnippet2
