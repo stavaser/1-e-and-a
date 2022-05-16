@@ -5,10 +5,8 @@ open FParsec
 type Settings =
     { Time: uint8 * uint8
       Division: uint8 * uint8
-    //   Title: string
-    //   Subtitle: string
-
-     }
+      Title: string
+      Subtitle: string }
 
 type Note =
     | Num of uint8
@@ -112,6 +110,10 @@ let render_keyword = "render"
 let title_keyword = "title"
 let subtitle_keyword = "subtitle"
 
+
+(*
+    Debug parser
+*)
 let (<!>) (p: Parser<_, _>) label : Parser<_, _> =
     fun stream ->
         printfn "%A: Entering %s" stream.Position label
@@ -145,21 +147,28 @@ let p_settings =
         >>. (((puint8 .>> ws0) .>> pchar '/')
              .>>. (puint8 .>> ws0))
 
-    // let p_subtitle =
-    //     ((str_ws0 subtitle_keyword)
-    //      .>> (ws0 >>. str_ws0 ":"))
-    //     >>. (manyCharsTill (letter <|> digit) (ws0 >>. tab))
+    let p_string =
+        (many1CharsTill anyChar newline)
+        <!> "parsing a string"
 
-    // let p_title =
-    //     ((str_ws0 title_keyword) .>> (ws0 >>. str_ws0 ":"))
-    //     >>. (manyCharsTill (letter <|> digit) (ws0 >>. tab))
-
-    // pipe4 p_time p_div p_title p_subtitle (fun time div title subtitle ->
-    //     { Time = time
-    //       Division = div
-    //       Title = title
-    //       Subtitle = subtitle })
-    pipe2 p_time p_div (fun time div -> { Time = time; Division = div })
+    pipe4
+        p_time
+        p_div
+        (((((str_ws0 title_keyword) .>> (ws0 >>. str_ws0 ":"))
+           >>. p_string)
+          .>> ws0)
+         <!> "parsed title")
+        (((((str_ws0 subtitle_keyword)
+            .>> (ws0 >>. str_ws0 ":"))
+           >>. p_string)
+          .>> ws0)
+         <!> "parsed subtitle")
+        (fun time div title subtitle ->
+            { Time = time
+              Division = div
+              Title = title
+              Subtitle = subtitle })
+// pipe2 p_time p_div (fun time div -> { Time = time; Division = div })
 
 (*
     Parses a variable name assignment such as
@@ -185,8 +194,10 @@ let p_pattern: Parser<Pattern, Unit> =
     hh:
 *)
 let p_drum =
-    ((cc <|> rd <|> hh <|> sn <|> t1 <|> t2 <|> bd) <!> "parsing drums")
-    .>> ((ws0 <!> "parsing whitespace") >>. (str_ws0 ":" <!> "parsing colon"))
+    ((cc <|> rd <|> hh <|> sn <|> t1 <|> t2 <|> bd)
+     <!> "parsing drums")
+    .>> ((ws0 <!> "parsing whitespace")
+         >>. (str_ws0 ":" <!> "parsing colon"))
 
 (*
     Parses a drum to pattern or pattern variable assignment such as
@@ -195,11 +206,22 @@ let p_drum =
     hh: var_pattern_name1
 *)
 let p_drumpattern_notes =
-    pipe2 p_drum ((str_ws0 "[" >>. (many p_note .>> ws0) .>> str_ws0 "]") <!> "drum->notes") (fun drum pattern -> DrumPatternNotes(drum, pattern))
-    // pipe2 p_drum ((str_ws0 "[" >>. (many p_note .>> ws0) .>> str_ws0 "]") <!> "drum->notes") (fun drum pattern -> DrumPatternNotes(drum, pattern))
+    pipe2
+        p_drum
+        ((str_ws0 "[" >>. (many p_note .>> ws0)
+          .>> str_ws0 "]")
+         <!> "drum->notes")
+        (fun drum pattern -> DrumPatternNotes(drum, pattern))
+// pipe2 p_drum ((str_ws0 "[" >>. (many p_note .>> ws0) .>> str_ws0 "]") <!> "drum->notes") (fun drum pattern -> DrumPatternNotes(drum, pattern))
 
 let p_drumpattern_var =
-    pipe2 p_drum (( str_ws0 "[" >>. (manyCharsTill (letter <|> digit) ws1) .>> str_ws0 "]") <!> "drum->var") (fun drum pattern -> DrumPatternVar(drum, pattern))
+    pipe2
+        p_drum
+        ((str_ws0 "["
+          >>. (manyCharsTill (letter <|> digit) ws1)
+          .>> str_ws0 "]")
+         <!> "drum->var")
+        (fun drum pattern -> DrumPatternVar(drum, pattern))
 
 
 (*
@@ -212,7 +234,11 @@ let p_bar: Parser<Bar, Unit> =
     pipe3
         (str_ws1 bar_keyword)
         (p_assignment |>> BarName)
-        ((many (attempt p_drumpattern_notes <|> attempt p_drumpattern_var))  <!> "trying to parse drum->notes or drum->var" )
+        ((many (
+            attempt p_drumpattern_notes
+            <|> attempt p_drumpattern_var
+         ))
+         <!> "trying to parse drum->notes or drum->var")
         (fun _ id data -> Bar(id, data))
 
 let p_snippet: Parser<Snippet, Unit> =
@@ -261,7 +287,13 @@ let p_snippet: Parser<Snippet, Unit> =
     pipe3
         (str_ws1 snippet_keyword)
         (p_assignment |>> SnippetName)
-        (many ( (attempt (str_ws0 "@" >>. p_repeat_with_change .>> str_ws0 ";")) <|> (attempt (str_ws0 "!" >>. p_repeat .>> str_ws0 ".")) ))
+        (many (
+            (attempt (
+                str_ws0 "@" >>. p_repeat_with_change
+                .>> str_ws0 ";"
+            ))
+            <|> (attempt (str_ws0 "!" >>. p_repeat .>> str_ws0 "."))
+        ))
         // (attempt (many (str_ws0 "@" >>. p_repeat_with_change .>> str_ws0 ";"))
         //  <|> attempt (many (str_ws0 "!" >>. p_repeat .>> str_ws0 ".")))
         (fun _ id data -> Snippet(id, data))

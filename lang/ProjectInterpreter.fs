@@ -4,6 +4,19 @@ open ProjectParser
 
 let MAX_LINE_WIDTH = 681.6
 
+
+let TITLE str =
+    "340.8 4.0 M  20.0 F2 ("
+    + str
+    + ")showc
+    0 -19.00 T \n"
+
+let SUBTITLE str =
+    "340.8 3.2 M  16.0 F2 ("
+    + str
+    + ")showc
+    0 -12.00 T\n"
+
 let TIME_SIG (a, b) =
     "("
     + string a
@@ -450,9 +463,15 @@ let eval
       Render = render }
     =
     // get values of the settings
-    let ((numBeats, beatValue), div) =
-        (fun { Time = (a, b); Division = (_, y) } -> (int a, int b), float y) settings
+    let ((numBeats, beatValue), div, title, subtitle) =
+        (fun { Time = (a, b)
+               Division = (_, y)
+               Title = title
+               Subtitle = subtitle } -> (int a, int b), float y, title, subtitle)
+            settings
 
+    printfn "%A, %A" title subtitle
+    let header = TITLE(title) + SUBTITLE(subtitle)
     // create pattern environment
     let envPattern =
         patterns
@@ -477,7 +496,8 @@ let eval
         let drums = createPatternPS HH expr numBeats div
 
         // construct PostScript
-        LINE(MAX_LINE_WIDTH)
+        header
+        + LINE(MAX_LINE_WIDTH)
         + TIME_SIG(numBeats, beatValue)
         + drums
     // render value is a bar
@@ -487,7 +507,8 @@ let eval
         printfn "%A" expr
 
         // construct PostScript
-        LINE(MAX_LINE_WIDTH)
+        header
+        + LINE(MAX_LINE_WIDTH)
         + TIME_SIG(numBeats, beatValue)
         + drums
     // render value is a snippet
@@ -497,6 +518,9 @@ let eval
         let drums = evalSnippet expr envPattern envBar numBeats div
 
         // construct PostScript
-        TIME_SIG(numBeats, beatValue) + FIRST_LINE + drums
+        header
+        + TIME_SIG(numBeats, beatValue)
+        + FIRST_LINE
+        + drums
     else
         failwith ("Undefined variable '" + render + "'")

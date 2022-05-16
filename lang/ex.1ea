@@ -1,5 +1,8 @@
 time :  4/4
 division: 1/16
+title: helo
+
+subtitle: new
 
 pattern mypattern : 1 e + a| 2 | 3 | 4 |
 
