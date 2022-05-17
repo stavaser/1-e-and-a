@@ -37,7 +37,7 @@ type TestClass() =
             | Success (result, _, _) -> eval result
             | Failure (errorMsg, _, _) -> "error"
 
-        let actual = (test grammar lines).Trim()
+        let actual = (test grammar lines).Trim([ ' ' ])
 
         let expected =
             "340.8 4.0 M  20.0 F2 (helo)showc
@@ -171,6 +171,8 @@ type TestClass() =
 
             642.7500000000001 bass
             "
-                .Trim()
+                .Trim([ ' ' ])
 
+        // My evaluated output is a file. I couldn't figure out how to open a file in Test.fs
+        // this method I am trying to do doesn't work.
         Assert.AreEqual(expected, actual)
