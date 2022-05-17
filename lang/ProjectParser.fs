@@ -100,7 +100,7 @@ let bd: Parser<Drum, unit> = (str_ws0 "bd") |>> (fun x -> BD)
 *)
 let pattern_keyword = "pattern"
 let bar_keyword = "bar"
-let snippet_keyword = "pippet"
+let snippet_keyword = "Snippet"
 let repeat_keyword = "repeat"
 let change_repeat_keyword = "change"
 let time_keyword = "time"
