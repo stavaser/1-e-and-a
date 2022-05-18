@@ -1,8 +1,22 @@
 module ProjectInterpreter
 
 open ProjectParser
+open System.Collections.Generic
 
 let MAX_LINE_WIDTH = 681.6
+
+
+let TITLE str =
+    "340.8 4.0 M  20.0 F2 ("
+    + str
+    + ")showc
+    0 -19.00 T \n"
+
+let SUBTITLE str =
+    "340.8 3.2 M  16.0 F2 ("
+    + str
+    + ")showc
+    0 -12.00 T\n"
 
 let TIME_SIG (a, b) =
     "("
@@ -49,23 +63,24 @@ let BASS distance = string distance + " bass\n"
 (*
 
 *)
+let multuplier current prev =
+    match current with
+    | E -> 1.0
+    | And ->
+        match prev with
+        | Num (_) -> 2.0
+        | E -> 1.0
+        | _ -> failwith ("Incorrect position of notes: '+' cannot come after 'a'")
+    | A ->
+        match prev with
+        | Num (n) -> 3.0
+        | E -> 2.0
+        | And -> 1.0
+        | _ -> failwith ("Incorrect position of notes: 'a'")
+    | a -> failwith ("Something went wrong: " + string a)
+
 let evalOneBeat beat numBeats div i =
     let rec evalOneBeatHelper (pattern: Note list) (numBeats: int) div distance prevVal =
-        let multuplier current prev =
-            match current with
-            | E -> 1.0
-            | And ->
-                match prev with
-                | Num (_) -> 2.0
-                | E -> 1.0
-                | _ -> failwith ("Incorrect position of notes: '+' cannot come after 'a'")
-            | A ->
-                match prev with
-                | Num (n) -> 3.0
-                | E -> 2.0
-                | And -> 1.0
-                | _ -> failwith ("Incorrect position of notes: 'a'")
-            | a -> failwith ("Something went wrong: " + string a)
 
         match pattern with
         | [] -> []
@@ -132,11 +147,11 @@ let rec evalOnePattern pattern numBeats div =
 
 (* TODO *)
 // [60.0; 137.7; 215.4; 293.1; 370.8; 526.2]
-let evalBeams combined_distances numBeats div =
-    let offset = 60.0
-    let note_start = (MAX_LINE_WIDTH - offset) / float numBeats
+// let evalBeams combined_distances numBeats div =
+//     let offset = 60.0
+//     let note_start = (MAX_LINE_WIDTH - offset) / float numBeats
 
-    ""
+//     ""
 
 // let rec evalBeamsHelper one_beat prev_note =
 //     match one_beat with
@@ -190,27 +205,109 @@ let evalOneDrumPattern drum_pattern (envPattern: Map<PatternName, Note list>) nu
 
 // let combineBeats (map: Map<int, Note list list>) current =
 
-// let rec transpose list =
-//     if List.isEmpty (List.head list) then
-//         []
-//     else
-//         (List.map List.head list |> List.distinct)
+let rec transpose list =
+    if List.isEmpty (List.head list) then
+        []
+    else
+        (List.map List.head list |> List.distinct)
+        :: transpose (List.map List.tail list)
 
-//         :: transpose (List.map List.tail list)
+
+
+let unwrap drum_pattern (envPattern: Map<PatternName, Note list>) =
+    match drum_pattern with
+    | DrumPatternNotes (drum, notes) -> separatePattern notes
+    | DrumPatternVar (drum, var) ->
+        if envPattern.ContainsKey var then
+            let notes = envPattern.Item var
+            separatePattern notes
+        else
+            failwith ("Undefined variable '" + var + "'")
+(*
+    [
+        [[Num 1uy; And]; [Num 2uy; And]; [Num 3uy; And]; [Num 4uy; And]];
+        [[Num 1uy; And]; [Num 2uy; And]; [Num 3uy; And]; [Num 4uy; And]];
+        [[]; [Num 2uy]; []; [Num 4uy]];
+        [[Num 1uy]; [Num 2uy]; [Num 3uy]; [Num 4uy; E; And; A]]
+    ]
+
+[
+    [Num 1uy; And]; [Num 2uy; And]; [Num 3uy; And]; [Num 4uy; And];
+    [Num 1uy; And]; [Num 2uy; And]; [Num 3uy; And]; [Num 4uy; And];
+    []; [Num 2uy]; []; [Num 4uy];
+    [Num 1uy]; [Num 2uy]; [Num 3uy]; [Num 4uy; E; And; A]
+]
+
+*)
+
+// let rec beamHelper one_beat =
+//     match
+// let shouldAdd current prev =
+//     match current with
+//     | E -> 1.0
+//     | And ->
+//         match prev with
+//         | Num (_) -> 2.0
+//         | E -> 1.0
+//         | _ -> failwith ("Incorrect position of notes: '+' cannot come after 'a'")
+//     | A ->
+//         match prev with
+//         | Num (n) -> 3.0
+//         | E -> 2.0
+//         | And -> 1.0
+//         | _ -> failwith ("Incorrect position of notes: 'a'")
+//     | a -> failwith ("Something went wrong: " + string a)
+let rec evalBeams distances numBeats div =
+    let rec helper distances =
+        match distances with
+        | [] -> []
+        | one_beat :: rest ->
+            let unique = List.concat one_beat |> List.distinct
+            printfn "unique: %A" unique
+
+            let rec helperHelper list add =
+                match list with
+                | [] -> 0
+                | note :: note_rest ->
+                    match note with
+                    | Num (n) -> add + (helperHelper note_rest (add + 1))
+                    | E -> add + (helperHelper note_rest (add + 2))
+                    | And -> add + (helperHelper note_rest (add + 3))
+                    | A -> add + (helperHelper note_rest (add + 4))
+                    | Sep -> 0
+
+            let len = helperHelper unique 0
+            len :: (helper rest)
+
+    helper distances
+
+// match unique with
+// | [] -> ""
+// | note :: note_rest ->
+//     match note with
+//     | Num (n) ->
+//     | E -> "Num(n)"
+//     | And -> "Num(n)"
+//     | A -> "Num(n)"
+//     | Sep -> ""
+
 
 
 let evalManyDrumPatterns drum_patterns (envPattern: Map<PatternName, Note list>) numBeats div =
     // let map =
     //     List.mapi (fun i (DrumPatternNotes (drum, pattern)) -> separatePattern pattern) drum_patterns
-
+    let map = List.map (fun item -> unwrap item envPattern) drum_patterns
+    let distances = transpose map
+    let beams = evalBeams distances numBeats div
 
     // let combined_distances =
     //     List.map (fun (DrumPatternNotes (drum, pattern)) -> separatePattern pattern) drum_patterns
     //     |> List.concat
 
-    // printfn "combined_distances: %A \n\n" combined_distances
+    // // printfn "combined_distances: %A \n\n" combined_distances
     // printfn "drum_patterns: %A \n\n" map
-    // printfn "transpose: %A \n\n" (transpose map)
+    printfn "transpose: %A \n\n" distances
+    printfn "beams: %A \n\n" beams
 
     List.map (fun expr -> (evalOneDrumPattern expr envPattern numBeats div)) drum_patterns
     |> String.concat "\n"
@@ -261,8 +358,6 @@ let evalManyBars bars (envPattern: Map<PatternName, Note list>) (envBar: Map<Bar
 (*
   Given two bars merge them into one and replace duplicate drums in the old bar
 *)
-
-
 let evalBarDifference old_bar new_bar =
     let envDrumPatternOld =
         old_bar
@@ -332,7 +427,7 @@ let evalRepeatChange repeat_num literals old_bar change_data numBeats div (envPa
             bars_ast
 
 
-    printfn "%A" bars_ast
+    // printfn "%A" bars_ast
 
     (bars_ps |> String.concat "\n")
 
@@ -390,7 +485,7 @@ let evalSnippet
             match head with
             // if it is a repeat with no change expr
             | Repeat (repeat_num, bars) ->
-                printfn "Repeat: %A %A" head bars
+                // printfn "Repeat: %A %A" head bars
                 // and repeat number is valid
                 if repeat_num > 0 then
                     // evaluate the bars in that repeat expr
@@ -405,7 +500,7 @@ let evalSnippet
             // (case 2) repeat 4 : barname (every 3) { ... }     OR
             // (case 3) repeat 4 : [ barname1 barname2 ... ]
             | RepeatChange (repeat_num, modify_bar, option, modify_data) ->
-                printfn "RepeatChange: %A %A %A" head modify_bar modify_data
+                // printfn "RepeatChange: %A %A %A" head modify_bar modify_data
 
                 match option with
                 // (case 1) if repeat option is (1,2, ...)
@@ -433,9 +528,7 @@ let evalSnippet
                             failwith ("Undefined bar " + modify_bar + ".")
                     else
                         failwith ("Can't have negative repeat values.")
-                | _ -> "smth is horrible wrong in eval snippet"
-            | _ -> "WHAT"
-        | _ -> "WHAT"
+
 
     evalSnippetHelper snippet
 
@@ -450,9 +543,16 @@ let eval
       Render = render }
     =
     // get values of the settings
-    let ((numBeats, beatValue), div) =
-        (fun { Time = (a, b); Division = (_, y) } -> (int a, int b), float y) settings
+    let ((numBeats, beatValue), div, title, subtitle) =
+        (fun { Time = (a, b)
+               Division = (_, y)
+               Title = title
+               Subtitle = subtitle } -> (int a, int b), float y, title, subtitle)
+            settings
 
+    // printfn "%A, %A" title subtitle
+    // printfn "%A" bars
+    let header = TITLE(title) + SUBTITLE(subtitle)
     // create pattern environment
     let envPattern =
         patterns
@@ -477,17 +577,19 @@ let eval
         let drums = createPatternPS HH expr numBeats div
 
         // construct PostScript
-        LINE(MAX_LINE_WIDTH)
+        header
+        + LINE(MAX_LINE_WIDTH)
         + TIME_SIG(numBeats, beatValue)
         + drums
     // render value is a bar
     elif envBar.ContainsKey render then
         let expr = envBar.Item render
         let drums = evalManyDrumPatterns expr envPattern numBeats div
-        printfn "%A" expr
+        // printfn "%A" drums
 
         // construct PostScript
-        LINE(MAX_LINE_WIDTH)
+        header
+        + LINE(MAX_LINE_WIDTH)
         + TIME_SIG(numBeats, beatValue)
         + drums
     // render value is a snippet
@@ -497,6 +599,9 @@ let eval
         let drums = evalSnippet expr envPattern envBar numBeats div
 
         // construct PostScript
-        TIME_SIG(numBeats, beatValue) + FIRST_LINE + drums
+        header
+        + TIME_SIG(numBeats, beatValue)
+        + FIRST_LINE
+        + drums
     else
         failwith ("Undefined variable '" + render + "'")

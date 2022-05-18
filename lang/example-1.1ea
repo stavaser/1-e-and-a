@@ -1,0 +1,9 @@
+time :  4/4
+division: 1/16
+
+title: my title
+subtitle: my subtitle
+
+pattern mypattern : 1 | 2 | 3 | 4 |
+
+render: mypattern

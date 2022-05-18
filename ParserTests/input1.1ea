@@ -1,0 +1,14 @@
+time :  4/4
+division: 1/16
+title: helo
+subtitle: new
+
+pattern mypattern : 1 e + a| 2 | 3 | 4 |
+
+bar mybar1:
+    cc: [ 1 + | 2  + | 3 + | 4  + |  ]
+    hh: [ 1 + | 2  + | 3 + | 4  + | ]
+    sn: mypattern
+    bd: [ 1  | 2   | 3  | 4 e + a  | ]
+
+render: mybar1

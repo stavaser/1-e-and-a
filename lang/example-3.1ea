@@ -1,0 +1,24 @@
+time :  4/4
+division: 1/16
+
+title: example 3
+subtitle: example 3
+
+pattern mypattern : 1 e + a | 2  e + a  | 3 e + a  | 4  e + a  |
+
+bar mybar1:
+    hh: [ mypattern ]
+    sn: [ | 2 |  | 4 |]
+    bd: [ 1 + | 2  + | 3 + | 4 + |]
+
+Snippet mysnippet:
+    
+    @change 4: 
+        mybar1 (1,4) {
+            cc: [1 |]
+            bd: [ 1 | 2 | 3 | 4 |]
+        };
+
+    !repeat 2: [ mybar1 ].
+
+render: mysnippet

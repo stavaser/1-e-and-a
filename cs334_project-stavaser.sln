@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "lang", "lang\lang.fsproj", "{DC7BE666-0A09-4A85-94E1-D0895DA42938}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ParserTests", "ParserTests\ParserTests.fsproj", "{F7DFE136-AD12-40E6-BBFE-5187B11E36D3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DC7BE666-0A09-4A85-94E1-D0895DA42938}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC7BE666-0A09-4A85-94E1-D0895DA42938}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC7BE666-0A09-4A85-94E1-D0895DA42938}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC7BE666-0A09-4A85-94E1-D0895DA42938}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7DFE136-AD12-40E6-BBFE-5187B11E36D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7DFE136-AD12-40E6-BBFE-5187B11E36D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7DFE136-AD12-40E6-BBFE-5187B11E36D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7DFE136-AD12-40E6-BBFE-5187B11E36D3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

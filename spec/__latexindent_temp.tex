@@ -91,6 +91,9 @@
 
 This language allows drummers to notate drums efficiently, without using inconvenient intermediary software. As it can be tedious to write drum tabs in UIs that are not designed for this purpose, this language lets users write drum tabs in a simple and intuitive way: by utilizing the good old "1 e and a" counting system. 
 
+
+\item
+
 A drum part's structure is often constant throughout a song, with only slight variations across its parts (intro, verse, pre-chorus, chorus, bridge, etc.). This language also helps to avoid repetition by allowing the user to write one structure only once, then reuse it in other parts with slight modifications if necessary.
 
 \section{Design Principles}
@@ -105,126 +108,73 @@ The most important design principle in this language is the fact that users can 
 It is very easy to create a pattern, just by using the "1 e and a" counting system. 
 We put separators \verb+|+ to disambiguate the division of the beats.
 \begin{verbatim}
-    time 4/4
-    division 1/16
+    time: 4/4
+    division: 1/16
     
-    pattern my_pattern: 1 e + a | + a | e | 4 a |
+    title: my title
+    subtitle: my subtitle
     
-    render my_pattern
+    pattern mypattern : 1 | 2 | 3 | 4 |
+    
+    render: mypattern
 \end{verbatim}
 
-\includegraphics[scale=0.25]{notation-5.png}
+\includegraphics[scale=1.0]{example1.png}
 
 
 \subsection{Example 2}
 Simple example of creating a one measure beat.
 \begin{verbatim}
-    time 4/4
-    division 1/16
+    time :  4/4
+    division: 1/16
     
-    bar my_bar:
-        hh: 1 2 3 4
-        sn: 2 4
-        bd: 1 & | 3 &
+    title: example 2
+    subtitle: example 2
     
-    render my_bar
+    pattern mypattern : 1 | 2 | 3 | 4 |
+    
+    
+    bar mybar1:
+        hh: [ 1 + | 2  + | 3 + | 4  + | ]
+        sn: [ mypattern ]
+        bd: [ 1 a | 2 a | 3 a | 4 a |]
+    
+    
+    render: mybar1    
 \end{verbatim}
-\includegraphics[scale=0.25]{notation-3.png}
+\includegraphics[scale=1.0]{example2.png}
 
 \subsection{Example 3}
-Create a beat by repeating the pre-defined measure 2 times. There's an accent [a] on the snare drum.
+Create a beat by repeating the pre-defined measure 4 times and adding a crash cymbal 
+on the first beat and changing the pattern of the bass drum. Also repeat the bar 2 times
+without any change instructions: 
 \begin{verbatim}
-    time 4/4
-    division 1/16
+    time :  4/4
+    division: 1/16
     
-    bar my_bar:
-        cc: 1
-        hh: + 2 + 3 + 4 +
-        sn[a]: a | + | a | + |
-        bd: 1 & | 3 &
+    title: example 3
+    subtitle: example 3
     
-    beat my_beat:
-        repeat 2 my_bar
+    pattern mypattern : 1 e + a | 2  e + a  | 3 e + a  | 4  e + a  |
     
-    render my_beat
-\end{verbatim}
-\includegraphics[scale=0.25]{notation-4.png}
-
-\subsection{Example 4}
-
-We want the bass and snare drum patterns to stay constant, so we can create a new bar \verb+main_bar+ that we can re-use and alter later. We then can create a beat by repeating this measure 4 times and making every odd measure (1st and 3rd) have a different hi-hat pattern. We also changed the hi-hats to ride bell in the 5th and 6th measures, and added a crash cymbal on the first notes of the next two measures.
-
-\begin{verbatim}
-    time 4/4
-    division 1/16
+    bar mybar1:
+        hh: [ mypattern ]
+        sn: [ | 2 |  | 4 |]
+        bd: [ 1 + | 2  + | 3 + | 4 + |]
     
-    pattern 8th_note_pattern: 1 + | 2 + | 3 + | 4 + |
-    
-    bar main_bar:
-        hh: 8th_note_pattern
-        sn: 2 4
-        bd: 1 3
-    
-    beat new_beat:
-        repeat 4 main_bar (odd) {
-            cc: 1
-            hh: 1 e + a | 2 e + a | 3 e + a | 4 e + a | 
-        }
-        repeat 2 main_bar {
-            hh -> rdb
-            t1: 1 3
-        }
-        repeat 2 main_bar {
-            cc: 1
-        }
+    Snippet mysnippet:
         
-    render new_beat
+        @change 4: 
+            mybar1 (1,4) {
+                cc: [1 |]
+                bd: [ 1 | 2 | 3 | 4 |]
+            };
     
+        !repeat 2: [ mybar1 ].
+    
+    render: mysnippet
 \end{verbatim}
-
-\includegraphics[scale=0.6]{ex1.png}
-
-\subsection{Example 5}
-
-\begin{verbatim}
-    bpm 120
-    time 4/4
-    division 1/16
-    
-    pattern new_bass_drum_pattern: 1 a | + | 3 a | +
-        
-    bar new_bar_1:
-      hh: 1 + | 2 + | 3 + | 4 +
-      sn: 2 4
-      bd: new_bass_drum_pattern
-
-    bar new_bar_2:
-      hh: _ e + a
-      sn: 2 a | 4 a
-      bd: 1 a | 3 a
-    
-    beat some_two_bar_fill:
-      bar 1:
-          cc: 1 4
-          sn[a]: + a | a 3 | + a
-          t1: 2 e +
-          t2: || e + a
-          bd: 1 4
-          
-      bar 2:
-          cc: 2 4
-          sn>: 1 e + a | + a | 3 e + a | + a
-          bd: 2 4
-      
-    beat main_part:
-      new_bar_1
-      new_bar_2
-      some_two_bar_fill
-
-    render main_part
-  \end{verbatim}
-
-\includegraphics[scale=0.45]{ex2.png}
+\includegraphics[scale=1.0]{example3.png}
 
 \section{Language Concepts}
 There are two core concepts a user should understand in order to write programs in this language. First, how to notate different parts of the drum-set. Below is an example of a basic drum kit and the corresponding abbreviations we will use to write programs.
@@ -268,44 +218,49 @@ keep the pattern the same but change the drum from one to another by
 using the \verb+->+ sign.
 
 \begin{alltt}
-    <ws>            ::= ␣ | \ensuremath{\epsilon}
-    
-    <bpm>           ::= bpm:<ws><num>
-    <time>          ::= time:<ws><num>/<num>
-    <division>      ::= division:<ws><num>/<num>
-    
     <num>           ::= x \ensuremath{\in} Z+
     <string>        ::= any string
     <varname>       ::= <string> | <num>
+
+    <time>          ::= time: <num>/<num>
+    <division>      ::= division: <num>/<num>
+
+    <title>         ::= title: <string>
+    <subtitle>      ::= subtitle: <string>
     
-    <count>         ::= <num> | e | + | a | |
-    <pattern>       ::= <notes>+
+    <count>         ::= <num> | e | + | a 
+    <sep>           ::= |
+    <beat>          ::= <count>+ <sep>
+    <pattern>       ::= <beat>+
         
-    <hihat>         ::= hh
-    <snare>         ::= sn
-    <drums>         ::= cc | <hihat> | rd | rd[b] | <snare> | t1 | t2 | ft | bd
-    <variation>     ::= <hihat>[o] | <hihat>[~] | <hihat>[x] | <hihat>[_] | 
-                        <snare>[a] | <snare>[f] | <snare>[r] | <snare>[g]
+    <pattern_expr>  ::= pattern<varname>: <pattern>
+    
+    <drums>                 := cc | hh | rd | sn | t1 | t2 | ft | bd
+    <drum_pattern_var>      ::= <drums>: <varname>
+    <drum_pattern_notes>    ::= <drums>: <pattern>
+    <drum_pattern>          ::= [ <drum_pattern_var> | <drum_pattern_notes> ]
                         
-    <pattern>       ::= pattern<ws><varname>:<ws><notes>
+    <bar_expr>              ::= bar <varname>: <drum_pattern>+
     
-    <drum_pattern_var>      ::= <drums> | <variation>:<ws><varname>
-    <drum_pattern_notes>    ::= <drums> | <variation>:<ws><notes>
-    <drum_pattern>          ::= <drum_pattern_var> | <drum_pattern_notes>
-                        
-    <bar>           ::= bar <varname><ws>:<drum_pattern>+
-    
-    <beat>          ::= beat <varname><ws>:<bar>+
-    
+    <repeat>                ::= !repeat <num>: [<varname>+].
+    <change_option>         ::= <num> | every <num>
+    <change>          ::= $change <change_option>: <varname> (<num>)\ensuremath{\{}<drum_pattern>+\ensuremath{\}};
+    <snippet_data>          ::= <repeat> | <change>
+    <snippet_expr>          ::= Snippet <varname>: <snippet_data>+
+
+    <render>        ::= render: <varname>
+
 \end{alltt}
 
 \section{Semantics}
 \begin{tabularx}{1\textwidth} { 
   | >{\raggedright\arraybackslash}X
   | >{\centering\arraybackslash}X 
-  | >{\raggedleft\arraybackslash}X
+  | >{\centering\arraybackslash}X 
+  | >{\centering\arraybackslash}X 
   | >{\raggedleft\arraybackslash}X 
-  | >{\raggedleft\arraybackslash}X 
+  | >{\raggedleft\arraybackslash}X |
+  | >{\raggedleft\arraybackslash}X |
   | >{\raggedleft\arraybackslash}X |
   | >{\raggedleft\arraybackslash}X |
   }
@@ -315,19 +270,30 @@ using the \verb+->+ sign.
 
     % x \in R  & x of int & int & x is a primitive \\
     % \hline
-    
-    1 \in R, e, +, a & Note of Num of int \verb+|+ E \verb+|+  And \verb+|+  A  & Note  & Denotes a note value \\
+    time: 4/4 & Time of uint8 * uint8 & Settings & Top number tells how many beats should be in one measure, and
+    the bottom number tells what value of note should get the beat. \\
     \hline
-     
-     sn & Drum of HH \verb+|+ SN \verb+|+ BD & Drum & Denotes a drum \\
+   
+    div: 1/16 & Division of uint8 * uint8 & Settings & The minimum value that notes can divide into \\
     \hline
-    
-     string  & string & PatternName & variable name for the type Pattern  \\
-    \hline
-     string  & string & BarName & variable name for the type Bar  \\
+
+    title: My Title & Title of string & Settings & Title of the piece \\
     \hline
     
-    pattern string: 1 2 3 4 & Pattern of PatternName * (Note list) & Pattern & a Pattern is a string denoting the name of the pattern after the keyword 'pattern' and a list of notes after the semicolon\\
+    subtitle: My Subtitle & Subtitle of string & Settings & Subtitle of the piece \\
+    \hline
+
+    1 e + a \verb+|+ & Num of int \verb+|+ E \verb+|+  And \verb+|+  A \verb+|+ Sep & Note  & 
+    Denotes the division of a note as defined by time signature (bottom number).
+    Beats should be separated by \verb+Sep+\\
+    \hline
+    
+    sn & Drum of \verb+|+ CC   \verb+|+ RD     \verb+|+ HH     \verb+|+ SN     \verb+|+ T1   \verb+|+ T2   \verb+|+ BD 
+    & Drum 
+    & Denotes a drum \\
+   \hline
+
+    pattern varname: 1 \verb+|+ 2 e + a \verb+|+ 3 \verb+|+ 4 \verb+|+ & Pattern of PatternName * (Note list) & Pattern & a Pattern is a string denoting the name of the pattern after the keyword 'pattern' and a list of notes after the semicolon\\
     \hline
      hh: string  & Drum * PatternName & DrumPatternVar & pattern variable assigned to a drum after the semicolon  \\
     \hline
@@ -336,12 +302,44 @@ using the \verb+->+ sign.
      
     
      bar string: 
-        hh: 1 2 3 4
+        hh: [1 \verb+|+ 2 \verb+|+ 3 \verb+|+ 4 \verb+|+]
     
     & Bar of BarName * (DrumPatternVar list * DrumPatternNotes list) & Bar & a Bar is a string denoting the name of the bar after the keyword 'bar' and a list of DrumPatternVar or DrumPatternNotes after the semicolon  \\
     
     \hline
 
+     !repeat <num>: [ varname1 varname2 ].
+    
+    & Repeat of int * (BarName list) &
+    SnippetData & 
+    
+   repeat instruction will repeat given bars <num> number of times.
+    \\
+    
+    \hline
+
+     @change <num>: varname { cc: [ 1 |] };
+    
+    & RepeatChange of int * BarName * RepeatOption * (DrumPattern list) &
+    SnippetData & 
+    
+   change instruction behaves similar to repeat in the was that it will
+   repeat one bar <num> number of times but it also accepts change instructions 
+   inside curly brackets, which are drum->pattern assignments. 
+   
+   \\
+    
+    \hline
+
+    Snippet mysnippet: ...
+    
+    & Snippet of SnippetName * (SnippetData list) &
+    Snippet & 
+    
+   Snippet creates multiple measure long pieces by combining repeat and change 
+   instructions.
+   \\
+    
 
 \end{tabularx}
 
@@ -357,14 +355,14 @@ using the \verb+->+ sign.
         bar <string>: 
             <drum>: <pattern>
     \end{verbatim}
-    And a \verb+beat+ can be created by combining and/or repeating multiple \verb+bar+s. 
+    And a \verb+Snippet+ can be created by combining and/or repeating multiple \verb+bar+s. 
     \begin{verbatim}
-        beat <string>: 
+        Snippet <string>: 
             <bar>
     \end{verbatim}
     \verb+Bar+s can be repeated by "\verb+repeat <num> <bar>+", and the repeated \verb+bar+s can be modified inside curly brackets, where \verb+<bar_num>+ represents the bar number(s) to be modified:
     \begin{verbatim}
-        beat <string>:
+        Snippet <string>:
             repeat <num> <bar> (<bar_num>) {
                 <drum>: <pattern>
             }
@@ -414,6 +412,16 @@ using the \verb+->+ sign.
         \end{enumerate}
     
 \end{enumerate}
+
+
+\section{Remaining Work}
+The only thing remaining now is figuring out how to
+display rests and the beaming of notes. The distance of
+notes evaluates and displayes correctly, but I just need to
+add the beams and rests as necessary.
+
+In addition, for a stretch goal there's a webapp where
+users can edit and play the pieces they wrote.
 
 % DO NOT DELETE ANYTHING BELOW THIS LINE
 \end{document}
