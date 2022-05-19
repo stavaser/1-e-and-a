@@ -10,7 +10,7 @@ pattern mypattern : 1 | 2 | 3 | 4 |
 bar mybar1:
     hh: [ 1 + | 2  + | 3 + | 4  + | ]
     sn: [ mypattern ]
-    bd: [ 1 a | 2 a | 3 a | 4 a |]
+    bd: [ 1 e + a | 2 a | 3 a | 4 a |]
 
 
 render: mybar1
