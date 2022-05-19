@@ -1,9 +1,9 @@
-time :  4/4
+time :  8/4
 division: 1/16
 
 title: my title
 subtitle: my subtitle
 
-pattern mypattern : 1 e + a | 2 + | 3 e | 4 |
+pattern mypattern : 1 e + a| 1 + | 1 + a | 1 e a |
 
 render: mypattern

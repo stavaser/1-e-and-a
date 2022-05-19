@@ -2,22 +2,6 @@ module ProjectInterpreter
 
 open ProjectParser
 
-// let multuplier current prev =
-//     match current with
-//     | E -> 2
-//     | And ->
-//         match prev with
-//         | Num (_) -> 2
-//         | E -> 3
-//         | _ -> failwith ("Incorrect position of notes: '+' cannot come after 'a'")
-//     | A ->
-//         match prev with
-//         | Num (n) -> 3.0
-//         | E -> 2.0
-//         | And -> 1.0
-//         | _ -> failwith ("Incorrect position of notes: 'a'")
-//     | a -> failwith ("Something went wrong: " + string a)
-
 let separatePattern pattern =
     let rec separatePatternHelper pattern beat =
         match pattern with
@@ -37,14 +21,31 @@ let beam current next =
         | E -> 1
         | And -> 2
         | A -> 3
+        | Num (n) -> 1
     | E ->
         match next with
         | And -> 1
         | A -> 2
+        | E -> 3
     | And ->
         match next with
         | A -> 1
+        | And -> 2
     | A -> 1
+
+let toABC distances drum =
+    let drum_ABC drum =
+        match drum with
+        | HH -> "ng"
+        | SN -> "c"
+        | BD -> "F"
+
+    (List.map
+        (fun one_beat ->
+            (List.map (fun pos -> (drum_ABC drum) + (string pos)) one_beat)
+            |> String.concat "")
+        distances
+     |> String.concat " ")
 
 let evalPattern (expr: Note list) _params =
     let rec evalPatternHelper beat =
@@ -53,68 +54,20 @@ let evalPattern (expr: Note list) _params =
         | head :: tail ->
             printfn "%A" head
 
-            if List.isEmpty tail then
-                []
-            else
-                (beam head (List.head tail))
-                :: (evalPatternHelper tail)
+            let next =
+                if List.isEmpty tail then
+                    head
+                else
+                    (List.head tail)
 
-
-    // let beam current prev =
-//     match current with
-//     | E ->
-//         match prev with
-//         | Num (n) -> 1
-//         | _ ->
-//             printfn "current: %A, prev: %A" current prev
-//             0
-//     | And ->
-//         match prev with
-//         | Num (n) -> 2
-//         | A -> 1
-//         | _ ->
-//             printfn "current: %A, prev: %A" current prev
-//             0
-//     | A ->
-//         match prev with
-//         | Num (n) -> 3
-//         | E -> 2
-//         | And -> 1
-//         | _ ->
-//             printfn "current: %A, prev: %A" current prev
-//             0
-//     | _ ->
-//         printfn "current: %A, prev: %A" current prev
-//         0
-
-    // let evalPattern (expr: Note list) _params =
-//     let rec evalPatternHelper beat prev =
-//         match beat with
-//         | [] -> []
-//         | head :: tail ->
-//             match head with
-//             | Num(n) -> (beam head prev) :: (evalPatternHelper tail head)
-//             | _ -> (beam head prev) :: (evalPatternHelper tail head)
-
-
-    // match head with
-    // | Num (n) ->
-    // | E ->
-    //     (beam head (List.head tail))
-    //     :: (evalPatternHelper tail)
-    // | And ->
-    //     (beam head (List.head tail))
-    //     :: (evalPatternHelper tail)
-    // | A ->
-    //     (beam head (List.head tail))
-    //     :: (evalPatternHelper tail)
+            (beam head next) :: (evalPatternHelper tail)
 
     let list_of_beats = separatePattern expr
-    printfn "list_of_beats: %A" list_of_beats
-
     let beats = List.mapi (fun i x -> evalPatternHelper x) list_of_beats
 
-    beats
+    toABC beats HH
+
+
 
 (*
     Evaluates AST into PostScript
