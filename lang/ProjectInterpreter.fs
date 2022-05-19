@@ -47,13 +47,25 @@ let toABC distances drum =
         distances
      |> String.concat " ")
 
-let evalPattern (expr: Note list) _params =
+let evalRests beats =
+    let rec evalRestsHelper beats =
+        match beats with
+        | [] -> []
+        | one_beat :: rest ->
+            let sum = List.sum one_beat
+            let rest_val = abs (sum - 4)
+            printfn "%A" rest_val
+            rest_val :: evalRestsHelper rest
+
+    let rests = evalRestsHelper beats
+
+    (List.map (fun value -> "z" + string value) rests)
+
+let evalBeats beats =
     let rec evalPatternHelper beat =
         match beat with
         | [] -> []
         | head :: tail ->
-            printfn "%A" head
-
             let next =
                 if List.isEmpty tail then
                     head
@@ -62,13 +74,60 @@ let evalPattern (expr: Note list) _params =
 
             (beam head next) :: (evalPatternHelper tail)
 
+    List.map (fun x -> evalPatternHelper x) beats
+
+let beatsToAbc beats drum =
+
+    let drum_ABC drum =
+        match drum with
+        | HH -> "ng"
+        | SN -> "c"
+        | BD -> "F"
+
+    (List.map (fun one_beat -> (List.map (fun pos -> (drum_ABC drum) + (string pos)) one_beat)) beats)
+
+let combineBeatsAndRests beats rests =
+    List.map2 (fun note rest -> rest :: note) beats rests
+
+
+let evalPattern (expr: Note list) drum _params =
     let list_of_beats = separatePattern expr
-    let beats = List.mapi (fun i x -> evalPatternHelper x) list_of_beats
+    let beats = evalBeats list_of_beats
+    let beatsABC = beatsToAbc beats drum
+    let rests = evalRests beats
+    let beats_and_rests = combineBeatsAndRests beatsABC rests
+    printfn "beats: %A" beats
+    printfn "rests: %A" rests
+    printfn "beatsABC: %A" beatsABC
+    printfn "beats_and_rests: %A" beats_and_rests
+    printfn "separatePattern: %A" list_of_beats
 
-    toABC beats HH
+    (List.map
+        (fun one_beat ->
+            (List.map (fun beat -> beat) one_beat)
+            |> String.concat "")
+        beats_and_rests
+     |> String.concat " ")
 
+// let rec transpose list =
+//     if List.isEmpty (List.head list) then
+//         []
+//     else
+//         (List.map List.head list |> List.distinct)
+//         :: transpose (List.map List.tail list)
 
+let evalBar bar _params = ""
+// let rec evalBarHelper bar =
+//     match bar with
+//     | [] -> []
+//     | head :: tail ->
+//         match head with
+//         | DrumPatternNotes (drum, notes) ->
+//             evalPattern notes drum _params
+//             + (evalBarHelper tail)
+//         | DrumPatternVar (drum, var) -> (evalBarHelper tail)
 
+// evalBarHelper bar
 (*
     Evaluates AST into PostScript
 *)
@@ -121,7 +180,7 @@ let eval
     // render value is a pattern
     if envPattern.ContainsKey render then
         let expr = envPattern.Item render
-        let result = evalPattern expr _params
+        let result = evalPattern expr HH _params
         printfn "%A" expr
         printfn "result: %A" result
 
@@ -130,7 +189,9 @@ let eval
     // render value is a bar
     elif envBar.ContainsKey render then
         let expr = envBar.Item render
+        let result = evalBar expr _params
         printfn "%A" expr
+        printfn "%A" result
         header
 
     // render value is a snippet

@@ -4,6 +4,6 @@ division: 1/16
 title: my title
 subtitle: my subtitle
 
-pattern mypattern : 1 e + a| 1 + | 1 + a | 1 e a |
+pattern mypattern : | | + a | a |
 
 render: mypattern

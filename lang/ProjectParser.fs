@@ -14,6 +14,7 @@ type Note =
     | And
     | A
     | Sep
+    | Empty
 
 type Drum =
     | CC
