@@ -14,40 +14,6 @@ let separatePattern pattern =
     let list = separatePatternHelper pattern []
     list |> List.map List.rev
 
-let fillPattern pattern =
-    let example =
-        [ (Num(uint8 1))
-          E
-          And
-          A
-          Sep
-          (Num(uint8 2))
-          E
-          And
-          A
-          Sep
-          (Num(uint8 3))
-          E
-          And
-          A
-          Sep
-          (Num(uint8 4))
-          E
-          And
-          A
-          Sep ]
-
-    let rec helper example pattern =
-        match example, pattern with
-        | [], [] -> []
-        | ex_head :: ex_tail, head :: tail ->
-            if ex_head = head then
-                head :: (helper ex_tail tail)
-            else
-                Empty :: (helper ex_tail (head :: tail))
-
-    helper example pattern
-
 
 let toABC distances drum =
     let drum_ABC drum =
@@ -144,22 +110,20 @@ let combineBeatsAndRests beats rests =
         rests
 
 
-let evalPattern (expr: Note list) drum _params =
-    let filled_pattern = fillPattern expr
-    let list_of_beats = separatePattern expr
-    let beats = evalBeats list_of_beats
-    let beatsABC = beatsToAbc beats drum
-    let rests = evalRests beats
+let evalPattern expr _params =
+    // let list_of_beats = separatePattern expr
+    let beats = evalBeats expr
+    // let beatsABC = beatsToAbc beats drum
+    // let rests = evalRests beats
     // let beats_and_rests = combineBeatsAndRests beatsABC rests
-    printfn "filled_pattern: %A" filled_pattern
-    printfn "separatePattern: %A" list_of_beats
+    // printfn "separatePattern: %A" list_of_beats
     printfn "beats: %A" beats
-    printfn "beatsABC: %A" beatsABC
-    printfn "rests: %A" rests
+    // printfn "beatsABC: %A" beatsABC
+    // printfn "rests: %A" rests
     // printfn "beats_and_rests: %A" beats_and_rests
     printfn "\n\n\n"
 
-    beatsABC
+    beats
 
 
 let rec transpose list =
@@ -194,6 +158,37 @@ let manyPatternsToString patterns =
     |> List.map (fun (beat) -> beat |> String.concat "")
     |> String.concat " "
 
+
+let beatSort beat =
+    let indexed =
+        List.map
+            (fun note ->
+                match note with
+                | Num (n) -> (note, 1)
+                | E -> (note, 2)
+                | And -> (note, 3)
+                | A -> (note, 4))
+            beat
+
+    indexed
+    |> List.sortBy (fun (note, index) -> index)
+    |> List.map (fun (note, index) -> note)
+
+let separatePattern2 drum pattern =
+    let notes_with_drums = List.map (fun x -> (x, drum)) pattern
+
+    let rec separatePatternHelper pattern beat =
+        match pattern with
+        | [] -> []
+        | head :: tail ->
+            match head with
+            | (Sep, _) -> (beat :: separatePatternHelper tail [])
+            | _ -> separatePatternHelper tail (head :: beat)
+
+    let list = separatePatternHelper notes_with_drums []
+    list |> List.map List.rev
+
+
 let evalBar bar _params =
     let rec evalBarHelper bar =
         match bar with
@@ -201,23 +196,37 @@ let evalBar bar _params =
         | head :: tail ->
             match head with
             | DrumPatternNotes (drum, notes) ->
-                let separated = separatePattern notes
+                let separated = separatePattern2 drum notes
                 separated :: (evalBarHelper tail)
             | DrumPatternVar (drum, var) -> (evalBarHelper tail)
 
     let bars = evalBarHelper bar
 
     let transposed =
-        transpose bars
-        |> List.map (fun x -> x |> List.concat |> List.distinct)
+        bars
+        |> transpose
+        |> List.map (fun x -> x |> List.concat)
+        |> List.map (fun note_drum_pair ->
+            note_drum_pair
+            |> List.groupBy (fun (note, drum) -> note))
+        |> List.map (fun one_beat ->
+            one_beat
+            |> List.map (fun (note, note_drum_pairs) -> note_drum_pairs |> List.unzip)
+            |> List.map (fun (notes, drums) -> (List.head notes), drums))
 
-    let evaluatedBars = List.map (fun (x) -> evalPattern x) transposed
+
+    // |> List.groupBy (fun ((Note (note)), (Drum (drum))) -> note)
+
+    // |> List.map (fun x -> x |> List.concat |> List.distinct |> beatSort)
+
+    // let evaluatedBeats = evalBeats transposed
+
     // let transposed = transpose bars
     // let combined = combinePatterns transposed
     // let string = manyPatternsToString combined
     printfn "bars: %A" bars
     printfn "transposed: %A" transposed
-    printfn "evaluatedBars: %A" evaluatedBars
+    // printfn "evaluatedBeats: %A" evaluatedBeats
     // printfn "transposed: %A" transposed
     // printfn "combined: %A" combined
     // printfn "string: %A" string
@@ -284,21 +293,21 @@ let eval
     // render value is a pattern
     if envPattern.ContainsKey render then
         let expr = envPattern.Item render
-        let result = evalPattern expr HH _params
+        // let result = evalPattern expr HH _params
 
-        let ABC =
-            (List.map
-                (fun one_beat ->
-                    (List.map (fun (beat, _) -> beat) one_beat)
-                    |> String.concat "")
-                result
-             |> String.concat " ")
+        // let ABC =
+        //     (List.map
+        //         (fun one_beat ->
+        //             (List.map (fun (beat, _) -> beat) one_beat)
+        //             |> String.concat "")
+        //         result
+        //      |> String.concat " ")
 
         printfn "%A" expr
-        printfn "result: %A" result
+        // printfn "result: %A" result
 
         // construct PostScript
-        header + ABC
+        header
     // render value is a bar
     elif envBar.ContainsKey render then
         let expr = envBar.Item render
