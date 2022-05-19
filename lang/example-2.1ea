@@ -9,8 +9,9 @@ pattern mypattern : 1 | 2 | 3 | 4 |
 
 bar mybar1:
     hh: [ 1 + | 2 e | 3 e a | 4  + | ]
-    sn: [ mypattern ]
     bd: [ 1 e + a | 2 a | 3 a | 4 a |]
+    sn: [ 1 e + a | 2 a | 3 a | 4 a |]
+
 
 
 render: mybar1
