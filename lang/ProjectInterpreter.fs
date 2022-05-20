@@ -2,6 +2,9 @@ module lang.ProjectInterpreter
 
 open lang.ProjectParser
 
+exception RuntimeError of string
+
+
 let separatePattern pattern =
     let rec separatePatternHelper pattern beat =
         match pattern with
@@ -230,7 +233,7 @@ let evalBar bar _params (envPattern: Map<PatternName, Note list>) =
                     let separated = separatePattern2 drum notes
                     separated :: (evalBarHelper tail)
                 else
-                    failwith ("Undefined bar " + var + ".")
+                    raise (RuntimeError("Undefined bar " + var + "."))
 
     let bars = evalBarHelper bar
 
@@ -264,7 +267,7 @@ let evalManyBars bars _params (envPattern: Map<PatternName, Note list>) (envBar:
             let drum_pattern = envBar.Item bar
             evalBar drum_pattern _params envPattern
         else
-            failwith ("Undefined variable '" + bar + "'"))
+            raise (RuntimeError("Undefined variable '" + bar + "'")))
     |> String.concat ""
 
 (*
@@ -360,7 +363,7 @@ let evalSnippet expr _params (envPattern: Map<PatternName, Note list>) (envBar: 
                     (String.replicate repeat_num bar)
                     + (evalSnippetHelper tail)
                 else
-                    failwith ("Can't have negative repeat values.")
+                    raise (RuntimeError("Can't have negative repeat values."))
             // repeat with change, for example:
             // (case 1) repeat 4 : barname (1,2, ...) { ... }         OR
             // (case 2) repeat 4 : barname (every 3) { ... }     OR
@@ -378,9 +381,9 @@ let evalSnippet expr _params (envPattern: Map<PatternName, Note list>) (envBar: 
                             (evalRepeatChange repeat_num literals expr modify_data _params envPattern)
                             + (evalSnippetHelper tail)
                         else
-                            failwith ("Undefined bar " + modify_bar + ".")
+                            raise (RuntimeError("Undefined bar " + modify_bar + "."))
                     else
-                        failwith ("Can't have negative repeat values.")
+                        raise (RuntimeError("Can't have negative repeat values."))
                 | Every (every_num) ->
                     if repeat_num > 0 then
                         // if the bar to modify exists
@@ -391,9 +394,9 @@ let evalSnippet expr _params (envPattern: Map<PatternName, Note list>) (envBar: 
 
                             + (evalSnippetHelper tail)
                         else
-                            failwith ("Undefined bar " + modify_bar + ".")
+                            raise (RuntimeError("Undefined bar " + modify_bar + "."))
                     else
-                        failwith ("Can't have negative repeat values.")
+                        raise (RuntimeError("Can't have negative repeat values."))
 
     evalSnippetHelper expr
 // [ [ [ "z0"; "ng2"; "ng2" ]
@@ -477,7 +480,7 @@ V:ALL stem=up\n"
 
     // render value is a pattern
     if envPattern.ContainsKey render then
-        failwith ("Cannot render patterns. Consider putting pattern inside a bar.")
+        raise (RuntimeError("Cannot render patterns. Consider putting pattern inside a bar."))
     // render value is a bar
     elif envBar.ContainsKey render then
         let expr = envBar.Item render
@@ -490,4 +493,4 @@ V:ALL stem=up\n"
         let result = evalSnippet expr _params envPattern envBar
         header + result
     else
-        failwith ("Undefined variable '" + render + "'")
+        raise (RuntimeError("Undefined variable '" + render + "'"))
