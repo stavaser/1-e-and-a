@@ -1,5 +1,7 @@
 import { ABC_REQUESTED } from './constants';
-const initialState = {};
+const initialState = {
+  abc: '',
+};
 
 const mainReducer = (state = initialState, action) => {
   const { type, payload } = action;

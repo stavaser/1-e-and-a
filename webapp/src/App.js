@@ -9,14 +9,13 @@ import { getAbc } from './redux/main.actions';
 
 const App = () => {
   const [code, setCode] = useState(``);
-  const abc = useSelector((state) => state.main);
-
+  const abc = useSelector((state) => state.main.abc);
+  console.log(abc);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    let editor = new ABCJS.Editor('editor', { canvas_id: 'paper' });
-
-    var visualObj = editor.tunes[0];
+    // let editor = new ABCJS.Editor('editor', { canvas_id: 'paper' });
+    var visualObj = ABCJS.renderAbc('paper', abc, {});
 
     // This object is the class that will contain the buffer
     var midiBuffer;
@@ -48,9 +47,9 @@ const App = () => {
           // midiBuffer.init preloads and caches all the notes needed. There may be significant network traffic here.
           return midiBuffer
             .init({
-              visualObj: visualObj,
+              visualObj: visualObj[0],
               audioContext: audioContext,
-              millisecondsPerMeasure: visualObj.millisecondsPerMeasure(),
+              millisecondsPerMeasure: visualObj[0].millisecondsPerMeasure(),
             })
             .then(function (response) {
               console.log('Notes loaded: ', response);
@@ -83,33 +82,40 @@ const App = () => {
       if (midiBuffer) midiBuffer.stop();
     });
   });
-
+  const onKeyDown = (e) => {
+    if (e.metaKey && e.which === 83) {
+      e.preventDefault();
+      dispatch(getAbc(e.target.value));
+    }
+  };
   return (
     <>
       <div style={{ display: 'flex' }}>
         <div>
           <CodeEditor
-            id="editor"
+            // id="editor"
             value={code}
             language="js"
-            onChange={(evn) => dispatch(getAbc(evn.target.value))}
+            onKeyDown={(e) => onKeyDown(e)}
+            // onSave={(evn) => }
             padding={15}
             style={{
               width: '50vw',
               height: '100vh',
-              fontSize: '22px',
+              fontSize: '18px',
               overflow: 'scroll',
+              fontFamily: 'monospace',
             }}
           />
         </div>
         <div style={{ height: '100vh', overflow: 'scroll' }}>
-          <div class="row">
+          <div className="row">
             <div>
-              <button class="activate-audio">Activate Audio Context And Play</button>
-              <button class="stop-audio" style={{ display: 'none' }}>
+              <button className="activate-audio">Activate Audio Context And Play</button>
+              <button className="stop-audio" style={{ display: 'none' }}>
                 Stop Audio
               </button>
-              <div class="audio-error" style={{ display: 'none' }}>
+              <div className="audio-error" style={{ display: 'none' }}>
                 Audio is not supported in this browser.
               </div>
             </div>

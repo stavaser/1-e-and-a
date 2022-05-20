@@ -37,8 +37,8 @@ let OneEaToABCHandler : HttpHandler =
                         eval result
                     with
                     | RuntimeError (message) -> message
-                return! json (ParseSuccess(output)) next ctx
-            | Failure (errorMsg, _, _) -> return! json (ParseFailure(errorMsg)) next ctx
+                return! json output next ctx
+            | Failure (errorMsg, _, _) -> return! (setStatusCode 400 >=> json errorMsg) next ctx
 
         }
 
