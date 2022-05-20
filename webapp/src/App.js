@@ -6,10 +6,6 @@ import AudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAbc } from './redux/main.actions';
-import Editor from 'react-simple-code-editor';
-import { highlight, languages } from 'prismjs/components/prism-core';
-import 'prismjs/components/prism-clike';
-import 'prismjs/components/prism-javascript';
 
 const App = () => {
   const [code, setCode] = useState(``);
@@ -101,15 +97,13 @@ const App = () => {
       <div style={{ display: 'flex' }}>
         <div>
           <CodeEditor
-            // id="editor"
-            value={code}
+            value=""
             language="js"
+            minHeight="100vh"
             onKeyDown={(e) => onKeyDown(e)}
-            // onSave={(evn) => }
             padding={15}
             style={{
               width: '50vw',
-              height: '100vh',
               fontSize: '18px',
               overflow: 'scroll',
               fontFamily: 'monospace',
