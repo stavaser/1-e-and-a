@@ -6,11 +6,19 @@ import AudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAbc } from './redux/main.actions';
+import Editor from 'react-simple-code-editor';
+import { highlight, languages } from 'prismjs/components/prism-core';
+import 'prismjs/components/prism-clike';
+import 'prismjs/components/prism-javascript';
 
 const App = () => {
   const [code, setCode] = useState(``);
   const abc = useSelector((state) => state.main.abc);
+  const parse_error = useSelector((state) => state.main.parse_error);
+  const runtime_error = useSelector((state) => state.main.runtime_error);
   console.log(abc);
+  console.log(parse_error);
+  console.log(runtime_error);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -83,7 +91,7 @@ const App = () => {
     });
   });
   const onKeyDown = (e) => {
-    if (e.metaKey && e.which === 83) {
+    if ((e.metaKey && e.which === 83) || (e.shiftKey && e.which === 83)) {
       e.preventDefault();
       dispatch(getAbc(e.target.value));
     }
@@ -126,6 +134,8 @@ const App = () => {
                 // other props here
               /> */}
           </div>
+          {parse_error}
+          {runtime_error}
           <div id="paper"></div>
         </div>
       </div>

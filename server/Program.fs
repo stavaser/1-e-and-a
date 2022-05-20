@@ -22,6 +22,10 @@ type ParseState =
     | ParseSuccess of string
     | ParseFailure of string
 
+type RuntimeResponse =
+    | RuntimeSuccess of string
+    | RuntimeFailure of string
+
 let OneEaToABCHandler : HttpHandler =
     fun (next : HttpFunc) (ctx : HttpContext) ->
         task {
@@ -29,15 +33,18 @@ let OneEaToABCHandler : HttpHandler =
             let abc_text = abc.Text
             
             let parsed_str = run grammar abc_text
-
             match parsed_str with
             | Success (result, _, _) ->
                 let output =
                     try
-                        eval result
+                        RuntimeSuccess(eval result)
                     with
-                    | RuntimeError (message) -> message
-                return! json output next ctx
+                    | RuntimeError (message) -> RuntimeFailure(message)
+
+                match output with
+                | RuntimeSuccess(result) -> return! json result next ctx
+                | RuntimeFailure(error) -> return! (setStatusCode 406 >=> json error) next ctx
+
             | Failure (errorMsg, _, _) -> return! (setStatusCode 400 >=> json errorMsg) next ctx
 
         }

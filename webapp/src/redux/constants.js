@@ -1,1 +1,3 @@
-export const ABC_REQUESTED = 'ABC_REQUESTED';
+export const ABC_SUCCESS = 'ABC_SUCCESS';
+export const ABC_PARSE_ERROR = 'ABC_PARSE_ERROR';
+export const ABC_RUNTIME_ERROR = 'ABC_RUNTIME_ERROR';
