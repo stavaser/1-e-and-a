@@ -2,20 +2,12 @@ import React, { useState, useEffect } from 'react';
 import ABCJS from 'abcjs';
 import 'abcjs/abcjs-audio.css';
 import CodeEditor from '@uiw/react-textarea-code-editor';
+import AudioPlayer from 'react-h5-audio-player';
+import 'react-h5-audio-player/lib/styles.css';
 
 const App = () => {
   const [code, setCode] = useState(``);
-  // abcjs.renderAbc('paper', 'X:1\nK:D\nDDAA|BBA2|\n');
-  var abc =
-    "T: Cooley's\n" +
-    'M: 4/4\n' +
-    'L: 1/8\n' +
-    'R: reel\n' +
-    'K: Emin\n' +
-    '|:D2|EB{c}BA B2 EB|~B2 AB dBAG|FDAD BDAD|FDAD dAFD|\n' +
-    'EBBA B2 EB|B2 AB defg|afe^c dBAF|DEFD E2:|\n' +
-    '|:gf|eB B2 efge|eB B2 gedB|A2 FA DAFA|A2 FA defg|\n' +
-    'eB B2 eBgB|eB B2 defg|afe^c dBAF|DEFD E2:|';
+
   useEffect(() => {
     let editor = new ABCJS.Editor('editor', { canvas_id: 'paper' });
 
@@ -26,13 +18,9 @@ const App = () => {
 
     var startAudioButton = document.querySelector('.activate-audio');
     var stopAudioButton = document.querySelector('.stop-audio');
-    var explanationDiv = document.querySelector('.suspend-explanation');
-    var statusDiv = document.querySelector('.status');
 
     startAudioButton.addEventListener('click', function () {
       startAudioButton.setAttribute('style', 'display:none;');
-      explanationDiv.setAttribute('style', 'opacity: 0;');
-      statusDiv.innerHTML = '<div>Testing browser</div>';
       if (ABCJS.synth.supportsAudio()) {
         stopAudioButton.setAttribute('style', '');
 
@@ -47,7 +35,6 @@ const App = () => {
           navigator.msAudioContext;
         var audioContext = new window.AudioContext();
         audioContext.resume().then(function () {
-          statusDiv.innerHTML += '<div>AudioContext resumed</div>';
           // In theory the AC shouldn't start suspended because it is being initialized in a click handler, but iOS seems to anyway.
 
           // This does a bare minimum so this object could be created in advance, or whenever convenient.
@@ -62,18 +49,13 @@ const App = () => {
             })
             .then(function (response) {
               console.log('Notes loaded: ', response);
-              statusDiv.innerHTML += '<div>Audio object has been initialized</div>';
               // console.log(response); // this contains the list of notes that were loaded.
               // midiBuffer.prime actually builds the output buffer.
               return midiBuffer.prime();
             })
             .then(function (response) {
-              statusDiv.innerHTML +=
-                '<div>Audio object has been primed (' + response.duration + ' seconds).</div>';
-              statusDiv.innerHTML += '<div>status = ' + response.status + '</div>';
               // At this point, everything slow has happened. midiBuffer.start will return very quickly and will start playing very quickly without lag.
               midiBuffer.start();
-              statusDiv.innerHTML += '<div>Audio started</div>';
               return Promise.resolve();
             })
             .catch(function (error) {
@@ -92,12 +74,10 @@ const App = () => {
 
     stopAudioButton.addEventListener('click', function () {
       startAudioButton.setAttribute('style', '');
-      explanationDiv.setAttribute('style', '');
       stopAudioButton.setAttribute('style', 'display:none;');
       if (midiBuffer) midiBuffer.stop();
     });
   });
-  // let editor =
 
   return (
     <>
@@ -110,32 +90,32 @@ const App = () => {
             onChange={(evn) => setCode(evn.target.value)}
             padding={15}
             style={{
-              width: '700px',
+              width: '50vw',
               height: '100vh',
+              fontSize: '22px',
+              overflow: 'scroll',
             }}
           />
         </div>
-        <div>
-          <div class="container">
-            <div id="paper"></div>
-            <p class="suspend-explanation">
-              Browsers won't allow audio to work unless the audio is started in response to a user
-              action. This prevents auto-playing web sites. Therefore, the following button is
-              needed to do the initialization:
-            </p>
-            <div class="row">
-              <div>
-                <button class="activate-audio">Activate Audio Context And Play</button>
-                <button class="stop-audio" style={{ display: 'none' }}>
-                  Stop Audio
-                </button>
-                <div class="audio-error" style={{ display: 'none' }}>
-                  Audio is not supported in this browser.
-                </div>
+        <div style={{ height: '100vh', overflow: 'scroll' }}>
+          <div class="row">
+            <div>
+              <button class="activate-audio">Activate Audio Context And Play</button>
+              <button class="stop-audio" style={{ display: 'none' }}>
+                Stop Audio
+              </button>
+              <div class="audio-error" style={{ display: 'none' }}>
+                Audio is not supported in this browser.
               </div>
-              <div class="status"></div>
             </div>
+            {/* <AudioPlayer
+                autoPlay
+                src="http://example.com/audio.mp3"
+                onPlay={(e) => console.log('onPlay')}
+                // other props here
+              /> */}
           </div>
+          <div id="paper"></div>
         </div>
       </div>
     </>
