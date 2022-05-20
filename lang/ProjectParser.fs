@@ -1,4 +1,4 @@
-module ProjectParser
+module lang.ProjectParser
 
 open FParsec
 

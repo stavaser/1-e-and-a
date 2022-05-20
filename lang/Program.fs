@@ -1,9 +1,7 @@
-﻿open ProjectInterpreter
-open ProjectParser
+﻿open lang.ProjectHandler
+open lang.ProjectParser
+
 open System.IO
-open FParsec
-open ProjectParser
-open Giraffe.ViewEngine
 
 [<EntryPoint>]
 let main argv =
@@ -13,19 +11,8 @@ let main argv =
 
     let input = argv.[0]
 
-    let test p str =
-        match run p str with
-        | Success (result, _, _) ->
-            let output = eval result
-            File.Copy("src.ps", "output.ps", true)
-            use sw = new StreamWriter("output.ps", true)
-
-            printfn "Success: %A" (output)
-            sw.WriteLine(output)
-        | Failure (errorMsg, _, _) -> printfn "Failure: %s" errorMsg
-
-
     let lines = File.ReadAllText input
-    test grammar lines
+
+    parseAndEval lines
 
     0
