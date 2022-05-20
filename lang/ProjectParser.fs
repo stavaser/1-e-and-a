@@ -5,8 +5,8 @@ open FParsec
 type Settings =
     { Time: uint8 * uint8
       Division: uint8 * uint8
-      Title: string
-      Subtitle: string }
+      Tempo: uint8
+      Title: string }
 
 type Note =
     | Num of uint8
@@ -148,6 +148,10 @@ let p_settings =
         >>. (((puint8 .>> ws0) .>> pchar '/')
              .>>. (puint8 .>> ws0))
 
+    let p_tempo: Parser<(uint8), unit> =
+        ((str_ws0 tempo_keyword) .>> (ws0 >>. str_ws0 ":"))
+        >>. (puint8 .>> ws0)
+
     let p_string =
         (many1CharsTill anyChar newline)
         <!> "parsing a string"
@@ -155,20 +159,17 @@ let p_settings =
     pipe4
         p_time
         p_div
+        p_tempo
         (((((str_ws0 title_keyword) .>> (ws0 >>. str_ws0 ":"))
            >>. p_string)
           .>> ws0)
          <!> "parsed title")
-        (((((str_ws0 subtitle_keyword)
-            .>> (ws0 >>. str_ws0 ":"))
-           >>. p_string)
-          .>> ws0)
-         <!> "parsed subtitle")
-        (fun time div title subtitle ->
+        (fun time div tempo title ->
             { Time = time
               Division = div
+              Tempo = tempo
               Title = title
-              Subtitle = subtitle })
+              })
 // pipe2 p_time p_div (fun time div -> { Time = time; Division = div })
 
 (*

@@ -1,16 +1,15 @@
 time :  4/4
 division: 1/16
+tempo: 120
 
 title: example 2
-subtitle: example 2
 
-pattern mypattern : 1 | 2 | 3 | 4 |
+pattern mypattern : | 2 | 3 | 4 |
 
 
 bar mybar1:
-    hh: [ 1 ||||]
+    t1: [ | 2 a | 3 a | 4 a |]
     bd: [ mypattern ]
-    sn: [ 1 e + a | 2 a | 3 a | 4 a |]
 
 
 

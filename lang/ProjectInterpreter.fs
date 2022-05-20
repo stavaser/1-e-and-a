@@ -88,8 +88,12 @@ let beatsToAbc beats drum =
 
     let drum_ABC drum =
         match drum with
+        | CC -> "na"
+        | RD -> "^f"
         | HH -> "ng"
         | SN -> "c"
+        | T1 -> "e"
+        | T2 -> "A"
         | BD -> "F"
 
     (List.map (fun one_beat -> (List.map (fun (pos, order) -> ((drum_ABC drum) + (string pos)), order) one_beat)) beats)
@@ -202,8 +206,12 @@ let evalBeats2 beats =
 let manyPatternsToString2 patterns =
     let drum_ABC drum =
         match drum with
+        | CC -> "na"
+        | RD -> "^f"
         | HH -> "ng"
         | SN -> "c"
+        | T1 -> "e"
+        | T2 -> "A"
         | BD -> "F"
 
     patterns
@@ -418,16 +426,19 @@ let eval
       Render = render }
     =
     // get values of the settings
-    let ((numBeats, beatValue), div, title, subtitle) =
+    let ((numBeats, beatValue), div, tempo, title) =
         (fun { Time = (a, b)
                Division = (_, y)
+               Tempo = tempo
                Title = title
-               Subtitle = subtitle } -> (int a, int b), float y, title, subtitle)
+          } -> (int a, int b), float y, tempo, title)
             settings
 
     let _params = (numBeats, beatValue, div)
     // printfn "%A, %A" title subtitle
     // printfn "%A" bars
+    let header_settings = "Q: " + (string tempo) + "\nT: " + title + "\nM: " + (string numBeats) + "/" + (string beatValue) + "\nL: 1/" + (string div) + "\nV:ALL stem=up\n"
+
     let header =
         "%%percmap D  pedal-hi-hat x
 %%percmap E  bass-drum-1
@@ -450,15 +461,12 @@ let eval
 %%percmap ^g open-hi-hat
 %%percmap a  crash-cymbal-1  x
 %%percmap ^a open-triangle     triangle
-%%flatbeams 1
-X: 1
-M: 4/4
-L: 1/16
-U:n=!style=x!
-K:perc
 %%MIDI drummap ^g 42 %closed hi hat
 %%MIDI drummap _g 46 % open hi hat
-V:ALL stem=up\n"
+%%flatbeams 1
+X: 1
+U:n=!style=x!
+K:perc\n" + header_settings
 
     // create pattern environment
     let envPattern =

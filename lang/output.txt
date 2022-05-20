@@ -19,14 +19,16 @@
 %%percmap ^g open-hi-hat
 %%percmap a  crash-cymbal-1  x
 %%percmap ^a open-triangle     triangle
-%%flatbeams 1
-X: 1
-M: 4/4
-L: 1/16
-U:n=!style=x!
-K:perc
 %%MIDI drummap ^g 42 %closed hi hat
 %%MIDI drummap _g 46 % open hi hat
+%%flatbeams 1
+X: 1
+U:n=!style=x!
+K:perc
+Q: 120
+T: example 2
+M: 4/4
+L: 1/16
 V:ALL stem=up
-[ng1F1c1][c1][c1][c1] [F3c3][c1] [F3c3][c1] [F3c3][c1]|
+ [e3F3][e1] [e3F3][e1] [e3F3][e1]|
 

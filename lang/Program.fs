@@ -13,6 +13,8 @@ let main argv =
 
     let lines = File.ReadAllText input
 
-    parseAndEval lines
+    let res = parseAndEval lines
+    res
+    printfn "%A" res
 
     0

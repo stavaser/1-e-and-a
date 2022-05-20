@@ -20,6 +20,7 @@ const App = () => {
   useEffect(() => {
     // let editor = new ABCJS.Editor('editor', { canvas_id: 'paper' });
     var visualObj = ABCJS.renderAbc('paper', abc, {});
+    console.log(visualObj);
 
     // This object is the class that will contain the buffer
     var midiBuffer;
@@ -95,7 +96,7 @@ const App = () => {
   return (
     <>
       <div style={{ display: 'flex' }}>
-        <div>
+        <div style={{ maxHeight: '100vh', overflow: 'scroll' }}>
           <CodeEditor
             value=""
             language="js"
@@ -105,7 +106,6 @@ const App = () => {
             style={{
               width: '50vw',
               fontSize: '18px',
-              overflow: 'scroll',
               fontFamily: 'monospace',
             }}
           />
