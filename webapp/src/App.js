@@ -4,9 +4,14 @@ import 'abcjs/abcjs-audio.css';
 import CodeEditor from '@uiw/react-textarea-code-editor';
 import AudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAbc } from './redux/main.actions';
 
 const App = () => {
   const [code, setCode] = useState(``);
+  const abc = useSelector((state) => state.main);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     let editor = new ABCJS.Editor('editor', { canvas_id: 'paper' });
@@ -87,7 +92,7 @@ const App = () => {
             id="editor"
             value={code}
             language="js"
-            onChange={(evn) => setCode(evn.target.value)}
+            onChange={(evn) => dispatch(getAbc(evn.target.value))}
             padding={15}
             style={{
               width: '50vw',

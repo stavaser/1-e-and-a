@@ -1,6 +1,6 @@
-module ProjectInterpreter
+module lang.ProjectInterpreter
 
-open ProjectParser
+open lang.ProjectParser
 
 let separatePattern pattern =
     let rec separatePatternHelper pattern beat =
@@ -248,7 +248,7 @@ let evalBar bar _params (envPattern: Map<PatternName, Note list>) =
         |> beatSort
 
     let evaluatedBeats = evalBeats2 transformed
-    let string = manyPatternsToString2 evaluatedBeats
+    let string = manyPatternsToString2 evaluatedBeats + "|\n"
     // printfn "bars: %A" bars
     // printfn "transformed: %A" transformed
     // printfn "evaluatedBeats: %A" evaluatedBeats
@@ -262,7 +262,7 @@ let evalManyBars bars _params (envPattern: Map<PatternName, Note list>) (envBar:
     |> List.map (fun bar ->
         if envBar.ContainsKey bar then
             let drum_pattern = envBar.Item bar
-            evalBar drum_pattern _params envPattern + "|\n"
+            evalBar drum_pattern _params envPattern
         else
             failwith ("Undefined variable '" + bar + "'"))
     |> String.concat ""
@@ -321,7 +321,7 @@ let evalRepeatChange repeat_num literals old_bar change_data _params (envPattern
 
     bars_ast
     |> List.map (fun expr -> evalBar expr _params envPattern)
-    |> String.concat "|\n"
+    |> String.concat ""
 
 
 let evalRepeatChangeEvery repeat_num every_num old_bar change_data _params (envPattern: Map<PatternName, Note list>) =
@@ -339,7 +339,7 @@ let evalRepeatChangeEvery repeat_num every_num old_bar change_data _params (envP
 
     bars_ast
     |> List.map (fun expr -> evalBar expr _params envPattern)
-    |> String.concat "|\n"
+    |> String.concat ""
 
 
 let evalSnippet expr _params (envPattern: Map<PatternName, Note list>) (envBar: Map<BarName, DrumPattern list>) =
@@ -387,8 +387,7 @@ let evalSnippet expr _params (envPattern: Map<PatternName, Note list>) (envBar: 
                         if envBar.ContainsKey modify_bar then
                             let expr = envBar.Item modify_bar
                             // evaluate the "repeat with change given a list of literals" expression
-                            "|\n"
-                            + (evalRepeatChangeEvery repeat_num every_num expr modify_data _params envPattern)
+                            (evalRepeatChangeEvery repeat_num every_num expr modify_data _params envPattern)
 
                             + (evalSnippetHelper tail)
                         else
