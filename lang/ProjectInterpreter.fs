@@ -387,7 +387,9 @@ let evalSnippet expr _params (envPattern: Map<PatternName, Note list>) (envBar: 
                         if envBar.ContainsKey modify_bar then
                             let expr = envBar.Item modify_bar
                             // evaluate the "repeat with change given a list of literals" expression
-                            (evalRepeatChangeEvery repeat_num every_num expr modify_data _params envPattern)
+                            "|\n"
+                            + (evalRepeatChangeEvery repeat_num every_num expr modify_data _params envPattern)
+
                             + (evalSnippetHelper tail)
                         else
                             failwith ("Undefined bar " + modify_bar + ".")
@@ -425,14 +427,36 @@ let eval
     // printfn "%A, %A" title subtitle
     // printfn "%A" bars
     let header =
-        "X:1 \nM:"
-        + string numBeats
-        + "/"
-        + string beatValue
-        + "\n"
-        + "L: 1/"
-        + string div
-        + "\nU:n=!style=x! \nK:perc \nV:ALL stem=up\n"
+        "%%percmap D  pedal-hi-hat x
+%%percmap E  bass-drum-1
+%%percmap F  acoustic-bass-drum
+%%percmap G  low-floor-tom
+%%percmap A  high-floor-tom
+%%percmap B  low-tom
+%%percmap ^B tambourine   triangle
+%%percmap c  acoustic-snare
+%%percmap _c electric-snare
+%%percmap ^c low-wood-block   triangle
+%%percmap =c side-stick x
+%%percmap d  low-mid-tom
+%%percmap ^d hi-wood-block    triangle
+%%percmap e  hi-mid-tom
+%%percmap ^e cowbell      triangle
+%%percmap f  high-tom
+%%percmap ^f ride-cymbal-1
+%%percmap g  closed-hi-hat
+%%percmap ^g open-hi-hat
+%%percmap a  crash-cymbal-1  x
+%%percmap ^a open-triangle     triangle
+%%flatbeams 1
+X: 1
+M: 4/4
+L: 1/16
+U:n=!style=x!
+K:perc
+%%MIDI drummap ^g 42 %closed hi hat
+%%MIDI drummap _g 46 % open hi hat
+V:ALL stem=up\n"
 
     // create pattern environment
     let envPattern =
@@ -454,35 +478,17 @@ let eval
 
     // render value is a pattern
     if envPattern.ContainsKey render then
-        let expr = envPattern.Item render
-        // let result = evalPattern expr HH _params
-
-        // let ABC =
-        //     (List.map
-        //         (fun one_beat ->
-        //             (List.map (fun (beat, _) -> beat) one_beat)
-        //             |> String.concat "")
-        //         result
-        //      |> String.concat " ")
-
-        printfn "%A" expr
-        // printfn "result: %A" result
-
-        // construct PostScript
-        header
+        failwith ("Cannot render patterns. Consider putting pattern inside a bar.")
     // render value is a bar
     elif envBar.ContainsKey render then
         let expr = envBar.Item render
         let result = evalBar expr _params envPattern
         printfn "%A" result
         header + result
-
     // render value is a snippet
     elif envSnippet.ContainsKey render then
         let expr = envSnippet.Item render
         let result = evalSnippet expr _params envPattern envBar
-        printfn "%A" expr
-        printfn "%A" result
-        header
+        header + result
     else
         failwith ("Undefined variable '" + render + "'")
