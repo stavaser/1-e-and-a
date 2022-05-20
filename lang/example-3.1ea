@@ -8,17 +8,26 @@ pattern mypattern : 1 e + a | 2  e + a  | 3 e + a  | 4  e + a  |
 
 bar mybar1:
     hh: [ mypattern ]
-    sn: [ | 2 |  | 4 |]
-    bd: [ 1 + | 2  + | 3 + | 4 + |]
+    bd: [ 1  | 2   | 3  | 4  |]
+
+bar mybar2:
+    hh: [ mypattern ]
 
 Snippet mysnippet:
+    !repeat 2: [ mybar1 mybar2 ].
     
     @change 4: 
-        mybar1 (1,4) {
-            cc: [1 |]
-            bd: [ 1 | 2 | 3 | 4 |]
+        mybar1 (1,2) {
+            hh: [1 ||||]
+            sn: [ | 2 |  | 4 |]
+            bd: [ 1 + | 2 + | 3 + | 4 + |]
+        };
+    @change 4: 
+        mybar1 (every 2) {
+            hh: [1 ||||]
+            sn: [ | 2 |  | 4 |]
+            bd: [ 1 + | 2 + | 3 + | 4 + |]
         };
 
-    !repeat 2: [ mybar1 ].
 
 render: mysnippet

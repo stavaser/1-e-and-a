@@ -44,7 +44,7 @@ let evalRests beats =
     (List.map (fun value -> "z" + string value) rests)
 
 let beam current next =
-    printfn "current: %A, next: %A" current next
+    // printfn "current: %A, next: %A" current next
 
     match current with
     | Num (n) ->
@@ -203,21 +203,6 @@ let manyPatternsToString2 patterns =
         | SN -> "c"
         | BD -> "F"
 
-    let b =
-        [ [ [ "ng1"; "F1"; "c1" ]
-            [ "F1"; "c1" ]
-            [ "ng1"; "F1"; "c1" ]
-            [ "F1"; "c1" ] ]
-          [ [ "ng1"; "F1"; "c1" ]
-            [ "ng2" ]
-            [ "F1"; "c1" ] ]
-          [ [ "ng1"; "F1"; "c1" ]
-            [ "ng2" ]
-            [ "ng1"; "F1"; "c1" ] ]
-          [ [ "ng2"; "F2"; "c2" ]
-            [ "ng1" ]
-            [ "F1"; "c1" ] ] ]
-
     patterns
     |> List.map (fun x ->
         x
@@ -230,7 +215,7 @@ let manyPatternsToString2 patterns =
     |> String.concat " "
 
 
-let evalBar bar _params =
+let evalBar bar _params (envPattern: Map<PatternName, Note list>) =
     let rec evalBarHelper bar =
         match bar with
         | [] -> []
@@ -239,7 +224,13 @@ let evalBar bar _params =
             | DrumPatternNotes (drum, notes) ->
                 let separated = separatePattern2 drum notes
                 separated :: (evalBarHelper tail)
-            | DrumPatternVar (drum, var) -> (evalBarHelper tail)
+            | DrumPatternVar (drum, var) ->
+                if envPattern.ContainsKey var then
+                    let notes = envPattern.Item var
+                    let separated = separatePattern2 drum notes
+                    separated :: (evalBarHelper tail)
+                else
+                    failwith ("Undefined bar " + var + ".")
 
     let bars = evalBarHelper bar
 
@@ -256,25 +247,154 @@ let evalBar bar _params =
             |> List.map (fun (notes, drums) -> (List.head notes), drums))
         |> beatSort
 
-
-    // |> List.groupBy (fun ((Note (note)), (Drum (drum))) -> note)
-
-    // |> List.map (fun x -> x |> List.concat |> List.distinct |> beatSort)
-
     let evaluatedBeats = evalBeats2 transformed
-
-    // let transposed = transpose bars
-    // let combined = combinePatterns transposed
     let string = manyPatternsToString2 evaluatedBeats
-    printfn "bars: %A" bars
-    printfn "transformed: %A" transformed
-    printfn "evaluatedBeats: %A" evaluatedBeats
-    // printfn "transposed: %A" transposed
-    // printfn "combined: %A" combined
-    printfn "string: %A" string
-    []
+    // printfn "bars: %A" bars
+    // printfn "transformed: %A" transformed
+    // printfn "evaluatedBeats: %A" evaluatedBeats
+    // // printfn "transposed: %A" transposed
+    // // printfn "combined: %A" combined
+    // printfn "string: %A" string
+    string
+
+let evalManyBars bars _params (envPattern: Map<PatternName, Note list>) (envBar: Map<BarName, DrumPattern list>) =
+    bars
+    |> List.map (fun bar ->
+        if envBar.ContainsKey bar then
+            let drum_pattern = envBar.Item bar
+            evalBar drum_pattern _params envPattern + "|\n"
+        else
+            failwith ("Undefined variable '" + bar + "'"))
+    |> String.concat ""
+
+(*
+  Given two bars merge them into one and replace duplicate drums in the old bar
+*)
+let evalBarDifference old_bar new_bar =
+    let envDrumPatternOld =
+        old_bar
+        |> List.map (fun (smth) ->
+            match smth with
+            | DrumPatternNotes (drum, _) -> drum, smth
+            | DrumPatternVar (drum, _) -> drum, smth)
+        |> Map.ofSeq
+
+    let envDrumPatternNew =
+        new_bar
+        |> List.map (fun (smth) ->
+            match smth with
+            | DrumPatternNotes (drum, _) -> drum, smth
+            | DrumPatternVar (drum, _) -> drum, smth)
+        |> Map.ofSeq
+
+    let newMap =
+        Map.fold (fun acc key value -> Map.add key value acc) envDrumPatternOld envDrumPatternNew
+
+    List.map
+        (fun (_, data) ->
+            match data with
+            | DrumPatternNotes (_, _) -> data
+            | DrumPatternVar (_, _) -> data)
+        (newMap |> Map.toList)
+
+let evalRepeatChange repeat_num literals old_bar change_data _params (envPattern: Map<PatternName, Note list>) =
+    let bar_nums = [ for i in 1..repeat_num -> i ]
+
+    let all_old_bars =
+        (List.map (fun num -> (num, old_bar)) bar_nums)
+        |> List.map (fun (num, data) -> num, data)
+        |> Map.ofSeq
+
+    let all_new_bars =
+        (List.map (fun num -> (num, change_data)) literals)
+        |> List.map (fun (num, data) -> num, data)
+        |> Map.ofSeq
+
+    let new_bar = evalBarDifference old_bar change_data
+    printfn "\nevalBarDifference: %A \n" new_bar
+
+    let newMap =
+        Map.fold (fun acc key value -> Map.add key new_bar acc) all_old_bars all_new_bars
+
+    let bars_ast = (List.map (fun (_, data) -> data) (newMap |> Map.toList))
+    printfn "\evalBar: %A \n" (evalBar new_bar _params envPattern)
+
+    bars_ast
+    |> List.map (fun expr -> evalBar expr _params envPattern)
+    |> String.concat "|\n"
 
 
+let evalRepeatChangeEvery repeat_num every_num old_bar change_data _params (envPattern: Map<PatternName, Note list>) =
+    let new_bar = evalBarDifference old_bar change_data
+
+    let bar_nums = [ for i in 1..repeat_num -> i ]
+
+    let is_divisible x =
+        if (x % every_num) = 0 then
+            new_bar
+        else
+            old_bar
+
+    let bars_ast = (List.map (fun bar_num -> is_divisible bar_num) bar_nums)
+
+    bars_ast
+    |> List.map (fun expr -> evalBar expr _params envPattern)
+    |> String.concat "|\n"
+
+
+let evalSnippet expr _params (envPattern: Map<PatternName, Note list>) (envBar: Map<BarName, DrumPattern list>) =
+    let rec evalSnippetHelper snippet =
+        match snippet with
+        | [] -> ""
+        // look at one expression
+        | head :: tail ->
+            match head with
+            // if it is a repeat with no change expr
+            | Repeat (repeat_num, bars) ->
+                // printfn "Repeat: %A %A" head bars
+                // and repeat number is valid
+                if repeat_num > 0 then
+                    // evaluate the bars in that repeat expr
+                    let bar = evalManyBars bars _params envPattern envBar
+
+                    (String.replicate repeat_num bar)
+                    + (evalSnippetHelper tail)
+                else
+                    failwith ("Can't have negative repeat values.")
+            // repeat with change, for example:
+            // (case 1) repeat 4 : barname (1,2, ...) { ... }         OR
+            // (case 2) repeat 4 : barname (every 3) { ... }     OR
+            // (case 3) repeat 4 : [ barname1 barname2 ... ]
+            | RepeatChange (repeat_num, modify_bar, option, modify_data) ->
+                // printfn "RepeatChange: %A %A %A" head modify_bar modify_data
+                match option with
+                // (case 1) if repeat option is (1,2, ...)
+                | Literals (literals) ->
+                    if repeat_num > 0 then
+                        // if the bar to modify exists
+                        if envBar.ContainsKey modify_bar then
+                            let expr = envBar.Item modify_bar
+                            // evaluate the "repeat with change given a list of literals" expression
+                            (evalRepeatChange repeat_num literals expr modify_data _params envPattern)
+                            + (evalSnippetHelper tail)
+                        else
+                            failwith ("Undefined bar " + modify_bar + ".")
+                    else
+                        failwith ("Can't have negative repeat values.")
+                | Every (every_num) ->
+                    if repeat_num > 0 then
+                        // if the bar to modify exists
+                        if envBar.ContainsKey modify_bar then
+                            let expr = envBar.Item modify_bar
+                            // evaluate the "repeat with change given a list of literals" expression
+                            (evalRepeatChangeEvery repeat_num every_num expr modify_data _params envPattern)
+                            + (evalSnippetHelper tail)
+                        else
+                            failwith ("Undefined bar " + modify_bar + ".")
+                    else
+                        failwith ("Can't have negative repeat values.")
+
+    evalSnippetHelper expr
 // [ [ [ "z0"; "ng2"; "ng2" ]
 //     [ "z0"; "ng2"; "ng2" ]
 //     [ "z0"; "ng2"; "ng2" ]
@@ -353,15 +473,16 @@ let eval
     // render value is a bar
     elif envBar.ContainsKey render then
         let expr = envBar.Item render
-        let result = evalBar expr _params
-        // printfn "%A" expr
+        let result = evalBar expr _params envPattern
         printfn "%A" result
-        header
+        header + result
 
     // render value is a snippet
     elif envSnippet.ContainsKey render then
         let expr = envSnippet.Item render
+        let result = evalSnippet expr _params envPattern envBar
         printfn "%A" expr
+        printfn "%A" result
         header
     else
         failwith ("Undefined variable '" + render + "'")
