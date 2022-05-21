@@ -241,7 +241,7 @@ let evalBar bar _params (envPattern: Map<PatternName, Note list>) =
                     let separated = separatePattern2 drum notes
                     separated :: (evalBarHelper tail)
                 else
-                    raise (RuntimeError("Undefined bar " + var + "."))
+                    raise (RuntimeError("Undefined pattern " + var + "."))
 
     let bars = evalBarHelper bar
 
@@ -498,6 +498,7 @@ K:perc\n" + header_settings
     // render value is a snippet
     elif envSnippet.ContainsKey render then
         let expr = envSnippet.Item render
+        printfn "%A" expr
         let result = evalSnippet expr _params envPattern envBar
         header + result
     else

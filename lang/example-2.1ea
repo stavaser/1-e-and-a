@@ -4,13 +4,14 @@ tempo: 120
 
 title: example 2
 
-pattern mypattern : | 2 | 3 | 4 |
+pattern one_two: [| 2 | 3 | 4 |]
 
 
-bar mybar1:
-    t1: [ | 2 a | 3 a | 4 a |]
-    bd: [ mypattern ]
+bar mybar:
+    bd: [  one_two]
+    t1: [ | 2 a | 3 a | 4 a | ]
+    hh: [| 2 a | 3 a | 4 a |]
 
 
 
-render: mybar1
+render: mybar

@@ -1,33 +1,32 @@
 time :  8/4
 division: 1/16
 tempo: 120
-
 title: example 3
 
-pattern mypattern : 1 e + a | 2  e + a  | 3 e + a  | 4  e + a  |
+pattern mypattern : [1 e + a | 2  e + a  | 3 e + a  | 4  e + a  |]
 
-bar mybar1:
+bar mybar:
     hh: [ mypattern ]
     bd: [ 1  | 2   | 3  | 4  |]
 
-bar mybar2:
+bar mybar:
     hh: [ mypattern ]
 
 Snippet mysnippet:
-    !repeat 2: [ mybar1 mybar2 ].
+    repeat 2: { mybar, mybar }
     
-    @change 4: 
-        mybar1 (1,2) {
+    change 4: 
+        mybar ( 1 , 2 ) {
             sn: [ | 2 |  | 4 |]
             hh: [1 ||||]
             bd: [ 1 + | 2 + | 3 + | 4 + |]
-        };
-    @change 4: 
-        mybar1 (every 2) {
+        }
+    change 4: 
+        mybar ( every 2 ) {
             hh: [1 ||||]
             sn: [ | 2 |  | 4 |]
             bd: [ 1 + | 2 + | 3 + | 4 + |]
-        };
+            }
 
 
 render: mysnippet
