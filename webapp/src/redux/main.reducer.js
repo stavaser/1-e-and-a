@@ -1,6 +1,6 @@
 import { ABC_SUCCESS, ABC_PARSE_ERROR, ABC_RUNTIME_ERROR } from './constants';
 const initialState = {
-  abc: '',
+  abc: ``,
   parse_error: '',
   runtime_error: '',
 };
