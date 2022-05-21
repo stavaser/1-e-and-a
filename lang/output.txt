@@ -27,19 +27,8 @@ U:n=!style=x!
 K:perc
 Q: 120
 T: example 3
-M: 8/4
+M: 4/4
 L: 1/16
 V:ALL stem=up
 [ng1][ng1][ng1][ng1] [ng1][ng1][ng1][ng1] [ng1][ng1][ng1][ng1] [ng1][ng1][ng1][ng1]|
-[ng1][ng1][ng1][ng1] [ng1][ng1][ng1][ng1] [ng1][ng1][ng1][ng1] [ng1][ng1][ng1][ng1]|
-[ng1][ng1][ng1][ng1] [ng1][ng1][ng1][ng1] [ng1][ng1][ng1][ng1] [ng1][ng1][ng1][ng1]|
-[ng1][ng1][ng1][ng1] [ng1][ng1][ng1][ng1] [ng1][ng1][ng1][ng1] [ng1][ng1][ng1][ng1]|
-[ng2F2][F2] [c2F2][F2] [F2][F2] [c2F2][F2]|
-[ng2F2][F2] [c2F2][F2] [F2][F2] [c2F2][F2]|
-[ng1][ng1][ng1][ng1] [ng1][ng1][ng1][ng1] [ng1][ng1][ng1][ng1] [ng1][ng1][ng1][ng1]|
-[ng1][ng1][ng1][ng1] [ng1][ng1][ng1][ng1] [ng1][ng1][ng1][ng1] [ng1][ng1][ng1][ng1]|
-[ng1][ng1][ng1][ng1] [ng1][ng1][ng1][ng1] [ng1][ng1][ng1][ng1] [ng1][ng1][ng1][ng1]|
-[ng2F2][F2] [c2F2][F2] [F2][F2] [c2F2][F2]|
-[ng1][ng1][ng1][ng1] [ng1][ng1][ng1][ng1] [ng1][ng1][ng1][ng1] [ng1][ng1][ng1][ng1]|
-[ng2F2][F2] [c2F2][F2] [F2][F2] [c2F2][F2]|
 

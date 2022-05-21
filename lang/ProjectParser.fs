@@ -101,7 +101,7 @@ let bd: Parser<Drum, unit> = (str_ws0 "bd") |>> (fun x -> BD)
 *)
 let pattern_keyword = "pattern"
 let bar_keyword = "bar"
-let snippet_keyword = "Snippet"
+let snippet_keyword = "snippet"
 let repeat_keyword = "repeat"
 let change_repeat_keyword = "change"
 let time_keyword = "time"
@@ -123,7 +123,7 @@ let (<!>) (p: Parser<_, _>) label : Parser<_, _> =
         // printfn "%A: Leaving %s (%A)" stream.Position label reply.Status
         reply
 
-let variable_name:Parser<char, unit> = (letter <|> pchar '_')
+let variable_name:Parser<string, unit> = (manyChars (letter <|> pchar '_'))
 
 (*
     Parses which expression the program should render, such as
@@ -131,7 +131,7 @@ let variable_name:Parser<char, unit> = (letter <|> pchar '_')
 *)
 let p_render =
     (((str_ws0 render_keyword) .>> (ws0 >>. str_ws0 ":"))
-     >>. ((manyChars variable_name)))
+     >>. variable_name)
 
 (*
     Parses settings
@@ -174,7 +174,7 @@ let p_settings =
     Parses a variable name assignment such as
     var_pattern_name1:
 *)
-let p_assignment = (manyCharsTill variable_name (ws0 >>. str_ws0 ":"))
+let p_assignment = (variable_name .>> (ws0 >>. str_ws0 ":"))
 
 (*
     Parses a note value such as
@@ -216,7 +216,7 @@ let p_drumpattern_notes =
 let p_drumpattern_var =
     pipe2
         p_drum
-        ((str_ws0 "[") >>. (manyCharsTill variable_name (ws0 >>. str_ws0 "]")))
+        ((str_ws0 "[") >>. (variable_name .>> (ws0 >>. str_ws0 "]")))
         (fun drum pattern -> DrumPatternVar(drum, pattern))
 
 (*
@@ -242,7 +242,7 @@ let p_bar: Parser<Bar, Unit> =
 let p_snippet: Parser<Snippet, Unit> =
     let number = many1Satisfy isDigit
 
-    let p_barname = (manyChars (variable_name)) |>> BarName
+    let p_barname = (variable_name) |>> BarName
 
     let p_repeat_num =
         ((many1Satisfy isDigit) .>> (ws0 >>. str_ws0 ":"))
@@ -259,7 +259,10 @@ let p_snippet: Parser<Snippet, Unit> =
         |>> Every
 
     let p_change_data =
-        str_ws0 "{" >>. (many p_drumpattern_notes)
+        str_ws0 "{" >>. (many (
+            attempt p_drumpattern_notes
+            <|> attempt p_drumpattern_var
+         ))
         .>> str_ws0 "}"
 
     let p_repeat =
@@ -283,10 +286,8 @@ let p_snippet: Parser<Snippet, Unit> =
         (str_ws1 snippet_keyword)
         (p_assignment |>> SnippetName)
         (many (
-            (attempt (
-                p_repeat_with_change
-            ))
-            <|> (attempt (p_repeat))
+            (attempt p_repeat_with_change)
+            <|> (attempt p_repeat)
         ))
         (fun _ id data -> Snippet(id, data))
 

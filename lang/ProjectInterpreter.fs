@@ -4,34 +4,6 @@ open lang.ProjectParser
 
 exception RuntimeError of string
 
-
-let separatePattern pattern =
-    let rec separatePatternHelper pattern beat =
-        match pattern with
-        | [] -> []
-        | head :: tail ->
-            match head with
-            | Sep -> (beat :: separatePatternHelper tail [])
-            | _ -> separatePatternHelper tail (head :: beat)
-
-    let list = separatePatternHelper pattern []
-    list |> List.map List.rev
-
-
-let toABC distances drum =
-    let drum_ABC drum =
-        match drum with
-        | HH -> "ng"
-        | SN -> "c"
-        | BD -> "F"
-
-    (List.map
-        (fun one_beat ->
-            (List.map (fun pos -> (drum_ABC drum) + (string pos)) one_beat)
-            |> String.concat "")
-        distances
-     |> String.concat " ")
-
 let evalRests beats =
     let rec evalRestsHelper beats =
         match beats with
@@ -68,35 +40,6 @@ let beam current next =
         | And -> 2
     | A -> 1
 
-let evalBeats beats =
-
-    let rec evalPatternHelper beat =
-        match beat with
-        | [] -> []
-        | head :: tail ->
-            let next =
-                if List.isEmpty tail then
-                    head
-                else
-                    (List.head tail)
-
-            (beam head next) :: (evalPatternHelper tail)
-
-    List.map (fun x -> evalPatternHelper x) beats
-
-let beatsToAbc beats drum =
-
-    let drum_ABC drum =
-        match drum with
-        | CC -> "na"
-        | RD -> "^f"
-        | HH -> "ng"
-        | SN -> "c"
-        | T1 -> "e"
-        | T2 -> "A"
-        | BD -> "F"
-
-    (List.map (fun one_beat -> (List.map (fun (pos, order) -> ((drum_ABC drum) + (string pos)), order) one_beat)) beats)
 
 let combineBeatsAndRests beats rests =
     List.map2
@@ -107,54 +50,12 @@ let combineBeatsAndRests beats rests =
         beats
         rests
 
-
-let evalPattern expr _params =
-    // let list_of_beats = separatePattern expr
-    let beats = evalBeats expr
-    // let beatsABC = beatsToAbc beats drum
-    // let rests = evalRests beats
-    // let beats_and_rests = combineBeatsAndRests beatsABC rests
-    // printfn "separatePattern: %A" list_of_beats
-    printfn "beats: %A" beats
-    // printfn "beatsABC: %A" beatsABC
-    // printfn "rests: %A" rests
-    // printfn "beats_and_rests: %A" beats_and_rests
-    printfn "\n\n\n"
-
-    beats
-
-
 let rec transpose list =
     if List.isEmpty (List.head list) then
         []
     else
         (List.map List.head list |> List.distinct)
         :: transpose (List.map List.tail list)
-
-let rec combinePatterns patterns =
-    match patterns with
-    | [] -> []
-    | one_beat :: beat_rest ->
-        let map =
-            (one_beat |> List.concat)
-            |> List.groupBy (fun (value, order) -> order)
-            |> List.sortBy (fun (order, value) -> order)
-            |> List.map (fun (order, list) -> order, List.map (fun (drum, order) -> drum) list)
-
-        map :: combinePatterns beat_rest
-
-// [[(1, ["ng2"; "F1"]); (2, ["F1"]); (3, ["ng2"; "F1"]); (4, ["F1"])];
-//  [(1, ["ng1"; "F3"]); (2, ["ng3"]); (4, ["F1"])];
-//  [(1, ["ng1"; "F3"]); (2, ["ng2"]); (4, ["ng1"; "F1"])];
-//  [(1, ["ng2"; "F3"]); (3, ["ng2"]); (4, ["F1"])]]
-let manyPatternsToString patterns =
-    patterns
-    |> List.map (fun (list) ->
-        (fun (_, notes) ->
-            notes
-            |> List.map (fun (drum) -> "[" + (drum |> String.concat "") + "]")) (list |> List.unzip))
-    |> List.map (fun (beat) -> beat |> String.concat "")
-    |> String.concat " "
 
 
 let beatSort beat =
@@ -172,7 +73,7 @@ let beatSort beat =
         |> List.map (fun (data, index) -> data))
 
 
-let separatePattern2 drum pattern =
+let separatePattern drum pattern =
     let notes_with_drums = List.map (fun x -> (x, drum)) pattern
 
     let rec separatePatternHelper pattern beat =
@@ -186,7 +87,7 @@ let separatePattern2 drum pattern =
     let list = separatePatternHelper notes_with_drums []
     list |> List.map List.rev
 
-let evalBeats2 beats =
+let evalBeats beats =
     let rec evalPatternHelper beat =
         match beat with
         | [] -> []
@@ -203,7 +104,7 @@ let evalBeats2 beats =
     List.map (fun x -> evalPatternHelper x) beats
 
 
-let manyPatternsToString2 patterns =
+let manyPatternsToString patterns =
     let drum_ABC drum =
         match drum with
         | CC -> "na"
@@ -233,12 +134,12 @@ let evalBar bar _params (envPattern: Map<PatternName, Note list>) =
         | head :: tail ->
             match head with
             | DrumPatternNotes (drum, notes) ->
-                let separated = separatePattern2 drum notes
+                let separated = separatePattern drum notes
                 separated :: (evalBarHelper tail)
             | DrumPatternVar (drum, var) ->
                 if envPattern.ContainsKey var then
                     let notes = envPattern.Item var
-                    let separated = separatePattern2 drum notes
+                    let separated = separatePattern drum notes
                     separated :: (evalBarHelper tail)
                 else
                     raise (RuntimeError("Undefined pattern " + var + "."))
@@ -258,8 +159,8 @@ let evalBar bar _params (envPattern: Map<PatternName, Note list>) =
             |> List.map (fun (notes, drums) -> (List.head notes), drums))
         |> beatSort
 
-    let evaluatedBeats = evalBeats2 transformed
-    let string = manyPatternsToString2 evaluatedBeats + "|\n"
+    let evaluatedBeats = evalBeats transformed
+    let string = manyPatternsToString evaluatedBeats + "|\n"
     // printfn "bars: %A" bars
     // printfn "transformed: %A" transformed
     // printfn "evaluatedBeats: %A" evaluatedBeats
@@ -275,7 +176,7 @@ let evalManyBars bars _params (envPattern: Map<PatternName, Note list>) (envBar:
             let drum_pattern = envBar.Item bar
             evalBar drum_pattern _params envPattern
         else
-            raise (RuntimeError("Undefined variable '" + bar + "'")))
+            raise (RuntimeError("Undefined bar '" + bar + "'")))
     |> String.concat ""
 
 (*
@@ -407,14 +308,7 @@ let evalSnippet expr _params (envPattern: Map<PatternName, Note list>) (envBar: 
                         raise (RuntimeError("Can't have negative repeat values."))
 
     evalSnippetHelper expr
-// [ [ [ "z0"; "ng2"; "ng2" ]
-//     [ "z0"; "ng2"; "ng2" ]
-//     [ "z0"; "ng2"; "ng2" ]
-//     [ "z0"; "ng2"; "ng2" ] ]
-//   [ [ "z0"; "F1"; "F1"; "F1"; "F1" ]
-//     [ "z0"; "F3"; "F1" ]
-//     [ "z0"; "F3"; "F1" ]
-//     [ "z0"; "F3"; "F1" ] ] ]
+
 (*
     Evaluates AST into PostScript
 *)
@@ -434,9 +328,13 @@ let eval
           } -> (int a, int b), float y, tempo, title)
             settings
 
+    if numBeats <> 4 || beatValue <> 4 then
+        raise (RuntimeError("Time: " + (string numBeats) + "/" + (string beatValue) + " feature isn't supported yet! Try the following: 4/4"))
+    
+    if div <> 16 then
+        raise (RuntimeError("Division: 1/" + (string div) + " feature isn't supported yet! Try the following: 1/16"))
+    
     let _params = (numBeats, beatValue, div)
-    // printfn "%A, %A" title subtitle
-    // printfn "%A" bars
     let header_settings = "Q: " + (string tempo) + "\nT: " + title + "\nM: " + (string numBeats) + "/" + (string beatValue) + "\nL: 1/" + (string div) + "\nV:ALL stem=up\n"
 
     let header =
