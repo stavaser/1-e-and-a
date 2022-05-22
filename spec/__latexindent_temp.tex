@@ -219,37 +219,45 @@ using the \verb+->+ sign.
 
 \begin{alltt}
     <num>           ::= x \ensuremath{\in} Z+
-    <string>        ::= any string
-    <varname>       ::= <string> | <num>
+    <string>        ::= y \ensuremath{\in} { a . . . z }
+    <varname>       ::= <string> | _
 
     <time>          ::= time: <num>/<num>
     <division>      ::= division: <num>/<num>
-
+    <tempo>         ::= tempo: <num>
     <title>         ::= title: <string>
-    <subtitle>      ::= subtitle: <string>
-    
-    <count>         ::= <num> | e | + | a 
-    <sep>           ::= |
-    <beat>          ::= <count>+ <sep>
-    <pattern>       ::= <beat>+
-        
-    <pattern_expr>  ::= pattern<varname>: <pattern>
+    <settings>      ::= <time> <division> <tempo> <title>
+
+    <sep>               ::= |
+    <note>              ::= <num> | e | + | a 
+    <notes>             ::= <note>+
+    <notes_with_sep>    ::= <notes><sep>
+    <pattern>           ::= <notes_with_sep>+
+    <pattern_expr>      ::= pattern <varname>: [<pattern>]
     
     <drums>                 := cc | hh | rd | sn | t1 | t2 | ft | bd
-    <drum_pattern_var>      ::= <drums>: <varname>
-    <drum_pattern_notes>    ::= <drums>: <pattern>
-    <drum_pattern>          ::= [ <drum_pattern_var> | <drum_pattern_notes> ]
-                        
-    <bar_expr>              ::= bar <varname>: <drum_pattern>+
+    <drum_pattern_var>      ::= <drums>: [<varname>]
+    <drum_pattern_notes>    ::= <drums>: [<pattern>]
+    <drum_pattern>          ::= <drum_pattern_var> | <drum_pattern_notes>
+    <many_drum_patterns>    ::= <drum_pattern>+
+    <bar_expr>              ::= bar <varname>: <many_drum_patterns>
     
-    <repeat>                ::= !repeat <num>: [<varname>+].
-    <change_option>         ::= <num> | every <num>
-    <change>          ::= $change <change_option>: <varname> (<num>)\ensuremath{\{}<drum_pattern>+\ensuremath{\}};
+    <repeat>                ::= repeat <num>: \ensuremath{\{}<varname>,+\ensuremath{\}}
+    <change_every>          ::= every <num>
+    <change_many>           ::= <num>,+
+    <change_option>         ::= <change_every> | <change_many>
+    <change>                ::= change <num>: 
+                                <varname> (<change_option>)\ensuremath{\{}
+                                    <drum_pattern>+
+                                \ensuremath{\}}
     <snippet_data>          ::= <repeat> | <change>
-    <snippet_expr>          ::= Snippet <varname>: <snippet_data>+
+    <snippet_expr>          ::= snippet <varname>: <snippet_data>+
 
-    <render>        ::= render: <varname>
+    <render>                ::= render: \ensuremath{\{}<varname>,+\ensuremath{\}}
 
+    <optional_expr>         ::= <pattern_expr> | <bar_expr> | <snippet_expr>
+    <many_optional_expr>    ::= <optional_expr>+
+    <expr>                  ::= <settings> <many_optional_expr> <render>
 \end{alltt}
 
 \section{Semantics}
@@ -274,21 +282,26 @@ using the \verb+->+ sign.
     the bottom number tells what value of note should get the beat. \\
     \hline
    
-    div: 1/16 & Division of uint8 * uint8 & Settings & The minimum value that notes can divide into \\
+    division: 1/16 & Division of uint8 * uint8 & Settings & The minimum value that notes can divide into \\
     \hline
 
-    title: My Title & Title of string & Settings & Title of the piece \\
+    tempo: 120 & Tempo of uint8 & Settings & The speed of the music to be played \\
     \hline
-    
-    subtitle: My Subtitle & Subtitle of string & Settings & Subtitle of the piece \\
+
+    title: My Title & Title of string & Settings & Title of the music \\
     \hline
 
     1 e + a \verb+|+ & Num of int \verb+|+ E \verb+|+  And \verb+|+  A \verb+|+ Sep & Note  & 
-    Denotes the division of a note as defined by time signature (bottom number).
-    Beats should be separated by \verb+Sep+\\
+    A way of writing notes: 1 specifies a strong beat, e is a weak beat, + is a strong beat, 
+    and a is a weak beat. Any of these notes (or even no notes at all), make up one beat. 
+    As defined by the time signature above, if we combine 4 beats then we get one full measure (ex: 1 e + a 2 e + a 3 e + a 4 e + a).
+    We put a separator \verb+|+ after each beat to disambiguate the division of the beats:
+    1 e + a \verb+|+ 2 e + a \verb+|+ 3 e + a \verb+|+ 4 e + a \verb+|+\\
+
+
     \hline
     
-    sn & Drum of \verb+|+ CC   \verb+|+ RD     \verb+|+ HH     \verb+|+ SN     \verb+|+ T1   \verb+|+ T2   \verb+|+ BD 
+    sn & Drum of \verb+|+ CC   \verb+|+ RD     \verb+|+ HH     \verb+|+ SN     \verb+|+ T1   \verb+|+ T2  \verb+|+ FT   \verb+|+ BD 
     & Drum 
     & Denotes a drum \\
    \hline
