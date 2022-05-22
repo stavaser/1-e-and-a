@@ -25,6 +25,7 @@ type Drum =
     | T2
     | FT
     | BD
+    | Rest
 
 type PatternName = string
 type BarName = string
@@ -96,6 +97,7 @@ let t1: Parser<Drum, unit> = (str_ws0 "t1") |>> (fun x -> T1)
 let t2: Parser<Drum, unit> = (str_ws0 "t2") |>> (fun x -> T2)
 let ft: Parser<Drum, unit> = (str_ws0 "ft") |>> (fun x -> FT)
 let bd: Parser<Drum, unit> = (str_ws0 "bd") |>> (fun x -> BD)
+let rest: Parser<Drum, unit> = (str_ws0 "r") |>> (fun x -> Rest)
 
 
 (*
@@ -196,7 +198,7 @@ let p_pattern: Parser<Pattern, Unit> =
     hh:
 *)
 let p_drum =
-    ((cc <|> rd <|> hh <|> sn <|> t1 <|> t2 <|> bd <|> ft)
+    ((cc <|> rd <|> hh <|> sn <|> t1 <|> t2 <|> bd <|> ft <|> rest)
      <!> "parsing drums")
     .>> ((ws0 <!> "parsing whitespace")
          >>. (str_ws0 ":" <!> "parsing colon"))

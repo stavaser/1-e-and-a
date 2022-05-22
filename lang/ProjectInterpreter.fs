@@ -27,7 +27,7 @@ let beam current next =
         | E -> 1
         | And -> 2
         | A -> 3
-        | Num (n) -> 1
+        | Num (n) -> 4
 
     | E ->
         match next with
@@ -114,6 +114,7 @@ let manyPatternsToString patterns =
         | T2 -> "B"
         | FT -> "A"
         | BD -> "F"
+        | Rest -> "z"
 
     patterns
     |> List.map (fun x ->
@@ -134,8 +135,11 @@ let evalBar bar _params (envPattern: Map<PatternName, Note list>) =
         | head :: tail ->
             match head with
             | DrumPatternNotes (drum, notes) ->
-                let separated = separatePattern drum notes
-                separated :: (evalBarHelper tail)
+                if List.isEmpty notes then
+                    raise (RuntimeError("The notes are empty in " + (string drum) + "."))
+                else
+                    let separated = separatePattern drum notes
+                    separated :: (evalBarHelper tail)
             | DrumPatternVar (drum, var) ->
                 if envPattern.ContainsKey var then
                     let notes = envPattern.Item var
@@ -163,7 +167,7 @@ let evalBar bar _params (envPattern: Map<PatternName, Note list>) =
     let string = manyPatternsToString evaluatedBeats + "|\n"
     // printfn "bars: %A" bars
     // printfn "transformed: %A" transformed
-    // printfn "evaluatedBeats: %A" evaluatedBeats
+    printfn "evaluatedBeats: %A" evaluatedBeats
     // // printfn "transposed: %A" transposed
     // // printfn "combined: %A" combined
     // printfn "string: %A" string
