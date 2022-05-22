@@ -107,11 +107,12 @@ let manyPatternsToString patterns =
     let drum_ABC drum =
         match drum with
         | CC -> "na"
-        | RD -> "^f"
+        | RD -> "n^f"
         | HH -> "ng"
         | SN -> "c"
         | T1 -> "e"
-        | T2 -> "A"
+        | T2 -> "B"
+        | FT -> "A"
         | BD -> "F"
 
     patterns
@@ -209,6 +210,9 @@ let evalBarDifference old_bar new_bar =
         (newMap |> Map.toList)
 
 let evalRepeatChange repeat_num literals old_bar change_data _params (envPattern: Map<PatternName, Note list>) =
+    if repeat_num <= 0 then
+        raise (RuntimeError("Can't have " + (string repeat_num) + " as a change value."))
+    else
     let bar_nums = [ for i in 1..repeat_num -> i ]
 
     let all_old_bars =
@@ -271,7 +275,7 @@ let evalSnippet expr _params (envPattern: Map<PatternName, Note list>) (envBar: 
                     (String.replicate repeat_num bar)
                     + (evalSnippetHelper tail)
                 else
-                    raise (RuntimeError("Can't have negative repeat values."))
+                    raise (RuntimeError("Can't have " + (string repeat_num) + " as a repeat value."))
             // repeat with change, for example:
             // (case 1) repeat 4 : barname (1,2, ...) { ... }         OR
             // (case 2) repeat 4 : barname (every 3) { ... }     OR
@@ -283,28 +287,34 @@ let evalSnippet expr _params (envPattern: Map<PatternName, Note list>) (envBar: 
                 | Literals (literals) ->
                     if repeat_num > 0 then
                         // if the bar to modify exists
-                        if envBar.ContainsKey modify_bar then
-                            let expr = envBar.Item modify_bar
-                            // evaluate the "repeat with change given a list of literals" expression
-                            (evalRepeatChange repeat_num literals expr modify_data _params envPattern)
-                            + (evalSnippetHelper tail)
+                        if List.contains 0 literals then
+                            raise (RuntimeError("Can't have 0 as a change value."))
                         else
-                            raise (RuntimeError("Undefined bar " + modify_bar + "."))
+                            if envBar.ContainsKey modify_bar then
+                                let expr = envBar.Item modify_bar
+                                // evaluate the "repeat with change given a list of literals" expression
+                                (evalRepeatChange repeat_num literals expr modify_data _params envPattern)
+                                + (evalSnippetHelper tail)
+                            else
+                                raise (RuntimeError("Undefined bar " + modify_bar + "."))
                     else
-                        raise (RuntimeError("Can't have negative repeat values."))
+                        raise (RuntimeError("Can't have " + (string repeat_num) + " as a repeat value."))
                 | Every (every_num) ->
                     if repeat_num > 0 then
-                        // if the bar to modify exists
-                        if envBar.ContainsKey modify_bar then
-                            let expr = envBar.Item modify_bar
-                            // evaluate the "repeat with change given a list of literals" expression
-                            (evalRepeatChangeEvery repeat_num every_num expr modify_data _params envPattern)
-
-                            + (evalSnippetHelper tail)
+                        if every_num = 0 then
+                            raise (RuntimeError("Can't have 0 as a change value."))
                         else
-                            raise (RuntimeError("Undefined bar " + modify_bar + "."))
+                            // if the bar to modify exists
+                            if envBar.ContainsKey modify_bar then
+                                let expr = envBar.Item modify_bar
+                                // evaluate the "repeat with change given a list of literals" expression
+                                (evalRepeatChangeEvery repeat_num every_num expr modify_data _params envPattern)
+
+                                + (evalSnippetHelper tail)
+                            else
+                                raise (RuntimeError("Undefined bar " + modify_bar + "."))
                     else
-                        raise (RuntimeError("Can't have negative repeat values."))
+                        raise (RuntimeError("Can't have " + (string repeat_num) + " as a repeat value."))
 
     evalSnippetHelper expr
 
@@ -383,20 +393,26 @@ K:perc\n" + header_settings
         |> List.map (fun (Snippet (id, data)) -> id, data)
         |> Map.ofSeq
 
-    // render value is a pattern
-    if envPattern.ContainsKey render then
-        raise (RuntimeError("Cannot render patterns. Consider putting pattern inside a bar."))
-    // render value is a bar
-    elif envBar.ContainsKey render then
-        let expr = envBar.Item render
-        printfn "%A" expr
-        let result = evalBar expr _params envPattern
-        header + result
-    // render value is a snippet
-    elif envSnippet.ContainsKey render then
-        let expr = envSnippet.Item render
-        let result = evalSnippet expr _params envPattern envBar
-        printfn "%A" result
-        header + result
-    else
-        raise (RuntimeError("Undefined variable '" + render + "'"))
+    let rec evalRender render_list = 
+        match render_list with
+        | [] -> ""
+        | render::tail -> 
+            // render value is a pattern
+            if envPattern.ContainsKey render then
+                raise (RuntimeError("Cannot render patterns. Consider putting pattern inside a bar."))
+            // render value is a bar
+            elif envBar.ContainsKey render then
+                let expr = envBar.Item render
+                printfn "%A" expr
+                let result = evalBar expr _params envPattern
+                result  + (evalRender tail)
+            // render value is a snippet
+            elif envSnippet.ContainsKey render then
+                let expr = envSnippet.Item render
+                let result = evalSnippet expr _params envPattern envBar
+                printfn "%A" result
+                result + (evalRender tail)
+            else
+                raise (RuntimeError("Undefined variable '" + render + "'"))
+    
+    header + (evalRender render)

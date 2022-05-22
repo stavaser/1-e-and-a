@@ -23,6 +23,7 @@ type Drum =
     | SN
     | T1
     | T2
+    | FT
     | BD
 
 type PatternName = string
@@ -66,7 +67,7 @@ type Expr =
       Patterns: Pattern list
       Bars: Bar list
       Snippets: Snippet list
-      Render: string }
+      Render: string list }
 
 let ws0 = spaces
 let ws1 = spaces1
@@ -93,6 +94,7 @@ let hh: Parser<Drum, unit> = (str_ws0 "hh") |>> (fun x -> HH)
 let sn: Parser<Drum, unit> = (str_ws0 "sn") |>> (fun x -> SN)
 let t1: Parser<Drum, unit> = (str_ws0 "t1") |>> (fun x -> T1)
 let t2: Parser<Drum, unit> = (str_ws0 "t2") |>> (fun x -> T2)
+let ft: Parser<Drum, unit> = (str_ws0 "ft") |>> (fun x -> FT)
 let bd: Parser<Drum, unit> = (str_ws0 "bd") |>> (fun x -> BD)
 
 
@@ -131,7 +133,7 @@ let variable_name:Parser<string, unit> = (manyChars (letter <|> pchar '_'))
 *)
 let p_render =
     (((str_ws0 render_keyword) .>> (ws0 >>. str_ws0 ":"))
-     >>. variable_name)
+     >>. (str_ws0 "{" >>. sepBy (variable_name .>> ws0) (str_ws0 ",") .>> str_ws0 "}"))
 
 (*
     Parses settings
@@ -194,7 +196,7 @@ let p_pattern: Parser<Pattern, Unit> =
     hh:
 *)
 let p_drum =
-    ((cc <|> rd <|> hh <|> sn <|> t1 <|> t2 <|> bd)
+    ((cc <|> rd <|> hh <|> sn <|> t1 <|> t2 <|> bd <|> ft)
      <!> "parsing drums")
     .>> ((ws0 <!> "parsing whitespace")
          >>. (str_ws0 ":" <!> "parsing colon"))

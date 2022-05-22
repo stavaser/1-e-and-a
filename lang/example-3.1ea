@@ -25,7 +25,7 @@ snippet my_song:
 	    hh: [||||]
 			sn: [1 e + a ||3 e + a||]
 			t1: [|2 e + a|||]
-			t2: [|||4 e + a|]
+			ft: [|||4 e + a|]
   }
 
-render: my_song
+render: {my_song, eight_notes}
