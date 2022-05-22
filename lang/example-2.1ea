@@ -1,17 +1,13 @@
 time :  4/4
 division: 1/16
 tempo: 120
+title: example 3
 
-title: example 2
-
-pattern one_two: [| 2 | 3 | 4 |]
-
+pattern sixteenth_notes: [1 e + a | 2  e + a  | 3 e + a  | 4  e + a  |]
 
 bar mybar:
-    bd: [  one_two]
-    t1: [ | 2 a | 3 a | 4 a | ]
-    hh: [| 2 a | 3 a | 4 a |]
-
-
+  hh: [ sixteenth_notes ]
+  sn: [   | 2 |   | 4 |]
+  bd: [ 1 |   | 3 |   |]
 
 render: mybar

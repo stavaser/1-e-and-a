@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "lang", "lang\lang.fsproj", "{DC7BE666-0A09-4A85-94E1-D0895DA42938}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ParserTests", "ParserTests\ParserTests.fsproj", "{F7DFE136-AD12-40E6-BBFE-5187B11E36D3}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "tests", "tests\tests.fsproj", "{F7DFE136-AD12-40E6-BBFE-5187B11E36D3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

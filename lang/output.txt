@@ -26,9 +26,26 @@ X: 1
 U:n=!style=x!
 K:perc
 Q: 120
-T: example 3
+T: example
 M: 4/4
 L: 1/16
 V:ALL stem=up
-[ng1][ng1][ng1][ng1] [ng1][ng1][ng1][ng1] [ng1][ng1][ng1][ng1] [ng1][ng1][ng1][ng1]|
+[na2c2F2][c1][c1] [na1e1][e1][e1][e1] [na2c2F2][c1][c1] [na1e1][e1][e1][e1]|
+[na2c2F2][c1][c1] [na1e1][e1][e1][e1] [na2c2F2][c1][c1] [na1e1][e1][e1][e1]|
+[ng2F2][ng2] [ng2c2][ng2] [ng2F2][ng2] [ng2c2][ng2]|
+[ng2F2][ng2] [ng2c2][ng2] [ng2F2][ng2] [ng2c2][ng2]|
+[ng2F2][ng2] [ng2c2][ng2] [ng2F2][ng2] [ng2c2][ng2]|
+[na1c1F1][c1][c1][c1] [na1e1][e1][e1][e1] [na1c1F1][c1][c1][c1] [na1A1][A1][A1][A1]|
+[ng2F2][ng2] [ng2c2][ng2] [ng2F2][ng2] [ng2c2][ng2]|
+[ng2F2][ng2] [ng2c2][ng2] [ng2F2][ng2] [ng2c2][ng2]|
+[ng2F2][ng2] [ng2c2][ng2] [ng2F2][ng2] [ng2c2][ng2]|
+[na1c1F1][c1][c1][c1] [na1e1][e1][e1][e1] [na1c1F1][c1][c1][c1] [na1A1][A1][A1][A1]|
+[ng2F2][ng2] [ng2c2][ng2] [ng2F2][ng2] [ng2c2][ng2]|
+[ng2F2][ng2] [ng2c2][ng2] [ng2F2][ng2] [ng2c2][ng2]|
+[ng2F2][ng2] [ng2c2][ng2] [ng2F2][ng2] [ng2c2][ng2]|
+[na1c1F1][c1][c1][c1] [na1e1][e1][e1][e1] [na1c1F1][c1][c1][c1] [na1A1][A1][A1][A1]|
+[ng2F2][ng2] [ng2c2][ng2] [ng2F2][ng2] [ng2c2][ng2]|
+[ng2F2][ng2] [ng2c2][ng2] [ng2F2][ng2] [ng2c2][ng2]|
+[ng2F2][ng2] [ng2c2][ng2] [ng2F2][ng2] [ng2c2][ng2]|
+[na1c1F1][c1][c1][c1] [na1e1][e1][e1][e1] [na1c1F1][c1][c1][c1] [na1A1][A1][A1][A1]|
 

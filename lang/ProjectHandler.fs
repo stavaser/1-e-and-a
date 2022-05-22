@@ -16,19 +16,12 @@ let parseAndEval str =
                 eval result
             with
             | RuntimeError (message) -> message
-
         use sw = new StreamWriter("output.txt")
-        printfn "%A" (output)
         sw.WriteLine(output)
         output
     | Failure (errorMsg, _, _) -> errorMsg
 
 let testParser p str =
     match run p str with
-    | Success (result, _, _) ->
-        let output = eval result
-        use sw = new StreamWriter("output.txt")
-        printfn "Success: %A" (output)
-        sw.WriteLine(output)
-        output
+    | Success (result, _, _) -> result
     | Failure (errorMsg, _, _) -> errorMsg

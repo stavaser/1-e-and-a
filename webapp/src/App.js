@@ -10,7 +10,7 @@ import Header from './components/Header/Header';
 import { Alert, Button } from 'antd';
 import 'antd/dist/antd.css';
 const App = () => {
-  const [code, setCode] = useState(`time :  4/4
+  const [code, setCode] = useState(`time: 4/4
 division: 1/16
 tempo: 120
 title: example 3

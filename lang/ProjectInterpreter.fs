@@ -100,7 +100,6 @@ let evalBeats beats =
 
             ((beam head next), drums)
             :: (evalPatternHelper tail)
-
     List.map (fun x -> evalPatternHelper x) beats
 
 
@@ -390,14 +389,14 @@ K:perc\n" + header_settings
     // render value is a bar
     elif envBar.ContainsKey render then
         let expr = envBar.Item render
+        printfn "%A" expr
         let result = evalBar expr _params envPattern
-        printfn "%A" result
         header + result
     // render value is a snippet
     elif envSnippet.ContainsKey render then
         let expr = envSnippet.Item render
-        printfn "%A" expr
         let result = evalSnippet expr _params envPattern envBar
+        printfn "%A" result
         header + result
     else
         raise (RuntimeError("Undefined variable '" + render + "'"))
