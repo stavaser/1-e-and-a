@@ -1,0 +1,832 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Docs: 1 e + a</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	text-indent: -1.7em;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-opaquegray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="f458fb36-1a92-429e-b912-2401cc244358" class="page sans"><header><img class="page-cover-image" src="Docs%201%20e%20+%20a%2088a56070ec65468cb4907e80f9d0e916/tumblr_lyhtybrcva1ql7m05o2_500.gif" style="object-position:center 50%"/><div class="page-header-icon page-header-icon-with-cover"><span class="icon">1️⃣</span></div><h1 class="page-title">Docs: 1 e + a</h1></header><div class="page-body"><p id="0c3cb13f-8b0e-45d3-9dbf-428dc63a1fd0" class="">1 e + a is a language designed for writing drum sheet music.</p><figure id="88a56070-ec65-468c-b490-7e80f9d0e916" class="image"><a href="Docs%201%20e%20+%20a%2088a56070ec65468cb4907e80f9d0e916/Untitled.png"><img style="width:1338px" src="Docs%201%20e%20+%20a%2088a56070ec65468cb4907e80f9d0e916/Untitled.png"/></a></figure><pre id="f191f436-7fce-47d7-bf13-e0d39dadebdd" class="code"><code>time: 4/4
+division: 1/16
+tempo: 120
+title: example
+
+pattern sixteenth_notes: [1 e + a | 2  e + a  | 3 e + a  | 4  e + a  |]
+
+bar mybar:
+  hh: [ sixteenth_notes ]
+  sn: [   | 2 |   | 4 |]
+  bd: [ 1 |   | 3 |   |]
+
+render: { mybar }</code></pre><h1 id="df4da862-067c-4000-b825-532dafe01f1c" class="">Table of contents</h1><nav id="a158b718-0385-4e8d-a1ae-c592afa935ad" class="block-color-gray table_of_contents"><div class="table_of_contents-item table_of_contents-indent-0"><a class="table_of_contents-link" href="#df4da862-067c-4000-b825-532dafe01f1c">Table of contents</a></div><div class="table_of_contents-item table_of_contents-indent-0"><a class="table_of_contents-link" href="#fcb3106f-2ab3-4e7f-8314-9e98c82ecd59">Getting started</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#43d2d402-fc77-4481-9557-559264376124">Running 1 e + a with an interactive editor and viewer</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#e1fe7086-096c-4939-bff2-297528ff887d">Running 1 e + a from the command line</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#f1ec49d2-a4ca-4936-990f-046af7114541">Simplest usage</a></div><div class="table_of_contents-item table_of_contents-indent-0"><a class="table_of_contents-link" href="#8686fccd-3ef6-4b2a-bac7-abb6f0490982">Tutorial: writing your first song in 1 e + a!</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#cd3bdcae-f5a7-46e0-9307-96fe165814a6">Step 1: creating a pattern</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#2ee54728-e027-4f92-beaf-67ec250bdfa5">Step 2: creating a bar</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#33f528f6-85dd-4a2d-9414-9b2080caa008">Step 3: creating a snippet</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#4ce706b4-d800-4e4d-8813-7c773c57384e">The complete example</a></div><div class="table_of_contents-item table_of_contents-indent-0"><a class="table_of_contents-link" href="#84171b05-8119-4827-9d91-cc068fda472e">Overview</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#d1815b5b-9596-4ca3-88f6-22615732c9c0">Settings</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#6ddc1225-0638-4d0a-bac4-15c08046bd96">Time signature</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#6abdaf9c-a7bd-4161-b845-ae9294718617">Division</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#8ce120a9-e1de-4c27-8e34-47a6f582b5ef">Tempo</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#ba54eb19-b7c5-46e8-8e50-9c2fa4146504">Title</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#3c3ba809-eb56-440d-9e32-6aeb3ea25aad">Example</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#5621a4f7-252b-49ac-aa48-b98bb15fe252">Drums</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#425550e7-a06e-4d6d-8d82-4f8a36f43cc4">Rests</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#36766830-1121-427f-8467-1b39b8470866">Notes</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#9a1de130-e1af-40ac-8f39-ca63ce0e41d7">Meaning</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#cccbc36f-a964-4000-9be4-7461dbc578f4">Syntax</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#d6bffeef-67bb-4a10-aff6-6dbe62cd9da9">Example</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#c5165d64-ef56-4ca1-b088-0633379bbe98">Patterns</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#630f08ec-990f-4135-bf20-8ee13301f638">Meaning</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#31fd94a2-332c-444b-8e7d-31574ff15712">Syntax</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#db1fe45c-85c4-499a-8c3e-abb2f328cf02">Example</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#3e169978-e9ac-4e7c-8557-a5759104dcf3">Bars</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#249520d2-635d-4d9e-b71f-d30688056cbb">Meaning</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#2a58c277-ce52-4e69-a2d2-9f38dc9aaf35">Syntax</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#cc05e734-b4a1-4933-ad9e-7441ab84bdbe">Example</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#c291d116-c3bf-4cc1-95f9-6f5571b9f296">Snippets</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#3c318003-1837-465f-b910-e63679fcfa8b">Meaning</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#7d9b5301-58bc-4443-9133-4dbb1d120785">Syntax</a></div><div class="table_of_contents-item table_of_contents-indent-2"><a class="table_of_contents-link" href="#50a62e5b-82b1-4a17-bfd7-e8a96ac1c6eb">Example</a></div><div class="table_of_contents-item table_of_contents-indent-1"><a class="table_of_contents-link" href="#3368eb2a-e1e5-4e90-90bb-00a02681720c">Rendering</a></div><div class="table_of_contents-item table_of_contents-indent-0"><a class="table_of_contents-link" href="#80c0c780-4d8b-4281-8317-1f3dd43ec90c">API reference</a></div></nav><h1 id="fcb3106f-2ab3-4e7f-8314-9e98c82ecd59" class="">Getting started</h1><h2 id="43d2d402-fc77-4481-9557-559264376124" class="">Running 1 e + a with an interactive editor and viewer</h2><p id="8835a044-59ca-4cdd-b2e3-b852fc815003" class="">(Users shouldn&#x27;t have to do this in the future, but for now you still have to clone the repo and run both the server and the client locally)</p><p id="e1d4ae03-ec2e-47d5-8d80-90241470bdff" class=""> 1. Clone the Github repository from</p><figure id="fd8c09cb-d245-4bd8-be44-dc744b9e78ab"><div class="source">https://github.com/williams-cs/cs334_project-stavaser.git</div></figure><pre id="52efb610-a4b0-4edb-8fb7-9ac93dc528b6" class="code"><code>git clone https://github.com/williams-cs/cs334_project-stavaser.git</code></pre><ol type="1" id="19fbfec8-3be8-4b8a-9930-02835d234c52" class="numbered-list" start="2"><li> Run the server which is inside <code>server</code> folder:</li></ol><pre id="82fb4f3d-b25a-4f55-9147-a3cdf556ad80" class="code"><code>cd server
+dotnet build
+dotnet run</code></pre><ol type="1" id="3c7a9a79-7a31-4a2a-84ac-ea70fc12e11b" class="numbered-list" start="3"><li>Run the website which is inside the <code>webapp</code> folder:</li></ol><pre id="3416b1d3-c5fb-438d-9c0a-54ba076e6261" class="code"><code>cd ..
+cd webapp
+npm install
+npm start</code></pre><ol type="1" id="310f0859-6b19-4ad3-bd05-9e7c5c96d3f1" class="numbered-list" start="4"><li>Done! By default, the React project will start on <a href="http://localhost:3000/">http://localhost:3000/</a>. You can start writing programs in the editor and the output will be rendered every time you hit save (<mark class="highlight-gray"><code>cmd</code></mark><mark class="highlight-gray"> </mark><mark class="highlight-gray"><code>+</code></mark><mark class="highlight-gray"> </mark><mark class="highlight-gray"><code>s</code></mark><mark class="highlight-gray"> or </mark><code><mark class="highlight-gray">ctrl</mark></code><mark class="highlight-gray"> </mark><code><mark class="highlight-gray">+</mark></code><mark class="highlight-gray"> </mark><code><mark class="highlight-gray">s</mark></code><mark class="highlight-gray"> if you’re on Windows).</mark></li></ol><h2 id="e1fe7086-096c-4939-bff2-297528ff887d" class="">Running 1 e + a from the command line</h2><p id="89e87cf4-4a80-4795-8320-38af4d657d88" class="">To run programs written in 1 e + a on your machine, download the Github repository from</p><figure id="8992bb36-0c68-478e-b059-5c763b01cba9"><div class="source">https://github.com/williams-cs/cs334_project-stavaser.git</div></figure><pre id="9205e269-3d3f-4e01-a2ab-de8dc85bab5a" class="code"><code>git clone https://github.com/williams-cs/cs334_project-stavaser.git</code></pre><p id="02c3459c-60f0-4cc6-a5e3-98a725709578" class="">Then when you’re inside the project folder, type</p><pre id="c1cbc1ca-bf25-4728-98bb-dee1bfc7ce2f" class="code"><code>cd lang
+dotnet build
+dotnet run &lt;filename&gt;</code></pre><p id="5b46e3a2-56da-4aee-9a2f-1b91a7e40bbc" class=""><code>&lt;filename&gt;</code> is a text file that contains 1 e + a code.</p><p id="98c1253c-e1a4-45cf-a5ce-95722b2dcf1b" class="">The output of this command is a text file containing <a href="https://abcnotation.com">abc notation</a> which you can then convert to pdf or svg by using abc’s software: <a href="https://abcnotation.com/software">https://abcnotation.com/software</a>.</p><p id="99443ac5-1c21-40f8-802b-1007559013d3" class="">Or if you are at the solution level (the parent directory) you can run the project by typing</p><pre id="ed9a47db-4afe-4483-a180-021e5e96746e" class="code"><code>dotnet run --project lang/lang.fsproj &lt;path_to_filename&gt;</code></pre><h2 id="f1ec49d2-a4ca-4936-990f-046af7114541" class="">Simplest usage</h2><p id="b1db4ba8-afeb-4078-9206-b29bf2bf2f70" class="">Copy and paste this code into the interactive web editor (or a new file if you’re running from the command line)</p><pre id="51c68647-748e-46c8-a0c2-aea66bd7a76d" class="code"><code>time: 4/4
+division: 1/16
+tempo: 120
+title: example
+
+pattern sixteenth_notes: [1 e + a | 2  e + a  | 3 e + a  | 4  e + a  |]
+
+bar mybar:
+  hh: [ sixteenth_notes ]
+  sn: [   | 2 |   | 4 |]
+  bd: [ 1 |   | 3 |   |]
+  
+render: { mybar }</code></pre><p id="c791cbcc-84dc-4868-bf69-dfc7d339c26c" class="">Hit save (<mark class="highlight-gray"><code>cmd</code></mark><mark class="highlight-gray"> </mark><mark class="highlight-gray"><code>+</code></mark><mark class="highlight-gray"> </mark><mark class="highlight-gray"><code>s</code></mark><mark class="highlight-gray"> or </mark><code><mark class="highlight-gray">ctrl</mark></code><mark class="highlight-gray"> </mark><code><mark class="highlight-gray">+</mark></code><mark class="highlight-gray"> </mark><code><mark class="highlight-gray">s</mark></code><mark class="highlight-gray"> if you’re on Windows</mark>) and you should see a rendered output like:</p><figure id="8266c6e3-5594-45a6-b6d3-fdde384c4a02" class="image"><a href="Docs%201%20e%20+%20a%2088a56070ec65468cb4907e80f9d0e916/Untitled%201.png"><img style="width:1370px" src="Docs%201%20e%20+%20a%2088a56070ec65468cb4907e80f9d0e916/Untitled%201.png"/></a></figure><p id="542f8861-dac3-42ec-8c0b-11ea8c37d8c2" class="">Or if you’re running from the command line, type <code>dotnet run &lt;filename&gt;</code> and you should see the output in file <code>output.txt</code>, which you can then render into svg or pdf on your own by using abc’s software: <a href="https://abcnotation.com/software">https://abcnotation.com/software</a>.</p><h1 id="8686fccd-3ef6-4b2a-bac7-abb6f0490982" class="">Tutorial: writing your first song in 1 e + a!</h1><p id="74165da3-dbdf-4ca1-b7cc-9f86da069a59" class="">Follow these 3 simple steps to get familiar with 1 e + a syntax and get started writing your own programs.</p><blockquote id="0dffb48b-67ac-4fdf-8fdd-cc10888daa50" class="">Note that currently for the language to be able to render anything, it needs the settings explicitly written in at the top level. So, in all of these examples there’s the exact same “header” omitted for the sake of saving space:</blockquote><pre id="6f37cacd-ceaa-4fe8-b70e-0745251f4ace" class="code"><code>time: 4/4
+division: 1/16
+tempo: 120
+title: example</code></pre><hr id="8a39fc5b-2d48-4bdd-a4d8-bfae278db974"/><h2 id="cd3bdcae-f5a7-46e0-9307-96fe165814a6" class="">Step 1: creating a pattern</h2><blockquote id="93d0129e-9725-4efc-bbd7-cb3a4660af75" class="block-color-teal_background"><mark class="highlight-teal">Note: Refer to the “</mark><a href="https://www.notion.so/Docs-1-e-a-f458fb361a92429eb9122401cc244358"><mark class="highlight-teal">Notes</mark></a><mark class="highlight-teal">” and “</mark><a href="https://www.notion.so/Docs-1-e-a-f458fb361a92429eb9122401cc244358"><mark class="highlight-teal">Patterns</mark></a><mark class="highlight-teal">” section in the Overview for a more detailed description of these data types.</mark></blockquote><p id="39db1bdf-60e1-4aac-abae-d365546c4748" class="">A pattern is one measure of notes. Creating a pattern is very simple. All you have to do is use the keyword <code>pattern</code> and give it a name! Then after the semicolon (<code>:</code>), you can begin writing the pattern. The entire measure should be inside square brackets <code>[]</code> , and all beats in the measure should be separated by <code>|</code> :</p><pre id="9354616c-a23d-40ad-ae6c-d22341b09090" class="code"><code>time: 4/4
+division: 1/16
+tempo: 120
+title: example
+
+pattern eight_notes: [1 + | 2 + | 3 + | 4 + |]
+
+...</code></pre><p id="88f0250f-e401-410b-9408-fed45cd8e6fe" class="">We already have one pattern, but we’d like to create one more, which will be our bass drum pattern that we can reuse later on. So, let’s do that:</p><pre id="63f59ac6-b143-4946-84d0-2b5d1f1822da" class="code"><code>...
+
+pattern eight_notes: [1 + | 2 + | 3 + | 4 + |]
+pattern bass_drum_pattern: [1 |   | 3 |   |]
+
+...</code></pre><p id="07025179-57eb-4d6f-9147-c3e9a8e8aa7b" class="">
+</p><p id="abda2d86-3055-4c4f-96f0-f184d6d698ee" class="">But oh no! We cannot render patterns alone because they needs assignments to instruments! The next example illustrates how you can do this and combine many patterns into a bar to render.</p><h2 id="2ee54728-e027-4f92-beaf-67ec250bdfa5" class="">Step 2: creating a bar</h2><blockquote id="578c5ad0-17b8-4fee-b242-f4b27c04689f" class="block-color-teal_background"><mark class="highlight-teal">Note: Refer to the “</mark><a href="https://www.notion.so/Docs-1-e-a-f458fb361a92429eb9122401cc244358"><mark class="highlight-teal">Bars</mark></a><mark class="highlight-teal">” section in the Overview for a more detailed description of this data type.</mark></blockquote><p id="8cbca763-f7a0-44e6-9089-dd2abe36fa44" class="">The process of creating bars is very similar creating patterns! All you have to do is use the keyword <code>bar</code> and give it a name, too. Then after the semicolon (<code>:</code>), you can begin writing the bar. For example,</p><pre id="87e06d91-44fa-4fd9-8c5e-48cf0c5b1227" class="code"><code>bar my_cool_beat:
+	...</code></pre><p id="e2e63747-ee6d-4535-88ef-c639228fa892" class="">Now we can assign patterns into various drums by writing <code>&lt;drum_name&gt;: &lt;pattern&gt;</code> inside the bar expression! Like this:</p><blockquote id="42df7a23-a104-4c2c-83d8-9bd27cb82c85" class="block-color-teal_background"><mark class="highlight-teal">Note: For more information which drums are available to use in &lt;drum_name&gt;, refer to the “</mark><a href="https://www.notion.so/Docs-1-e-a-f458fb361a92429eb9122401cc244358"><mark class="highlight-teal">Drums</mark></a><mark class="highlight-teal">” section in the Overview.</mark></blockquote><pre id="ed10124c-4a4a-4f6d-a3d0-eefd3d74e6c7" class="code"><code>...
+bar my_cool_beat:
+	hh: [eight_notes]
+	bd: [bass_drum_pattern]
+...</code></pre><p id="b535fc2a-ea2c-44a7-b97f-1b08bbdb303b" class="">But you are not restricted to always use pattern variable names to assign patterns to drums. You can directly write a pattern after <code>&lt;drum_name&gt;:</code> if you like! For example,</p><pre id="1117b6b4-870c-49a8-b253-97cf3a97894f" class="code"><code>...
+bar my_cool_beat:
+	hh: [eight_notes]
+  sn: [  | 2 |   | 4 |]
+	bd: [bass_drum_pattern]
+...</code></pre><p id="74d8a6f3-cceb-4d67-9344-eb3c2fa51d7e" class="">Cool! Now all you have to do is specify what to render after the <code>render:</code> keyword inside curly brackets <code>{}</code>:</p><pre id="7ba3978c-13ed-4c4e-be76-3841875cd740" class="code"><code>render: {my_cool_beat}</code></pre><blockquote id="6be073b7-11e1-4b01-97a7-eced89ae9efb" class="block-color-teal_background"><mark class="highlight-teal">Note: render accepts a list of bars or snippets (more on snippets in step 3) separated by commas. Read more on the “</mark><mark class="highlight-teal"><a href="https://www.notion.so/Docs-1-e-a-f458fb361a92429eb9122401cc244358">Rendering</a></mark><mark class="highlight-teal">” section in the Overview.</mark></blockquote><p id="3253f22a-123f-4667-9ff8-ff8c928771dd" class="">
+</p><p id="a85fd9ac-8602-4a08-a98f-0842640dff02" class="">And that’s it, you’ve created your very first bar, yaay! 🎉</p><p id="31132ced-18c5-4f72-86a2-42a03da298be" class="">
+</p><p id="9674c3ca-5fd7-40e5-9564-b9ccb6e06ca4" class="">The full example:</p><pre id="1a20cd45-4720-4f72-bcf0-093a984ba157" class="code"><code>time : 4/4
+division: 1/16
+tempo: 120
+title: example
+
+pattern eight_notes: [1 + | 2 + | 3 + | 4 + |]
+pattern bass_drum_pattern: [1 |   | 3 |   |]
+
+bar my_cool_beat:
+	hh: [eight_notes]
+	sn: [  | 2 |   | 4 |]
+	bd: [bass_drum_pattern]
+
+render: {my_cool_beat}</code></pre><p id="2f4190d6-bf8c-4774-bd33-b0438a51e66d" class="">And the output:</p><figure id="bdb8090e-c922-4907-98a6-5f447817400f" class="image"><a href="Docs%201%20e%20+%20a%2088a56070ec65468cb4907e80f9d0e916/Untitled%202.png"><img style="width:1352px" src="Docs%201%20e%20+%20a%2088a56070ec65468cb4907e80f9d0e916/Untitled%202.png"/></a></figure><p id="96cc7700-b2d1-4914-af53-7b4fc6a51fb0" class="">
+</p><h2 id="33f528f6-85dd-4a2d-9414-9b2080caa008" class="">Step 3: creating a snippet</h2><p id="059827eb-9a5a-4307-a800-12e46eecbf20" class="">Now that we have a bar, we can go even further and combine multiple bars into a <code>snippet</code>!</p><blockquote id="c7813087-d449-4b88-948e-1d6dd74dff61" class="block-color-teal_background"><mark class="highlight-teal">Note: Refer to the “</mark><a href="https://www.notion.so/Docs-1-e-a-f458fb361a92429eb9122401cc244358"><mark class="highlight-teal">Snippets</mark></a><mark class="highlight-teal">” section in the Overview for a more detailed description of this data type.</mark></blockquote><p id="5c43e84c-6c37-45ae-a8a1-7958b0407cf5" class="">Declare a snippet by writing</p><pre id="dbf1a546-88cc-4f61-a337-f052af31370d" class="code"><code>snippet my_song:
+	...</code></pre><p id="9e6569dc-f7fc-4471-81b4-8bf9b1e0505e" class="">We have 2 choices when creating a snippet:</p><ol type="1" id="17010139-9a18-49a9-b87b-a8809f05d66b" class="numbered-list" start="1"><li>We can either repeat one or more bars N number of times by writing<pre id="0546d4c0-ce12-4ae1-9399-a64655c72135" class="code"><code>repeat N: {bar1, bar2, ...}</code></pre></li></ol><ol type="1" id="a9e0dbb0-7c46-4b72-b229-10884d026e4c" class="numbered-list" start="2"><li>Or change a repeated bar by specifying which repeated number to change like so<pre id="edaebd34-810f-4c0d-a236-5d5ed117af8d" class="code"><code>change 10: my_bar (1,4,7){
+	&lt;drum_name&gt;: &lt;pattern&gt;
+}</code></pre></li></ol><p id="b0873de4-b087-41c5-8b9c-f91e9e28eae0" class="">So let’s do both!</p><pre id="728272dc-16b9-49e2-81f6-247e5e344c0c" class="code"><code>...
+
+snippet my_song:
+	repeat 2: {my_cool_beat}
+
+	change 16: my_cool_beat (every 4) {
+	    cc: [1 | 2 | 3 | 4 |]
+	    hh: [||||]
+			sn: [1 e + a ||3 e + a||]
+			t1: [|2 e + a|||]
+			t2: [|||4 e + a|]
+  }
+
+render: {my_song}</code></pre><p id="2a130ca5-0207-40c2-a698-b7dfbf09bd2b" class="">
+</p><h2 id="4ce706b4-d800-4e4d-8813-7c773c57384e" class="">The complete example</h2><p id="823e7143-97a3-45d6-b79c-1abec684c1a6" class="">And we’re done!!</p><p id="7dfe0403-56df-49ac-926a-f32e7d507266" class="">Try copying and pasting this code into the web editor and see how it sounds!</p><pre id="ecba7c66-c5ac-4b2c-90c5-1db190498c26" class="code"><code>time : 4/4
+division: 1/16
+tempo: 120
+title: example
+
+pattern eight_notes: [1 + | 2 + | 3 + | 4 + |]
+pattern bass_drum_pattern: [1 |   | 3 |   |]
+
+bar my_cool_beat:
+	hh: [eight_notes]
+	sn: [  | 2 |   | 4 |]
+	bd: [bass_drum_pattern]
+
+bar my_cool_intro:
+  cc: [1 | 2 | 3 | 4 |]
+	sn: [1 + a | | 3  + a | |]
+	t1: [| 2 e + a | | 4 e + a |]
+	bd: [bass_drum_pattern]
+
+snippet my_song:
+	repeat 2: { my_cool_intro }
+
+	change 16: my_cool_beat (every 4) {
+	    cc: [1 | 2 | 3 | 4 |]
+	    hh: [||||]
+			sn: [1 e + a ||3 e + a||]
+			t1: [|2 e + a|||]
+			t2: [|||4 e + a|]
+  }
+
+render: {my_song}</code></pre><h1 id="84171b05-8119-4827-9d91-cc068fda472e" class="">Overview</h1><hr id="eb052a41-4d8f-4b5a-8243-01b5bb6fd3e3"/><p id="030fc5f3-d3d7-4acf-a3cf-c1d6453b485d" class="">This is a collection of basic syntax elements and their meanings followed by examples.</p><p id="70d45bc1-edcb-4685-8386-81ea4b39e912" class="">The order in which these elements appear in the program should be strictly followed:<div class="indented"><ol type="1" id="09aeba8b-0ee6-43b1-9f6b-4ad93167bacc" class="numbered-list" start="1"><li>Settings</li></ol><ol type="1" id="6ad94ebb-97a8-45e3-a4a6-78d72f7a72f6" class="numbered-list" start="2"><li>Patterns</li></ol><ol type="1" id="c6a81454-e0b2-48f8-a346-35e92bb18ac5" class="numbered-list" start="3"><li>Bars</li></ol><ol type="1" id="be6fe6fa-652c-442c-a426-1fbe58601aea" class="numbered-list" start="4"><li>Snippets</li></ol><ol type="1" id="b6dd730e-7ca6-4a55-9f05-7bd9468c1f04" class="numbered-list" start="5"><li>Render</li></ol></div></p><pre id="07c8c532-38d7-47be-8566-ca4ea81a9812" class="code"><code>... settings ...
+... patterns ...
+... bars ...
+... snippets ...
+render: {...}</code></pre><h2 id="d1815b5b-9596-4ca3-88f6-22615732c9c0" class="">Settings</h2><hr id="0c32c928-526a-44cf-ae45-f143fd50cff4"/><p id="490685c0-6419-4664-8734-aed42663e18b" class="">There are 4 required settings to render the sheet music: time signature, division, tempo, and title. And the order must be strictly followed: first - time, second division, then tempo, and finally title.</p><h3 id="6ddc1225-0638-4d0a-bac4-15c08046bd96" class="">Time signature</h3><p id="af5fe94b-9fee-4c8b-9802-68b39a482f12" class="">Format: <code>time: &lt;int&gt;/&lt;int&gt;</code></p><p id="8d671d9b-19ec-497b-bf2c-9feea33ba039" class="">Top number tells how many beats should be in one measure, and the bottom number tells what value of note should get the beat.</p><p id="92fb26eb-abcf-427d-9eed-70a54163978a" class=""><mark class="highlight-gray">Note: The language currently supports only </mark><mark class="highlight-gray"><code>4/4</code></mark><mark class="highlight-gray"> time signature. </mark></p><h3 id="6abdaf9c-a7bd-4161-b845-ae9294718617" class="">Division</h3><p id="a00dad44-ec62-47ee-ab3a-24e530def506" class="">Format: <code>division: 1/&lt;int&gt;</code></p><p id="187c2c0a-efba-41dd-b008-132d75339c6e" class="">Specifies the minimum value that  notes can divide into.</p><p id="55c524a7-fe42-42a4-99c9-69e1db6c6787" class=""><mark class="highlight-gray">Note: The language currently supports only 1/2, 1/4, 1/8, and 1/16 division of beats. </mark></p><h3 id="8ce120a9-e1de-4c27-8e34-47a6f582b5ef" class="">Tempo</h3><p id="017d2952-2eef-4e2c-a03e-aa0f8355a806" class="">Format: <code>tempo: &lt;int&gt;</code></p><p id="337323b3-63e9-4184-94be-acaf6f33687f" class="">Specifies the speed of the music to be played.</p><h3 id="ba54eb19-b7c5-46e8-8e50-9c2fa4146504" class="">Title</h3><p id="d0092b78-5276-4917-9053-b4df893ddbd0" class="">Format: <code>title: &lt;string&gt;</code></p><p id="516c2e0d-6647-42bb-b881-7e41bdbe2227" class="">Specifies the title of the sheet music.</p><h3 id="3c3ba809-eb56-440d-9e32-6aeb3ea25aad" class="">Example</h3><pre id="f443d736-b762-455d-afd6-802f6c879795" class="code"><code>time : 4/4
+division: 1/16
+tempo: 120
+title: example</code></pre><h2 id="5621a4f7-252b-49ac-aa48-b98bb15fe252" class="">Drums</h2><hr id="2208268f-7065-4ae2-8172-22f7198d45af"/><p id="79c02a01-944c-42aa-b339-3eb96a9ac7f8" class="">Below is an example of a basic drum kit and their corresponding abbreviations used to write programs.</p><pre id="6419fb6b-f7c3-4261-a6c5-55e208fdfe34" class="code"><code>cc = Crash cymbal
+hh = Hi-hat
+rd = Ride cymbal
+sn = Snare drum
+t1 = High tom
+t2 = Mid tom
+ft = Floor tom
+bd = Bass drum</code></pre><p id="a359683a-ad19-497d-8729-05d069ee3471" class=""><mark class="highlight-gray">More drums and techniques will be added in the future!</mark></p><h2 id="425550e7-a06e-4d6d-8d82-4f8a36f43cc4" class="">Rests</h2><hr id="079d5026-361f-4c9e-ad8e-b331c0449dc3"/><p id="e3fb8fd9-531d-4392-b087-ecdd2ed48ef1" class="">Rest is a special case of a drum. Think of it as an extra invisible instrument:</p><pre id="76ccb3c3-42b9-4795-b380-e89a40ef77f4" class="code"><code>r = Rest</code></pre><p id="8250f703-4ee2-49cd-b3df-945bd12c7e79" class="">Rests behave exactly like any other drum instrument, thus they should be added only when the first note of a beat does not exist.</p><p id="149781b2-4849-414a-958d-ca78c77f8f5b" class="">Example:</p><pre id="a4ce2b11-b6b0-4800-a3e1-997e5faae89e" class="code"><code>bar bar_with_rest:
+	sn: [ + a | 2 | e + a |   |]
+  hh: [ + a | 2 | e + a |   |]
+  r:  [ 1   |   | 3     | 4 |]</code></pre><p id="f5423f8f-d9a2-497d-aec9-a9c1e552b9b0" class="">Output:</p><figure id="4ed513d6-1af0-49a0-b520-d1a2ea4ec6df" class="image"><a href="Docs%201%20e%20+%20a%2088a56070ec65468cb4907e80f9d0e916/Untitled%203.png"><img style="width:654px" src="Docs%201%20e%20+%20a%2088a56070ec65468cb4907e80f9d0e916/Untitled%203.png"/></a></figure><h2 id="36766830-1121-427f-8467-1b39b8470866" class="">Notes</h2><hr id="630fc9c5-7643-4ef3-b61a-cf81d31039ee"/><h3 id="9a1de130-e1af-40ac-8f39-ca63ce0e41d7" class="">Meaning</h3><p id="05697e91-61c7-4bc5-8319-15868b8d2297" class="">Notes in 1 e + a are written, well… using the “1 e and a” counting system: </p><figure id="2923a6aa-00d9-4319-84d1-ec01bd7b31f5"><a href="https://en.wikipedia.org/wiki/Counting_(music)" class="bookmark source"><div class="bookmark-info"><div class="bookmark-text"><div class="bookmark-title">Counting (music) - Wikipedia</div><div class="bookmark-description">In music, counting is a system of regularly occurring sounds that serve to assist with the performance or audition of music by allowing the easy identification of the beat. Commonly, this involves verbally counting the beats in each measure as they occur, whether there be 2 beats, 3 beats, 4 beats, or even 5 beats.</div></div><div class="bookmark-href"><img src="https://en.wikipedia.org/static/favicon/wikipedia.ico" class="icon bookmark-icon"/>https://en.wikipedia.org/wiki/Counting_(music)</div></div><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Figure_rythmique_deux_croches_lien_bas.svg/112px-Figure_rythmique_deux_croches_lien_bas.svg.png" class="bookmark-image"/></a></figure><p id="b8807a58-c278-4a5d-b6c8-4222c6def497" class="">
+</p><p id="9a1bdf9f-e548-48c1-a3e3-b5cedcef299a" class="">For example, in 4/4 time and 1/16 division</p><ul id="cf79e840-692f-4888-a691-fc43b0f45483" class="bulleted-list"><li style="list-style-type:disc">“1 2 3 4” means 4 quarter notes</li></ul><ul id="825af104-2711-45ad-b077-a8ac17e26872" class="bulleted-list"><li style="list-style-type:disc">“1 and, 2 and, 3 and, 4 and” means 8 eighth notes</li></ul><ul id="940ec958-eb4f-4148-9051-72d4a84f79f0" class="bulleted-list"><li style="list-style-type:disc">“1 e and a, 2 e and a, 3 e and a, 4 e and a” means 16 sixteenth notes</li></ul><p id="c5164016-8c14-495e-9ed6-6541e2a752b0" class="">
+</p><h3 id="cccbc36f-a964-4000-9be4-7461dbc578f4" class="">Syntax</h3><p id="f6b4899d-af8f-4c88-9086-322a701d3202" class="">A sequence of notes in one measure is placed inside square brackets <code>[]</code> and separated by <code>|</code> after EACH beat:</p><pre id="f9a7353e-6416-47d1-a919-11ec1a64c67e" class="code"><code>[1 | 2 | 3 | 4 |]</code></pre><blockquote id="3d395b87-753a-4f4b-9502-b03f1a0ef6f6" class="">Note: it is important that you put <code>|</code> after each beat even if there’s no note (meaning a rest) in the beat because it might be ambiguous which beat a note belongs to:</blockquote><pre id="c1754372-48c8-46c7-8ed5-767d7ab31d06" class="code"><code>[1 + 2 + 4 a]</code></pre><pre id="a9246ff5-38b7-41fa-b5cb-e875462f1a61" class="code"><code>[1 + | 2 + |  | 4 a |]</code></pre><blockquote id="036c1e75-3f65-4fcc-a0de-f8adeaad6280" class="">General rule of thumb is that you should have as many <code>|</code>&#x27;s as the top number of the time signature.</blockquote><h3 id="d6bffeef-67bb-4a10-aff6-6dbe62cd9da9" class="">Example</h3><pre id="529af115-54eb-4d4f-8266-545e4a9721b7" class="code"><code>[1 |  | 3 |  |]
+
+[1 ||||]
+
+[1 + | 2 e a | + a | 4 e + a |]</code></pre><h2 id="c5165d64-ef56-4ca1-b088-0633379bbe98" class="">Patterns</h2><hr id="0c35ed64-23e5-4270-a2df-dfaafdf2390e"/><h3 id="630f08ec-990f-4135-bf20-8ee13301f638" class="">Meaning</h3><p id="c5154a55-df35-449c-9f1a-fa14deb9bb7b" class="">A <code>pattern</code> is a data type that contains one measure of notes as defined by the time signature.</p><h3 id="31fd94a2-332c-444b-8e7d-31574ff15712" class="">Syntax</h3><pre id="87626279-9270-4ae6-840c-9f6a35b3b561" class="code"><code>pattern &lt;pattername&gt;: &lt;notes&gt;</code></pre><ul id="671c1b2f-827a-4008-a095-330b6498c391" class="bulleted-list"><li style="list-style-type:disc"><code>&lt;pattername&gt;</code> is a string denoting the pattern’s name<ul id="6bd50c7f-08d2-4cb8-9c18-e242f314ded1" class="bulleted-list"><li style="list-style-type:circle">Allowed characters: any letters from the English alphabet and underscores <code>_</code></li></ul></li></ul><ul id="df8f2816-6723-4234-8d12-382c787f4df4" class="bulleted-list"><li style="list-style-type:disc"><a href="https://www.notion.so/Docs-1-e-a-f458fb361a92429eb9122401cc244358"><code>&lt;notes&gt;</code></a> is one measure of notes as defined in section “Notes”.<p id="3b8ff17b-7921-4007-ba14-e53ee1808ebd" class="">
+</p></li></ul><h3 id="db1fe45c-85c4-499a-8c3e-abb2f328cf02" class="">Example</h3><pre id="62784138-e5e5-4cd9-a76b-165222911915" class="code"><code>pattern mypattern: [ 1 e + a | 2 e + a | 3  e + a | 4  e + a |]</code></pre><h2 id="3e169978-e9ac-4e7c-8557-a5759104dcf3" class="">Bars</h2><hr id="0a8048e4-e6e3-4765-84b6-7d545dbe2861"/><h3 id="249520d2-635d-4d9e-b71f-d30688056cbb" class="">Meaning</h3><p id="17a1bbeb-02f7-4b91-b6da-1910188c5559" class="">A <code>bar</code> is a data type that contains one or more <a href="https://www.notion.so/Docs-1-e-a-f458fb361a92429eb9122401cc244358"><code>pattern</code></a> variable names or <a href="https://www.notion.so/Docs-1-e-a-f458fb361a92429eb9122401cc244358"><code>notes</code></a> assigned to drum instruments.</p><blockquote id="c9a34fc3-c11c-446d-a73f-6648f30c93ce" class="block-color-teal_background"><mark class="highlight-teal">Note: For more information which drum instruments are available to use, refer to the “</mark><a href="https://www.notion.so/Docs-1-e-a-f458fb361a92429eb9122401cc244358"><mark class="highlight-teal">Drums</mark></a><mark class="highlight-teal">” section in the Overview.</mark></blockquote><h3 id="2a58c277-ce52-4e69-a2d2-9f38dc9aaf35" class="">Syntax</h3><pre id="8ab8e98e-532f-49b3-a6ea-582369731dfc" class="code"><code>bar &lt;barname&gt;: 
+	&lt;drum&gt;: [&lt;pattern&gt;]</code></pre><ul id="5cec2867-a0e5-4801-9e65-7594d4658244" class="bulleted-list"><li style="list-style-type:disc"><code>&lt;barname&gt;</code> is a string denoting the pattern’s name<ul id="3f9178fe-2c98-4f78-acef-bd2162ef8ffe" class="bulleted-list"><li style="list-style-type:circle">Allowed characters: any letters from the English alphabet and underscores <code>_</code></li></ul></li></ul><ul id="b4321dae-fa9b-4abb-a73b-5306b8acea89" class="bulleted-list"><li style="list-style-type:disc"><a href="https://www.notion.so/Docs-1-e-a-f458fb361a92429eb9122401cc244358"><code>&lt;drum&gt;</code></a> is a drum instrument</li></ul><ul id="f5593c10-7497-44e3-a7fe-044c3102a96c" class="bulleted-list"><li style="list-style-type:disc"><a href="https://www.notion.so/Docs-1-e-a-f458fb361a92429eb9122401cc244358"><code>&lt;pattern&gt;</code></a> can either be a pattern variable name or directly <a href="https://www.notion.so/Docs-1-e-a-f458fb361a92429eb9122401cc244358"><code>&lt;notes&gt;</code></a></li></ul><h3 id="cc05e734-b4a1-4933-ad9e-7441ab84bdbe" class="">Example</h3><pre id="0b0d7651-c600-4342-a6c3-db8c06deb20f" class="code"><code>bar my_bar: 
+	hh: [my_pattern]
+	sn: [1|2|3|4|]</code></pre><h2 id="c291d116-c3bf-4cc1-95f9-6f5571b9f296" class="">Snippets</h2><hr id="208c1a0d-dd6e-4576-850d-56f8fe9c5e7e"/><h3 id="3c318003-1837-465f-b910-e63679fcfa8b" class="">Meaning</h3><p id="280e5f04-35c1-4939-bc43-6f0cc786d3a6" class="">A <code>snippet</code> is a data type that contains one or more combinations of the two possible instructions:</p><ol type="1" id="364df117-b056-4371-bfe5-b1422825415f" class="numbered-list" start="1"><li>Repeat instruction: repeats one or more specified <code>bar</code> N times</li></ol><ol type="1" id="dd668965-97e8-4a47-9605-951581cc6594" class="numbered-list" start="2"><li>Change instruction: repeats ONE specified <code>bar</code> N times, but also changes K-th repetitions of the given bar.</li></ol><h3 id="7d9b5301-58bc-4443-9133-4dbb1d120785" class="">Syntax</h3><pre id="448e0fc1-e70e-4e0e-99f3-e2166aa554e6" class="code"><code>snippet &lt;snippetname&gt;: 
+	repeat &lt;N&gt;: {&lt;barname&gt;, &lt;barname&gt;, ...}
+	change &lt;N&gt;: &lt;barname&gt; (&lt;option&gt;) {
+		&lt;drum&gt;: &lt;pattern&gt;
+	}</code></pre><ul id="ad82d67f-b336-48c1-bea0-d5629b9aba5f" class="bulleted-list"><li style="list-style-type:disc"><code>&lt;snippetname&gt;</code> is a string denoting the snippet’s name<ul id="ca5f95b8-39f2-451d-aced-be3587c7f33e" class="bulleted-list"><li style="list-style-type:circle">Allowed characters: any letters from the English alphabet and underscores <code>_</code></li></ul></li></ul><ul id="17f26be3-2630-44f8-b951-e7c7780c4712" class="bulleted-list"><li style="list-style-type:disc"><code>&lt;N&gt;</code> is the number of times to repeat a bar</li></ul><ul id="1bf63b68-8d0d-40ee-bb15-51152fae8bd2" class="bulleted-list"><li style="list-style-type:disc"><code>&lt;barname&gt;</code> is a bar variable name to repeat/change</li></ul><ul id="97617ac3-3e5e-41c0-8342-5dd79f523d8b" class="bulleted-list"><li style="list-style-type:disc"><code>&lt;option&gt;</code> is a repeat option which can have two forms:<ul id="490c88e7-c0ad-43f6-8651-00a2fe0389a0" class="bulleted-list"><li style="list-style-type:circle">A list of numbers followed by commas: <code>1, 2, 3, …</code></li></ul><ul id="39a55a84-10e1-4dd1-86bc-41d5be67cbc3" class="bulleted-list"><li style="list-style-type:circle">A number after the keyword <code>every &lt;num&gt;</code></li></ul></li></ul><h3 id="50a62e5b-82b1-4a17-bfd7-e8a96ac1c6eb" class="">Example</h3><pre id="a76e012c-03a3-4a6f-9868-166691ded260" class="code"><code>snippet my_snippet:
+
+	repeat 2: { my_intro_one, my_intro_two }
+	repeat 3: { something }
+
+	change 16: my_beat (every 4) {
+			t1: [1 | 2 | 3 | 4 |]
+			t2: [ some_pattern ]
+  }</code></pre><p id="c3e58566-aca7-4258-a93a-7ae2376ff230" class="">
+</p><h2 id="3368eb2a-e1e5-4e90-90bb-00a02681720c" class="">Rendering</h2><hr id="5b3d456f-b97a-45f6-aac3-7b7900b10eb2"/><p id="0ae26f99-f84d-4691-ab86-8ba329bd15a4" class=""><code>render</code> keyword will render (or in other words, evaluate) the variables specified inside curly brackets <code>{}</code> after the semicolon <code>:</code>. The <code>render</code> keyword must always come the very last in the program.</p><p id="f9f52625-4121-4f97-87b9-f6d4960e3e57" class="">Accepted data types are:</p><ul id="7c105e8c-7690-4c2e-abe3-2d1265847016" class="bulleted-list"><li style="list-style-type:disc"><code>bar</code></li></ul><ul id="fe88fcd8-2d2c-46d2-b5fe-729bea237d60" class="bulleted-list"><li style="list-style-type:disc"><code>snippet</code></li></ul><p id="93ef9bb2-91dd-4101-9ea8-6b99f0a6e7aa" class="">
+</p><p id="56a938ea-ce75-478a-9b97-937155eca01d" class="">Example:</p><pre id="92aa90c2-deb9-40c7-899e-ea81d5e55e05" class="code"><code>...
+
+render: {&lt;barname&gt;, &lt;snippetname&gt;, ...}</code></pre><h1 id="80c0c780-4d8b-4281-8317-1f3dd43ec90c" class="">API reference</h1><hr id="1df5297f-caba-469a-97a1-ce25c0bc9a52"/><p id="817a5553-a2cf-40b2-9b81-f0670d199755" class="">If you would like to write your own interface for 1 e + a language, you can access the 1 e + a to abc notation converter through this API endpoint:</p><table id="116ee8f7-091b-4f93-9382-874d63a677ab" class="simple-table"><thead class="simple-table-header"><tr id="4a330e26-93b2-43c0-9d4c-e270afc1c549"><th id="JhBE" class="simple-table-header-color simple-table-header" style="width:174.5px">Method</th><th id="nRl~" class="simple-table-header-color simple-table-header" style="width:174.5px">HTTP request</th><th id="RVDl" class="simple-table-header-color simple-table-header" style="width:174.5px">Description</th><th id="dhRm" class="simple-table-header-color simple-table-header" style="width:174.5px">Params</th></tr></thead><tbody><tr id="79967425-c2e3-4b6c-8650-a9bcddeda332"><td id="JhBE" class="" style="width:174.5px">post</td><td id="nRl~" class="" style="width:174.5px">POST /api/1eaToAbc/</td><td id="RVDl" class="" style="width:174.5px">Converts a program written in 1 e + a to abc notation</td><td id="dhRm" class="" style="width:174.5px"><code>Text</code>: string</td></tr></tbody></table></div></article></body></html>
