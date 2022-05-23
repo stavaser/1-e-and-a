@@ -1,16 +1,17 @@
-time :  4/4
+time: 4/4
 division: 1/16
-
+tempo: 120
 title: example 2
-subtitle: example 2
 
-pattern mypattern : 1 | 2 | 3 | 4 |
+pattern sixteenth_notes: [1 e + a | 2  e + a  | 3 e + a  | 4  e + a  |]
 
+bar intro:
+    sn: [sixteenth_notes]
+    bd: [1 | 2 | 3 | 4|]
+    
+bar main:
+    hh: [sixteenth_notes]
+    sn: [1 | 2 | 3 | 4|]
 
-bar mybar1:
-    hh: [ 1 + | 2  + | 3 + | 4  + | ]
-    sn: [ mypattern ]
-    bd: [ 1 a | 2 a | 3 a | 4 a |]
-
-
-render: mybar1
+    
+render: { intro, main } 

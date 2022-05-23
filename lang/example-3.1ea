@@ -1,24 +1,25 @@
-time :  4/4
+time: 4/4
 division: 1/16
+tempo: 127
+title: Chop Suey!
 
-title: example 3
-subtitle: example 3
+pattern eigthNotes: [1 + | 2 + | 3 + | 4 + |]
+pattern fourthNotes: [ 1 | 2 | 3 | 4 |]
 
-pattern mypattern : 1 e + a | 2  e + a  | 3 e + a  | 4  e + a  |
 
-bar mybar1:
-    hh: [ mypattern ]
-    sn: [ | 2 |  | 4 |]
-    bd: [ 1 + | 2  + | 3 + | 4 + |]
-
-Snippet mysnippet:
+bar intro_bar:
+    bd: [ fourthNotes ]
+    t1: [ 1 + a | 2 | | |]
+    t2: [ |  e + | 3 | |]
+    ft: [ 1 | | e + a | 4 + |]
     
-    @change 4: 
-        mybar1 (1,4) {
-            cc: [1 |]
-            bd: [ 1 | 2 | 3 | 4 |]
-        };
+snippet intro:
+    change 8: intro_bar(8) {
+    bd: [ eigthNotes ]
+    sn: [  |  |  | + |]
+    t1: [ 1 + | 2 + | 3 + | 4 |]
+    t2: [ | | | |]
+    ft: [ 1 + | 2 + | 3 + | 4 |]
+    }
 
-    !repeat 2: [ mybar1 ].
-
-render: mysnippet
+render: { intro }

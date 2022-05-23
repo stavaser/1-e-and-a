@@ -1,0 +1,41 @@
+%%percmap D  pedal-hi-hat x
+%%percmap E  bass-drum-1
+%%percmap F  acoustic-bass-drum
+%%percmap G  low-floor-tom
+%%percmap A  high-floor-tom
+%%percmap B  low-tom
+%%percmap ^B tambourine   triangle
+%%percmap c  acoustic-snare
+%%percmap _c electric-snare
+%%percmap ^c low-wood-block   triangle
+%%percmap =c side-stick x
+%%percmap d  low-mid-tom
+%%percmap ^d hi-wood-block    triangle
+%%percmap e  hi-mid-tom
+%%percmap ^e cowbell      triangle
+%%percmap f  high-tom
+%%percmap ^f ride-cymbal-1
+%%percmap g  closed-hi-hat
+%%percmap ^g open-hi-hat
+%%percmap a  crash-cymbal-1  x
+%%percmap ^a open-triangle     triangle
+%%MIDI drummap ^g 42 %closed hi hat
+%%MIDI drummap _g 46 % open hi hat
+%%flatbeams 1
+X: 1
+U:n=!style=x!
+K:perc
+Q: 127
+T: Chop Suey!
+M: 4/4
+L: 1/16
+V:ALL stem=up
+[F2e2A2][e1][e1] [F1e1][B1][B2] [F1B1][A1][A1][A1] [F2A2][A2]|
+[F2e2A2][e1][e1] [F1e1][B1][B2] [F1B1][A1][A1][A1] [F2A2][A2]|
+[F2e2A2][e1][e1] [F1e1][B1][B2] [F1B1][A1][A1][A1] [F2A2][A2]|
+[F2e2A2][e1][e1] [F1e1][B1][B2] [F1B1][A1][A1][A1] [F2A2][A2]|
+[F2e2A2][e1][e1] [F1e1][B1][B2] [F1B1][A1][A1][A1] [F2A2][A2]|
+[F2e2A2][e1][e1] [F1e1][B1][B2] [F1B1][A1][A1][A1] [F2A2][A2]|
+[F2e2A2][e1][e1] [F1e1][B1][B2] [F1B1][A1][A1][A1] [F2A2][A2]|
+[e2A2F2][e2A2F2] [e2A2F2][e2A2F2] [e2A2F2][e2A2F2] [e2A2F2][c2F2]|
+

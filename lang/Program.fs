@@ -1,31 +1,21 @@
-﻿open ProjectInterpreter
-open ProjectParser
+﻿open lang.ProjectHandler
+open lang.ProjectParser
+
 open System.IO
-open FParsec
-open ProjectParser
-open Giraffe.ViewEngine
 
 [<EntryPoint>]
 let main argv =
     if (Array.length argv <> 1) then
-        printfn "usage: dotnet run <input_file>.1ea"
+        printfn "usage: dotnet run <input_file>"
+        printfn "you can run an example file by typing: dotnet run example-3.1ea"
+        printfn "the output of this is a text file that contains abc notaion code."
+        printfn "Also check out the web editor! Read more in the docs: https://stump-pullover-0b3.notion.site/Docs-1-e-a-f458fb361a92429eb9122401cc244358"
         exit 1
 
     let input = argv.[0]
 
-    let test p str =
-        match run p str with
-        | Success (result, _, _) ->
-            let output = eval result
-            File.Copy("src.ps", "output.ps", true)
-            use sw = new StreamWriter("output.ps", true)
-
-            printfn "Success: %A" (output)
-            sw.WriteLine(output)
-        | Failure (errorMsg, _, _) -> printfn "Failure: %s" errorMsg
-
-
     let lines = File.ReadAllText input
-    test grammar lines
+
+    parseAndEval lines
 
     0
