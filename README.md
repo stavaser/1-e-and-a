@@ -1,10 +1,12 @@
 # CS334 Final Project
 
-usage: `dotnet run <input_file>.1ea`
+usage: `dotnet run <input_file>`
 
-then to get the pdf output you have to run
+The output is a txt file containing abc notation code.
 
-`ps2pdf output.ps`
+Check out the web editor, which is much cooler than a plain txt file! Read more here:
+https://stump-pullover-0b3.notion.site/Docs-1-e-a-f458fb361a92429eb9122401cc244358
+
 
 ## Ready for Feeback?
 
