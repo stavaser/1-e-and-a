@@ -18,6 +18,8 @@ let parseAndEval str =
             | RuntimeError (message) -> message
         use sw = new StreamWriter("output.txt")
         sw.WriteLine(output)
+        printfn "All done! Check the output in the file output.txt"
+        printfn "Also check out the web editor! Read more in the docs: https://stump-pullover-0b3.notion.site/Docs-1-e-a-f458fb361a92429eb9122401cc244358"
         output
     | Failure (errorMsg, _, _) -> errorMsg
 

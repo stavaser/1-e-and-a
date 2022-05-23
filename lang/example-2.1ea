@@ -1,15 +1,17 @@
 time: 4/4
 division: 1/16
-tempo: 127
-title: Chop Suey!
+tempo: 120
+title: example 2
 
-pattern eigthNotes: [1 + | 2 + | 3 + | 4 + |]
-pattern fourthNotes: [ 1 | 2 | 3 | 4 |]
-pattern strongBeatWithFill: [ 1 | 2 | 3 | 4 + |]
-pattern bassDrumMainCourse: [1 a | + | 3 a | |]
+pattern sixteenth_notes: [1 e + a | 2  e + a  | 3 e + a  | 4  e + a  |]
 
-bar emptyBar:
-  hh: [  | 2 | 3 | 4 |]
-  r: [ 1 |  |  |  |]
- 
-render: { emptyBar }
+bar intro:
+    sn: [sixteenth_notes]
+    bd: [1 | 2 | 3 | 4|]
+    
+bar main:
+    hh: [sixteenth_notes]
+    sn: [1 | 2 | 3 | 4|]
+
+    
+render: { intro, main } 

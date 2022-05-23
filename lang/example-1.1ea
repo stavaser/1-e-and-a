@@ -1,8 +1,11 @@
-time :  8/4
+time: 4/4
 division: 1/16
+tempo: 120
+title: example 1
 
-title: my title
+pattern sixteenth_notes: [1 e + a | 2  e + a  | 3 e + a  | 4  e + a  |]
 
-pattern mypattern : | | + a | a |
+bar mybar:
+    hh: [sixteenth_notes]
 
-render: mypattern
+render: { mybar }

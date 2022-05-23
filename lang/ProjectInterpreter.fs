@@ -167,7 +167,7 @@ let evalBar bar _params (envPattern: Map<PatternName, Note list>) =
     let string = manyPatternsToString evaluatedBeats + "|\n"
     // printfn "bars: %A" bars
     // printfn "transformed: %A" transformed
-    printfn "evaluatedBeats: %A" evaluatedBeats
+    // printfn "evaluatedBeats: %A" evaluatedBeats
     // // printfn "transposed: %A" transposed
     // // printfn "combined: %A" combined
     // printfn "string: %A" string
@@ -230,13 +230,13 @@ let evalRepeatChange repeat_num literals old_bar change_data _params (envPattern
         |> Map.ofSeq
 
     let new_bar = evalBarDifference old_bar change_data
-    printfn "\nevalBarDifference: %A \n" new_bar
+    // printfn "\nevalBarDifference: %A \n" new_bar
 
     let newMap =
         Map.fold (fun acc key value -> Map.add key new_bar acc) all_old_bars all_new_bars
 
     let bars_ast = (List.map (fun (_, data) -> data) (newMap |> Map.toList))
-    printfn "\evalBar: %A \n" (evalBar new_bar _params envPattern)
+    // printfn "\evalBar: %A \n" (evalBar new_bar _params envPattern)
 
     bars_ast
     |> List.map (fun expr -> evalBar expr _params envPattern)
@@ -407,14 +407,14 @@ K:perc\n" + header_settings
             // render value is a bar
             elif envBar.ContainsKey render then
                 let expr = envBar.Item render
-                printfn "%A" expr
+                // printfn "%A" expr
                 let result = evalBar expr _params envPattern
                 result  + (evalRender tail)
             // render value is a snippet
             elif envSnippet.ContainsKey render then
                 let expr = envSnippet.Item render
                 let result = evalSnippet expr _params envPattern envBar
-                printfn "%A" result
+                // printfn "%A" result
                 result + (evalRender tail)
             else
                 raise (RuntimeError("Undefined variable '" + render + "'"))
