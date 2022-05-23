@@ -22,7 +22,7 @@ bar mybar:
   sn: [   | 2 |   | 4 |]
   bd: [ 1 |   | 3 |   |]
 
-render: mybar`);
+render: {mybar}`);
   const [midiBuffer, setMidiBuffer] = useState();
   const [visualObj, setVisualObj] = useState([]);
   const [cursorControl, setCursorControl] = useState();
