@@ -1,4 +1,4 @@
-To access the tutorial, please go to this link and look at the section Tutorial:
+To access the tutorial, please go to this link and look at the section "Tutorial: writing your first song in 1 e + a!":
 
 <https://stump-pullover-0b3.notion.site/Docs-1-e-a-f458fb361a92429eb9122401cc244358>
 
