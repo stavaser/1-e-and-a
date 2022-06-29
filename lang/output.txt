@@ -25,17 +25,10 @@
 X: 1
 U:n=!style=x!
 K:perc
-Q: 127
-T: Chop Suey!
+Q: 120
+T: example 1
 M: 4/4
-L: 1/16
+L: 1/32
 V:ALL stem=up
-[F2e2A2][e1][e1] [F1e1][B1][B2] [F1B1][A1][A1][A1] [F2A2][A2]|
-[F2e2A2][e1][e1] [F1e1][B1][B2] [F1B1][A1][A1][A1] [F2A2][A2]|
-[F2e2A2][e1][e1] [F1e1][B1][B2] [F1B1][A1][A1][A1] [F2A2][A2]|
-[F2e2A2][e1][e1] [F1e1][B1][B2] [F1B1][A1][A1][A1] [F2A2][A2]|
-[F2e2A2][e1][e1] [F1e1][B1][B2] [F1B1][A1][A1][A1] [F2A2][A2]|
-[F2e2A2][e1][e1] [F1e1][B1][B2] [F1B1][A1][A1][A1] [F2A2][A2]|
-[F2e2A2][e1][e1] [F1e1][B1][B2] [F1B1][A1][A1][A1] [F2A2][A2]|
-[e2A2F2][e2A2F2] [e2A2F2][e2A2F2] [e2A2F2][e2A2F2] [e2A2F2][c2F2]|
+[ng1][ng1][ng2][ng2][ng2] [ng2][ng2][ng2][ng2] [ng2][ng2][ng2][ng2] [ng2][ng2][ng2][ng2]|
 

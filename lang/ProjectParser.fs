@@ -4,12 +4,15 @@ open FParsec
 
 type Settings =
     { Time: uint8 * uint8
-      Division: uint8 * uint8
       Tempo: uint8
       Title: string }
 
 type Note =
     | Num of uint8
+    | Filler1
+    | Filler2
+    | Filler3
+    | Filler4
     | E
     | And
     | A
@@ -85,6 +88,10 @@ let e: Parser<Note, unit> = (pchar 'e' .>> ws0) |>> (fun e -> E)
 let and': Parser<Note, unit> = (pchar '+' .>> ws0) |>> (fun e -> And)
 let a: Parser<Note, unit> = (pchar 'a' .>> ws0) |>> (fun e -> A)
 let sep: Parser<Note, unit> = (pchar '|' .>> ws0) |>> (fun e -> Sep)
+let filler1: Parser<Note, unit> = (between (str_ws0 "(") (str_ws0 ")") (pchar '1' .>> ws0)) |>> (fun e -> Filler1)
+let filler2: Parser<Note, unit> = (between (str_ws0 "(") (str_ws0 ")") (pchar '2' .>> ws0)) |>> (fun e -> Filler2)
+let filler3: Parser<Note, unit> = (between (str_ws0 "(") (str_ws0 ")") (pchar '3' .>> ws0)) |>> (fun e -> Filler3)
+let filler4: Parser<Note, unit> = (between (str_ws0 "(") (str_ws0 ")") (pchar '4' .>> ws0)) |>> (fun e -> Filler4)
 
 (*
     Parse drum names
@@ -146,11 +153,6 @@ let p_settings =
         >>. (((puint8 .>> ws0) .>> pchar '/')
              .>>. (puint8 .>> ws0))
 
-    let p_div: Parser<(uint8 * uint8), unit> =
-        ((str_ws0 div_keyword) .>> (ws0 >>. str_ws0 ":"))
-        >>. (((puint8 .>> ws0) .>> pchar '/')
-             .>>. (puint8 .>> ws0))
-
     let p_tempo: Parser<(uint8), unit> =
         ((str_ws0 tempo_keyword) .>> (ws0 >>. str_ws0 ":"))
         >>. (puint8 .>> ws0)
@@ -159,17 +161,15 @@ let p_settings =
         (many1CharsTill anyChar newline)
         <!> "parsing a string"
 
-    pipe4
+    pipe3
         p_time
-        p_div
         p_tempo
         (((((str_ws0 title_keyword) .>> (ws0 >>. str_ws0 ":"))
            >>. p_string)
           .>> ws0)
          <!> "parsed title")
-        (fun time div tempo title ->
+        (fun time tempo title ->
             { Time = time
-              Division = div
               Tempo = tempo
               Title = title
               })
@@ -184,7 +184,7 @@ let p_assignment = (variable_name .>> (ws0 >>. str_ws0 ":"))
     Parses a note value such as
     1, e, and, or a
 *)
-let p_note = (num <|> e <|> and' <|> a <|> sep)
+let p_note = (num <|> e <|> and' <|> a <|> sep <|> attempt filler1 <|>  attempt filler2 <|> attempt filler3 <|> attempt filler4)
 
 (*
     Parses a pattern expression such as

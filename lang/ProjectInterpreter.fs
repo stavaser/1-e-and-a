@@ -24,21 +24,56 @@ let beam current next =
     match current with
     | Num (n) ->
         match next with
+        | Filler1 -> 1
+        | E -> 2
+        | Filler2 -> 3
+        | And -> 4
+        | Filler3 -> 5
+        | A -> 6
+        | Filler4 -> 7
+        | Num (n) -> 8
+    | Filler1 ->
+        match next with
         | E -> 1
-        | And -> 2
-        | A -> 3
-        | Num (n) -> 4
-
+        | Filler2 -> 2
+        | And -> 3
+        | Filler3 -> 4
+        | A -> 5
+        | Filler4 -> 6
+        | Num (n) -> 7
     | E ->
         match next with
+        | Filler2 -> 1
+        | And -> 2
+        | Filler3 -> 3
+        | A -> 4
+        | Filler4 -> 5
+        | E -> 6
+    | Filler2 ->
+        match next with
         | And -> 1
-        | A -> 2
-        | E -> 3
+        | Filler3 -> 2
+        | A -> 3
+        | Filler4 -> 4
+        | Num (n) -> 5
+        | Filler2 -> 6
     | And ->
         match next with
+        | Filler3 -> 1
+        | A -> 2
+        | Filler4 -> 3
+        | And -> 4
+    | Filler3 ->
+        match next with
         | A -> 1
-        | And -> 2
-    | A -> 1
+        | Filler4 -> 2
+        | Num (n) -> 3
+        | Filler3 -> 4
+    | A -> 
+        match next with
+        | Filler4 -> 1
+        | A -> 2
+    | Filler4 -> 1
 
 
 let combineBeatsAndRests beats rests =
@@ -65,9 +100,13 @@ let beatSort beat =
         |> List.map (fun y ->
             match y with
             | Num (n), _ -> (y, 1)
-            | E, _ -> (y, 2)
-            | And, _ -> (y, 3)
-            | A, _ -> (y, 4))
+            | Filler1, _ -> (y, 2)
+            | E, _ -> (y, 3)
+            | Filler2, _ -> (y, 4)
+            | And, _ -> (y, 5)
+            | Filler3, _ -> (y, 6)
+            | A, _ -> (y, 7)
+            | Filler4, _ -> (y, 8))
 
         |> List.sortBy (fun (data, index) -> index)
         |> List.map (fun (data, index) -> data))
@@ -323,7 +362,7 @@ let evalSnippet expr _params (envPattern: Map<PatternName, Note list>) (envBar: 
     evalSnippetHelper expr
 
 (*
-    Evaluates AST into PostScript
+    Evaluates AST into abc notation
 *)
 let eval
     { Settings = settings
@@ -333,22 +372,21 @@ let eval
       Render = render }
     =
     // get values of the settings
-    let ((numBeats, beatValue), div, tempo, title) =
+    let ((numBeats, beatValue), tempo, title) =
         (fun { Time = (a, b)
-               Division = (_, y)
                Tempo = tempo
                Title = title
-          } -> (int a, int b), float y, tempo, title)
+          } -> (int a, int b), tempo, title)
             settings
 
-    if numBeats <> 4 || beatValue <> 4 then
-        raise (RuntimeError("Time: " + (string numBeats) + "/" + (string beatValue) + " feature isn't supported yet! Try the following: 4/4"))
+    // if numBeats <> 4 || beatValue <> 4 then
+    //     raise (RuntimeError("Time: " + (string numBeats) + "/" + (string beatValue) + " feature isn't supported yet! Try the following: 4/4"))
     
-    if div <> 16 then
-        raise (RuntimeError("Division: 1/" + (string div) + " feature isn't supported yet! Try the following: 1/16"))
+    // if div <> 16 then
+    //     raise (RuntimeError("Division: 1/" + (string div) + " feature isn't supported yet! Try the following: 1/16"))
     
-    let _params = (numBeats, beatValue, div)
-    let header_settings = "Q: " + (string tempo) + "\nT: " + title + "\nM: " + (string numBeats) + "/" + (string beatValue) + "\nL: 1/" + (string div) + "\nV:ALL stem=up\n"
+    let _params = (numBeats, beatValue)
+    let header_settings = "Q: " + (string tempo) + "\nT: " + title + "\nM: " + (string numBeats) + "/" + (string beatValue) + "\nV:ALL stem=up\n"
 
     let header =
         "%%percmap D  pedal-hi-hat x
@@ -376,6 +414,7 @@ let eval
 %%MIDI drummap _g 46 % open hi hat
 %%flatbeams 1
 X: 1
+L: 1/32
 U:n=!style=x!
 K:perc\n" + header_settings
 
@@ -396,7 +435,7 @@ K:perc\n" + header_settings
         snippets
         |> List.map (fun (Snippet (id, data)) -> id, data)
         |> Map.ofSeq
-
+    
     let rec evalRender render_list = 
         match render_list with
         | [] -> ""
@@ -407,7 +446,7 @@ K:perc\n" + header_settings
             // render value is a bar
             elif envBar.ContainsKey render then
                 let expr = envBar.Item render
-                // printfn "%A" expr
+                printfn "%A" expr
                 let result = evalBar expr _params envPattern
                 result  + (evalRender tail)
             // render value is a snippet
